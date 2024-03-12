@@ -1,6 +1,10 @@
-﻿using Domain.Models;
+﻿using API.Helpers;
+using Domain.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Persistence.DataAccess;
+using System.Text;
 
 namespace API.Extensions;
 
