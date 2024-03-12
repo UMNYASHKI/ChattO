@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Application.Interfaces;
+using Domain.Models;
 using Domain.Models.Files;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -7,7 +8,7 @@ using Persistence.DataAccess.EntityTypeConfigurations;
 
 namespace Persistence.DataAccess;
 
-public class ChattoDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
+public class ChattoDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>, IChattoDbContext
 {
     public ChattoDbContext(DbContextOptions options) : base(options)
     {
