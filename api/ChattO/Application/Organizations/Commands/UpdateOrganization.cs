@@ -54,6 +54,11 @@ public class UpdateOrganization
             if (!validationResult.IsValid)
                 return Result.Failure<bool>(validationResult.ToString(" "));
 
+            var isUnique = await _repository.IsUnique(o => o.Name == request.Name || o.Domain == request.Domain);
+
+            if (!isUnique.IsSuccessful)
+                return Result.Failure<bool>($"{nameof(Organization)} with this name or domain already exists");
+
             var organization = await _repository.GetByIdAsync(request.Id);
 
             if (organization.Data is null)

@@ -51,6 +51,17 @@ public class CreateOrganization
             if (!validationResult.IsValid)
                 return Result.Failure<Guid>(validationResult.ToString(" "));
 
+            var isUniqueResult = await _repository.IsUnique(o => o.Name == request.Name || o.Domain == request.Domain);
+
+            if (!isUniqueResult.IsSuccessful)
+            {
+                return Result.Failure<Guid>(isUniqueResult.Message);
+            }
+            else if (!isUniqueResult.Data)
+            {
+                return Result.Failure<Guid>($"{nameof(Organization)} with this name or domain already exists");
+            }    
+
             var organization = _mapper.Map<Organization>(request);
 
             var result = await _repository.AddItemAsync(organization);

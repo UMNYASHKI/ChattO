@@ -116,6 +116,21 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         }
     }
 
+    public async Task<Result<bool>> IsUnique(Expression<Func<TEntity, bool>> filter)
+    {
+        try
+        {
+            IQueryable<TEntity> query = _dbSet.AsQueryable();
+
+            return Result.Success(!query.Any(filter));
+        }
+        catch
+        {
+            return Result.Failure<bool>($"Cannot check uniqueness of {typeof(TEntity).Name}");
+        }
+
+    }
+
     private void CheckEntityEntryState(TEntity entity)
     {
         if (_context.Entry(entity).State == EntityState.Detached)
