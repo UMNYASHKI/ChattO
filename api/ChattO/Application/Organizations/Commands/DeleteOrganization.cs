@@ -1,8 +1,9 @@
 ﻿using Application.Abstractions;
 using Application.Helpers;
+using Domain.Models;
 using FluentValidation;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace Application.Organizations.Commands;
 
@@ -23,33 +24,22 @@ public class DeleteOrganization
 
     public class Handler : IRequestHandler<Command, Result<bool>>
     {
-        private readonly IChattoDbContext _dbContext;
+        private readonly IRepository<Organization> _repository;
         private readonly IValidator<Command> _validator;
-        public Handler(IChattoDbContext dbContext, IValidator<Command> validator)
+        public Handler(IRepository<Organization> repository, IValidator<Command> validator)
         {
-            _dbContext = dbContext;
+            _repository = repository;
             _validator = validator;
         }
 
         public async Task<Result<bool>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var organization = await _dbContext.Organizations
-                .FirstOrDefaultAsync(o => o.Id == request.Id, cancellationToken);
+            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
-            if (organization is null)
-                return Result.Failure<bool>($"Organization with id {request.Id} not found");
+            if (!validationResult.IsValid)
+                return Result.Failure<bool>(validationResult.ToString(" "));
 
-            try
-            {
-                _dbContext.Organizations.Remove(organization);
-                var result = await _dbContext.SaveChangesAsync(cancellationToken) > 0;
-
-                return result ? Result.Success(true) : Result.Failure<bool>("Failed to delete organization");
-            }
-            catch
-            {
-                return Result.Failure<bool>("Failed to delete organization");
-            }
+            return await _repository.DeleteItemAsync(request.Id);
         }
     }
 

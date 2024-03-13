@@ -35,12 +35,12 @@ public class CreateOrganization
     }
     public class Handler : IRequestHandler<Command, Result<Guid>>
     {
-        private readonly IChattoDbContext _dbContext;
+        private readonly IRepository<Organization> _repository;
         private readonly IMapper _mapper;
         private readonly IValidator<Command> _validator;
-        public Handler(IChattoDbContext dbContext, IMapper mapper, IValidator<Command> validator)
+        public Handler(IRepository<Organization> repository, IMapper mapper, IValidator<Command> validator)
         {
-            _dbContext = dbContext;
+            _repository = repository;
             _mapper = mapper;
             _validator = validator;
         }
@@ -53,20 +53,12 @@ public class CreateOrganization
 
             var organization = _mapper.Map<Organization>(request);
 
-            try
-            {
-                await _dbContext.Organizations.AddAsync(organization);
-                var result = await _dbContext.SaveChangesAsync(cancellationToken) > 0;
+            var result = await _repository.AddItemAsync(organization);
 
-                if (!result)
-                    return Result.Failure<Guid>("Failed to create organization");
+            if (!result.IsSuccessful)
+                return Result.Failure<Guid>($"Failed to create {nameof(Organization)}");
 
-                return Result.Success(organization.Id);
-            }
-            catch
-            {
-                return Result.Failure<Guid>("Failed to save organization");
-            }
+            return Result.Success(organization.Id);
         }
     }
 }

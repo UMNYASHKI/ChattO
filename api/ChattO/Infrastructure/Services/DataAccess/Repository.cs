@@ -8,11 +8,11 @@ namespace Infrastructure.Services.DataAccess;
 
 public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 {
-    private readonly Abstractions.IChattoDbContext _context;
+    private readonly IChattoDbContext _context;
 
     private readonly DbSet<TEntity> _dbSet;
 
-    public Repository(Abstractions.IChattoDbContext dvdRentalContext)
+    public Repository(IChattoDbContext dvdRentalContext)
     {
         _context = dvdRentalContext;
         _dbSet = _context.Set<TEntity>();
@@ -24,11 +24,12 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         {
             await _dbSet.AddAsync(entity);
             await _context.SaveChangesAsync();
+
             return Result.Success(true);
         }
         catch
         {
-            return Result.Failure<bool>("Cannot add item");
+            return Result.Failure<bool>($"Cannot add {typeof(TEntity).Name}");
         }
     }
 
@@ -56,7 +57,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         }
         catch
         {
-            return Result.Failure<IEnumerable<TEntity>>("Cannot get items");
+            return Result.Failure<IEnumerable<TEntity>>($"Cannot get {typeof(TEntity).Name}s");
         }
 
     }
@@ -66,15 +67,17 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         try
         {
             var result = await _dbSet.FindAsync(id);
+
             if (result is null)
             {
-                return Result.Failure<TEntity>("Cannot find item");
+                return Result.Failure<TEntity>($"Cannot find {typeof(TEntity).Name}");
             }
+
             return Result.Success(result);
         }
         catch
         {
-            return Result.Failure<TEntity>("Error when finding item");
+            return Result.Failure<TEntity>($"Error when finding {typeof(TEntity).Name}");
         }
 
     }
@@ -92,7 +95,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         }
         catch
         {
-            return Result.Failure<bool>("Cannot update item");
+            return Result.Failure<bool>($"Cannot update {typeof(TEntity).Name}");
         }
     }
 
@@ -104,11 +107,12 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
             CheckEntityEntryState(entityToDelete);
             _dbSet.Remove(entityToDelete);
             await _context.SaveChangesAsync();
+
             return Result.Success<bool>();
         }
         catch
         {
-            return Result.Failure<bool>("Cannot delete the item");
+            return Result.Failure<bool>($"Cannot delete the {typeof(TEntity).Name}");
         }
     }
 

@@ -1,5 +1,6 @@
 using API.Extensions;
 using Application;
+using Application.Abstractions;
 using Application.Helpers.Mappings;
 using Infrastructure;
 using Persistence;
@@ -10,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(config =>
 {
     config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
-    config.AddProfile(new AssemblyMappingProfile(typeof(Infrastructure.Abstractions.IChattoDbContext).Assembly));
+    config.AddProfile(new AssemblyMappingProfile(typeof(IUserService).Assembly));
 });
 
 builder.Services.AddPersistence(builder.Configuration);

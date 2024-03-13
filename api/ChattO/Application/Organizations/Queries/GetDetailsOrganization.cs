@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions;
 using Application.Helpers;
+using AutoMapper;
 using Domain.Models;
 using FluentValidation;
 using MediatR;
@@ -22,28 +23,14 @@ public class GetDetailsOrganization
     }
     public class Handler : IRequestHandler<Query, Result<Organization>>
     {
-        private readonly IChattoDbContext _dbContext;
-        public Handler(IChattoDbContext dbContext)
+        private readonly IRepository<Organization> _repository;
+        public Handler(IRepository<Organization> repository)
         {
-            _dbContext = dbContext;
+            _repository = repository;
         }
         public async Task<Result<Organization>> Handle(Query request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var organizationProxy = await _dbContext.Organizations
-                                    .FirstOrDefaultAsync(o => o.Id == request.Id, cancellationToken);
-
-                if (organizationProxy is null)
-                    return Result.Failure<Organization>($"Organization with id {request.Id} not found");
-
-                return Result.Success(organizationProxy);
-            }
-            catch
-            {
-                return Result.Failure<Organization>("Failed to get organization");
-            }
+            return await _repository.GetByIdAsync(request.Id);
         }
-
     }
 }
