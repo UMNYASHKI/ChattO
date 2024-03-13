@@ -1,8 +1,17 @@
 using Application;
+using Application.Helpers.Mappings;
+using Application.Interfaces;
 using Infrastructure;
 using Persistence;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAutoMapper(config =>
+{
+    config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
+    config.AddProfile(new AssemblyMappingProfile(typeof(IChattoDbContext).Assembly));
+});
 
 // Add services to the container.
 builder.Services.AddPersistence(builder.Configuration);
