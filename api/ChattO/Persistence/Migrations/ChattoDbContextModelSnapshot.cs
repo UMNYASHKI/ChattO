@@ -128,7 +128,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("FeedId");
 
-                    b.ToTable("AppUserFeeds");
+                    b.ToTable("AppUserFeeds", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.AppUserGroup", b =>
@@ -152,7 +152,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("AppUserGroups");
+                    b.ToTable("AppUserGroups", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Feed", b =>
@@ -180,7 +180,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Feeds");
+                    b.ToTable("Feeds", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Files.FeedImage", b =>
@@ -203,7 +203,7 @@ namespace Persistence.Migrations
                     b.HasIndex("FeedId")
                         .IsUnique();
 
-                    b.ToTable("FeedImages");
+                    b.ToTable("FeedImages", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Files.MessageFile", b =>
@@ -223,7 +223,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MessageFiles");
+                    b.ToTable("MessageFiles", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Files.ProfileImage", b =>
@@ -243,7 +243,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProfileImages");
+                    b.ToTable("ProfileImages", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Group", b =>
@@ -257,7 +257,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Message", b =>
@@ -291,7 +291,7 @@ namespace Persistence.Migrations
                     b.HasIndex("MessageFileId")
                         .IsUnique();
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Organization", b =>
@@ -308,7 +308,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("Organizations", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Ticket", b =>
@@ -336,7 +336,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Tickets");
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
