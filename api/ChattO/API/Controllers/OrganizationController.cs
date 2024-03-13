@@ -1,31 +1,43 @@
 ﻿using API.DTOs.Requests.Organization;
 using API.DTOs.Responses.Organization;
+using Application.Abstractions;
 using Application.Organizations.Commands;
 using Application.Organizations.Queries;
+using Domain.Enums;
+using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 public class OrganizationController : BaseController
 {
+    private readonly IUserService _userService;
+
+    public OrganizationController(IUserService userService)
+    {
+        _userService = userService;
+    }
+
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Create([FromBody] CreateOrganizationRequest request)
     {
-        //organization creation logic
         var result = await Mediator.Send(Mapper.Map<CreateOrganization.Command>(request));
 
         if (!result.IsSuccessful)
             return HandleResult(result);
 
-        //super admin creation logic
+        var user = Mapper.Map<AppUser>(request);
+        user.OrganizationId = result.Data;
 
-        return Ok();
+        return HandleResult(await _userService.RegisterUserAsync(user));
     }
 
-    //[Authorize]
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
@@ -37,7 +49,6 @@ public class OrganizationController : BaseController
         return Ok(Mapper.Map<GetDetailsOrganizationResponse>(organizationResult.Data));       
     }
 
-    //[Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
@@ -49,7 +60,6 @@ public class OrganizationController : BaseController
         return NoContent();
     }
 
-    //[Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, UpdateOrganizationRequest request)
     {
