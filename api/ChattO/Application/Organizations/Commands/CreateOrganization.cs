@@ -37,13 +37,20 @@ public class CreateOrganization
     {
         private readonly IChattoDbContext _dbContext;
         private readonly IMapper _mapper;
-        public Handler(IChattoDbContext dbContext, IMapper mapper)
+        private readonly IValidator<Command> _validator;
+        public Handler(IChattoDbContext dbContext, IMapper mapper, IValidator<Command> validator)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _validator = validator;
         }
         public async Task<Result<Guid>> Handle(Command request, CancellationToken cancellationToken)
         {
+            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+
+            if (!validationResult.IsValid)
+                return Result.Failure<Guid>(validationResult.Errors.ToString());
+
             var organization = _mapper.Map<Organization>(request);
 
             try
