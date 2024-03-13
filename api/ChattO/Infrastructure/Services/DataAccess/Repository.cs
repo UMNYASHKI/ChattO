@@ -12,9 +12,9 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 
     private readonly DbSet<TEntity> _dbSet;
 
-    public Repository(IChattoDbContext dvdRentalContext)
+    public Repository(IChattoDbContext chattoDbContext)
     {
-        _context = dvdRentalContext;
+        _context = chattoDbContext;
         _dbSet = _context.Set<TEntity>();
     }
 
