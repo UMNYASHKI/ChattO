@@ -1,6 +1,6 @@
 using AutoMapper;
 using MediatR;
-﻿using Application.Helpers;
+using Application.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using API.Helpers;

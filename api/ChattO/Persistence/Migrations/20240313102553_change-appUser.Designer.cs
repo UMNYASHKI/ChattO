@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistence.DataAccess;
@@ -11,9 +12,11 @@ using Persistence.DataAccess;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ChattoDbContext))]
-    partial class ChattoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240313102553_change-appUser")]
+    partial class changeappUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
