@@ -1,4 +1,4 @@
-﻿using API.DTOs.Requests.Orqanization;
+﻿using API.DTOs.Requests.Organization;
 using API.DTOs.Responses.Organization;
 using Application.Organizations.Commands;
 using Application.Organizations.Queries;

@@ -3,7 +3,7 @@ using Application.Organizations.Commands;
 using AutoMapper;
 using System.ComponentModel.DataAnnotations;
 
-namespace API.DTOs.Requests.Orqanization;
+namespace API.DTOs.Requests.Organization;
 
 public class CreateOrganizationRequest : IMapWith<CreateOrganization.Command>
 {

@@ -1,7 +1,4 @@
-﻿using API.DTOs.Requests.Orqanization;
-using Application.Helpers.Mappings;
-using Application.Organizations.Commands;
-using Application.Organizations.Queries;
+﻿using Application.Helpers.Mappings;
 using AutoMapper;
 
 namespace API.DTOs.Responses.Organization;

@@ -1,8 +1,9 @@
 ﻿using Domain.Models;
 using Domain.Models.Files;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Application.Interfaces;
+namespace Application.Abstractions;
 
 public interface IChattoDbContext
 {
@@ -16,5 +17,9 @@ public interface IChattoDbContext
     public DbSet<FeedImage> FeedImages { get; set; }
     public DbSet<ProfileImage> ProfileImages { get; set; }
     public DbSet<MessageFile> MessageFiles { get; set; }
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    DbSet<TEntity> Set<TEntity>()
+        where TEntity : class;
+    EntityEntry<TEntity> Entry<TEntity>(TEntity entity)
+        where TEntity : class;
 }

@@ -1,6 +1,6 @@
+using API.Extensions;
 using Application;
 using Application.Helpers.Mappings;
-using Application.Interfaces;
 using Infrastructure;
 using Persistence;
 using System.Reflection;
@@ -10,12 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(config =>
 {
     config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
-    config.AddProfile(new AssemblyMappingProfile(typeof(IChattoDbContext).Assembly));
+    config.AddProfile(new AssemblyMappingProfile(typeof(Infrastructure.Abstractions.IChattoDbContext).Assembly));
 });
 
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
+
+builder.Services.AddIdentity();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();

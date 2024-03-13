@@ -1,10 +1,10 @@
-﻿using Application.Helpers.Mappings;
+﻿using Application.Abstractions;
 using Application.Helpers;
+using Application.Helpers.Mappings;
 using AutoMapper;
 using Domain.Models;
-using MediatR;
 using FluentValidation;
-using Application.Interfaces;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Organizations.Commands;

@@ -1,10 +1,10 @@
-﻿using Application.Interfaces;
-using FluentValidation;
+﻿using FluentValidation;
 using Domain.Models;
 using MediatR;
 using Application.Helpers;
 using Application.Helpers.Mappings;
 using AutoMapper;
+using Application.Abstractions;
 
 namespace Application.Organizations.Commands;
 
