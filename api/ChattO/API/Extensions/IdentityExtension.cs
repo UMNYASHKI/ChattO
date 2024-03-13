@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.DataAccess;
 
-namespace Infrastructure.Extensions;
+namespace API.Extensions;
 
 public static class IdentityExtension
 {

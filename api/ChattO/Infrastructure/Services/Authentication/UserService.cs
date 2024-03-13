@@ -25,8 +25,7 @@ public class UserService : IUserService
     }
 
     public async Task<Result<bool>> RegisterUserAsync(AppUser user)
-    {
-        // user.PasswordHash is non-hashed password, which was received by mapping and will be hashed by Identity 
+    { 
         var registerResult = await _userManager.CreateAsync(user, user.PasswordHash);
         if (!registerResult.Succeeded)
         {
@@ -39,7 +38,7 @@ public class UserService : IUserService
             return Result.Failure<bool>("Failed to give user role:\n" + string.Join('\n', registerResult.Errors));
         }
 
-        return Result.Success<bool>();
+        return Result.Success<bool>(true);
     }
 
     public async Task<Result<string>> AuthenticateUserAsync(string username, string password)
