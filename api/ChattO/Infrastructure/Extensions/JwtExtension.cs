@@ -11,9 +11,9 @@ public static class JwtExtension
 {
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtIssuer = configuration.GetSection("Jwt:Issuer").Get<string>();
-        var jwtAudience = configuration.GetSection("Jwt:Audience").Get<string>();
-        var jwtKey = configuration.GetSection("Jwt:Key").Get<string>();
+        var jwtIssuer = configuration.GetSection("JwtSettings:Issuer").Get<string>();
+        var jwtAudience = configuration.GetSection("JwtSettings:Audience").Get<string>();
+        var jwtKey = configuration.GetSection("JwtSettings:Key").Get<string>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
          .AddJwtBearer(options =>

@@ -13,7 +13,7 @@ public static class DependencyInjection
             services)
     {
         var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-        services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+        services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
 
         services.AddIdentity();
 
