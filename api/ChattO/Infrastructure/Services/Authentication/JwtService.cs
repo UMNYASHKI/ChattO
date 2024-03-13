@@ -1,15 +1,15 @@
-﻿using API.Helpers;
-using API.Services.Abstractions;
+﻿using Application.Abstractions;
 using Domain.Models;
+using Infrastructure.Helpers;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace API.Services.Implementations;
+namespace Infrastructure.Services.Authentication;
 
-public class JwtService : IJwtService
+public class JwtService : ITokenService
 {
     private readonly JwtSettings _jwtSettings;
 
@@ -18,7 +18,7 @@ public class JwtService : IJwtService
         _jwtSettings = options.Value;
     }
 
-    public string GenerateJwtToken(AppUser user)
+    public string GenerateToken(AppUser user)
     {
         if (user is null)
         {
@@ -32,6 +32,7 @@ public class JwtService : IJwtService
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
                 new Claim("SecurityStamp", user.SecurityStamp)
             };
 

@@ -1,7 +1,7 @@
 ﻿using Application.Helpers;
 using Domain.Models;
 
-namespace API.Services.Abstractions
+namespace Application.Abstractions
 {
     public interface IUserService
     {

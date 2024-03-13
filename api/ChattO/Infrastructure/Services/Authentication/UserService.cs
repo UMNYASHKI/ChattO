@@ -1,14 +1,10 @@
-﻿using API.Extensions;
-using API.Helpers;
-using API.Services.Abstractions;
+﻿using Application.Abstractions;
 using Application.Helpers;
-using Domain.Enums;
 using Domain.Models;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 
-namespace API.Services.Implementations;
+namespace Infrastructure.Services.Authentication;
 
 public class UserService : IUserService
 {
@@ -16,11 +12,11 @@ public class UserService : IUserService
 
     private readonly SignInManager<AppUser> _signInManager;
 
-    private readonly IJwtService _jwtService;
+    private readonly ITokenService _jwtService;
 
     private readonly IHttpContextAccessor _contextAccessor;
 
-    public UserService(UserManager<AppUser> userManager, IJwtService jwtService, SignInManager<AppUser> signInManager, IHttpContextAccessor contextAccessor)
+    public UserService(UserManager<AppUser> userManager, ITokenService jwtService, SignInManager<AppUser> signInManager, IHttpContextAccessor contextAccessor)
     {
         _userManager = userManager;
         _jwtService = jwtService;
@@ -30,7 +26,8 @@ public class UserService : IUserService
 
     public async Task<Result<bool>> RegisterUserAsync(AppUser user)
     {
-        var registerResult = await _userManager.CreateAsync(user);
+        // user.PasswordHash is non-hashed password, which was received by mapping and will be hashed by Identity 
+        var registerResult = await _userManager.CreateAsync(user, user.PasswordHash);
         if (!registerResult.Succeeded)
         {
             return Result.Failure<bool>("Failed to create user:\n" + string.Join('\n', registerResult.Errors));
@@ -51,23 +48,23 @@ public class UserService : IUserService
         const string errorMesage = "Invalid credentials";
         if (user == null)
         {
-            return new Result<string>(false, errorMesage);
+            return Result.Failure<string>(errorMesage);
         }
 
         if (!await _userManager.CheckPasswordAsync(user, password))
         {
-            return new Result<string>(false, errorMesage);
+            return Result.Failure<string>(errorMesage);
         }
 
         await UpdateUsersSecurityStamp(user, Guid.NewGuid().ToString());
         await _signInManager.SignInAsync(user, true);
 
-        var jwt = _jwtService.GenerateJwtToken(user);
+        var jwt = _jwtService.GenerateToken(user);
 
-        return new Result<string>(true, jwt);
+        return Result.Success(jwt);
     }
 
-    public async Task SignOutAsync() 
+    public async Task SignOutAsync()
     {
         var principal = _contextAccessor?.HttpContext?.User;
         var user = await _userManager.GetUserAsync(principal);

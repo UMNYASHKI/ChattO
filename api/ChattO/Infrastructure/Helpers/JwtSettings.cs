@@ -1,4 +1,4 @@
-﻿namespace API.Helpers;
+﻿namespace Infrastructure.Helpers;
 
 public class JwtSettings
 {
@@ -6,7 +6,7 @@ public class JwtSettings
 
     public string Issuer { get; set; }
 
-    public string Audience { get; set; } 
+    public string Audience { get; set; }
 
     public int TokenValidityFromDays { get; set; }
 }

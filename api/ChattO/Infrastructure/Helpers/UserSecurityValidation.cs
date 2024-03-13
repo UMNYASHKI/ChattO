@@ -1,10 +1,11 @@
 ﻿using Domain.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace API.Helpers;
+namespace Infrastructure.Helpers;
 
 public class UserSecurityValidation : JwtBearerEvents
 {

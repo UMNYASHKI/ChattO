@@ -1,16 +1,13 @@
-﻿using API.Helpers;
-using Domain.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Domain.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.DependencyInjection;
 using Persistence.DataAccess;
-using System.Text;
 
-namespace API.Extensions;
+namespace Infrastructure.Extensions;
 
 public static class IdentityExtension
 {
-    public static IServiceCollection AddIdentity(this IServiceCollection services) 
+    public static IServiceCollection AddIdentity(this IServiceCollection services)
     {
         services.AddIdentity<AppUser, IdentityRole<Guid>>()
             .AddDefaultTokenProviders()
