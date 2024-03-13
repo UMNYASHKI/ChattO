@@ -18,5 +18,10 @@ public class FeedConfiguration : IEntityTypeConfiguration<Feed>
             .WithOne(appUserFeed=>appUserFeed.Feed)
             .HasForeignKey(appUserFeed=>appUserFeed.FeedId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(feed => feed.Ticket)
+           .WithOne(ticket => ticket.Feed)
+           .HasForeignKey<Ticket>(ticket => ticket.FeedId)
+           .OnDelete(DeleteBehavior.Cascade);
     }
 }

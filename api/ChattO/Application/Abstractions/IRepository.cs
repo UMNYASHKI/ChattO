@@ -5,13 +5,15 @@ namespace Application.Abstractions;
 
 public interface IRepository<TEntity> where TEntity : class
 {
-    public Task<Result<bool>> AddItemAsync(TEntity entity);
+    Task<Result<bool>> AddItemAsync(TEntity entity);
 
-    public Task<Result<TEntity>> GetByIdAsync(Guid id);
+    Task<Result<TEntity>> GetByIdAsync(Guid id);
 
-    public Task<Result<IEnumerable<TEntity>>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate, int? pageNum, int? count);
+    Task<Result<IEnumerable<TEntity>>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate, int? pageNum, int? count);
 
-    public Task<Result<bool>> DeleteItemAsync(Guid id);
+    Task<Result<bool>> DeleteItemAsync(Guid id);
 
-    public Task<Result<bool>> UpdateItemAsync(TEntity entity);
+    Task<Result<bool>> UpdateItemAsync(TEntity entity);
+
+    Task<Result<bool>> IsUnique(Expression<Func<TEntity, bool>> filter);
 }
