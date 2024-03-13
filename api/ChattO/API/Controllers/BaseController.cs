@@ -1,5 +1,6 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MediatR;
+﻿using Application.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,4 +18,16 @@ public class BaseController : ControllerBase
     protected IMapper Mapper =>
         _mapper ??= HttpContext.RequestServices.GetService<IMapper>();
 
+    protected ActionResult HandleResult<T>(Result<T> result)
+    {
+        if (result == null) return NotFound();
+
+        if (result.IsSuccessful && result.Data != null)
+            return Ok(result.Data);
+
+        if (result.IsSuccessful && result.Data == null)
+            return NotFound();
+
+        return BadRequest(result.Message);
+    }
 }
