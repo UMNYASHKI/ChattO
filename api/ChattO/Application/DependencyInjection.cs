@@ -11,7 +11,7 @@ public static class DependencyInjection
             this IServiceCollection services)
     {
         services.AddMediatR(cfg => 
-            cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         return services;
