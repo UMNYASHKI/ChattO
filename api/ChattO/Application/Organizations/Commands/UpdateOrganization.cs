@@ -1,17 +1,19 @@
-﻿using Application.Interfaces;
-using FluentValidation;
+﻿using Application.Helpers.Mappings;
+using Application.Helpers;
+using AutoMapper;
 using Domain.Models;
 using MediatR;
-using Application.Helpers;
-using Application.Helpers.Mappings;
-using AutoMapper;
+using FluentValidation;
+using Application.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Organizations.Commands;
 
-public class CreateOrganization
+public class UpdateOrganization
 {
-    public class  Command : IRequest<Result<Guid>>, IMapWith<Organization>
+    public class Command : IRequest<Result<bool>>, IMapWith<Organization>
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Domain { get; set; }
 
@@ -24,16 +26,17 @@ public class CreateOrganization
                     opt => opt.MapFrom(c => c.Domain));
         }
     }
-
     public class CommandValidator : AbstractValidator<Command>
     {
         public CommandValidator()
         {
+            RuleFor(x => x.Id).NotEqual(Guid.Empty);
             RuleFor(x => x.Name).NotEmpty();
             RuleFor(x => x.Domain).NotEmpty();
         }
     }
-    public class Handler : IRequestHandler<Command, Result<Guid>>
+
+    public class Handler : IRequestHandler<Command, Result<bool>>
     {
         private readonly IChattoDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -44,28 +47,30 @@ public class CreateOrganization
             _mapper = mapper;
             _validator = validator;
         }
-        public async Task<Result<Guid>> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(Command request, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
             if (!validationResult.IsValid)
-                return Result.Failure<Guid>(validationResult.ToString(" "));
+                return Result.Failure<bool>(validationResult.ToString(" "));
 
-            var organization = _mapper.Map<Organization>(request);
+            var organization = await _dbContext.Organizations
+                .FirstOrDefaultAsync(o => o.Id == request.Id, cancellationToken);
+
+            if (organization is null)
+                return Result.Failure<bool>($"Organization with id {request.Id} not found");
+
+            _mapper.Map(request, organization);
 
             try
             {
-                await _dbContext.Organizations.AddAsync(organization);
                 var result = await _dbContext.SaveChangesAsync(cancellationToken) > 0;
 
-                if (!result)
-                    return Result.Failure<Guid>("Failed to create organization");
-
-                return Result.Success(organization.Id);
+                return result ? Result.Success<bool>() : Result.Failure<bool>("Failed to update organization");
             }
             catch
             {
-                return Result.Failure<Guid>("Failed to save organization");
+                return Result.Failure<bool>("Failed to update organization");
             }
         }
     }

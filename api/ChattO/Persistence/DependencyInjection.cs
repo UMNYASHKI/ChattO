@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Application.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence.DataAccess;
@@ -16,6 +17,8 @@ public static class DependencyInjection
                 .UseLazyLoadingProxies()
                 .UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
         });
+        services.AddScoped<IChattoDbContext>(provider =>
+                provider.GetService<ChattoDbContext>());
 
         return services;
     }

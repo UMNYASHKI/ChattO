@@ -3,11 +3,13 @@ using MediatR;
 ﻿using Application.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using API.Helpers;
 
 namespace API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[ModelStateValidation]
 public class BaseController : ControllerBase
 {
     private IMediator _mediator;
@@ -20,7 +22,8 @@ public class BaseController : ControllerBase
 
     protected ActionResult HandleResult<T>(Result<T> result)
     {
-        if (result == null) return NotFound();
+        if (result == null) 
+            return NotFound();
 
         if (result.IsSuccessful && result.Data != null)
             return Ok(result.Data);
