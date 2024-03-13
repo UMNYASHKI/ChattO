@@ -1,11 +1,12 @@
-﻿using Application.Helpers;
-using Microsoft.AspNetCore.Http;
+﻿using API.Helpers;
+using Application.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[ModelStateValidation]
 public class BaseController : ControllerBase
 {
     protected ActionResult HandleResult<T>(Result<T> result)
