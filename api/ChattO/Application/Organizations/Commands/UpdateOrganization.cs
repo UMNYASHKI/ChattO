@@ -66,7 +66,7 @@ public class UpdateOrganization
             {
                 var result = await _dbContext.SaveChangesAsync(cancellationToken) > 0;
 
-                return result ? Result.Success<bool>() : Result.Failure<bool>("Failed to update organization");
+                return result ? Result.Success<bool>(true) : Result.Failure<bool>("Failed to update organization");
             }
             catch
             {

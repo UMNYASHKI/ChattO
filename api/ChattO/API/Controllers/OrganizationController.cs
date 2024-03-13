@@ -41,7 +41,12 @@ public class OrganizationController : BaseController
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        return HandleResult(await Mediator.Send(new DeleteOrganization.Command { Id = id }));
+        var result = await Mediator.Send(new DeleteOrganization.Command { Id = id });
+
+        if (!result.IsSuccessful)
+            return HandleResult(result);
+
+        return NoContent();
     }
 
     //[Authorize]
@@ -51,7 +56,12 @@ public class OrganizationController : BaseController
         var organization = Mapper.Map<UpdateOrganization.Command>(request);
         organization.Id = id;
 
-        return HandleResult(await Mediator.Send(organization));
+        var result = await Mediator.Send(organization);
+
+        if(!result.IsSuccessful)
+            return HandleResult(result);
+
+        return NoContent();
     }
 
 }
