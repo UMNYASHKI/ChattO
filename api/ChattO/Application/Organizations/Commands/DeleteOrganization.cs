@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Organizations.Commands;
 
@@ -32,7 +33,8 @@ public class DeleteOrganization
 
         public async Task<Result<bool>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var organization = await _dbContext.Organizations.FindAsync(request.Id);
+            var organization = await _dbContext.Organizations
+                .FirstOrDefaultAsync(o => o.Id == request.Id, cancellationToken);
 
             if (organization is null)
                 return Result.Failure<bool>($"Organization with id {request.Id} not found");
