@@ -10,6 +10,7 @@ public static class JwtExtension
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtIssuer = configuration.GetSection("Jwt:Issuer").Get<string>();
+        var jwtAudience = configuration.GetSection("Jwt:Audience").Get<string>();
         var jwtKey = configuration.GetSection("Jwt:Key").Get<string>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -22,7 +23,7 @@ public static class JwtExtension
                  ValidateLifetime = true,
                  ValidateIssuerSigningKey = true,
                  ValidIssuer = jwtIssuer,
-                 ValidAudience = jwtIssuer,
+                 ValidAudience = jwtAudience,
                  IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
              };
              options.EventsType = typeof(UserSecurityValidation);

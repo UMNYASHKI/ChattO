@@ -14,10 +14,10 @@ public class AccountController : BaseController
         _userService = userService;
     }
 
-    [HttpPost("Log-in")]
+    [HttpPost("Login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest) 
     {
-        var loginResult = await _userService.AuthenticateUserAsync(loginRequest.UserName, loginRequest.Password);
+        var loginResult = await _userService.AuthenticateUserAsync(loginRequest.Username, loginRequest.Password);
         if (!loginResult.IsSuccessful)
         {
             return BadRequest(loginResult.Message);
@@ -27,7 +27,7 @@ public class AccountController : BaseController
     }
 
     [Authorize]
-    [HttpGet("Log-out")]
+    [HttpGet("Logout")]
     public async Task<IActionResult> Logout() 
     {
         await _userService.SignOutAsync();

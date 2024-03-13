@@ -33,16 +33,16 @@ public class UserService : IUserService
         var registerResult = await _userManager.CreateAsync(user);
         if (!registerResult.Succeeded)
         {
-            return new Result<bool>(false, "Failed to create user:\n" + string.Join('\n', registerResult.Errors));
+            return Result.Failure<bool>("Failed to create user:\n" + string.Join('\n', registerResult.Errors));
         }
 
         var addToRoleResult = await _userManager.AddToRoleAsync(user, user.Role.ToString());
         if (!addToRoleResult.Succeeded)
         {
-            return new Result<bool>(false, "Failed to give user role:\n" + string.Join('\n', registerResult.Errors));
+            return Result.Failure<bool>("Failed to give user role:\n" + string.Join('\n', registerResult.Errors));
         }
 
-        return new Result<bool>(true);
+        return Result.Success<bool>();
     }
 
     public async Task<Result<string>> AuthenticateUserAsync(string username, string password)
