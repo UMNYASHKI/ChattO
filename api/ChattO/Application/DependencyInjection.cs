@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MediatR;
 using System.Reflection;
+using FluentValidation;
 
 namespace Application;
 
@@ -11,6 +12,7 @@ public static class DependencyInjection
     {
         services.AddMediatR(cfg => 
             cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         return services;
     }
