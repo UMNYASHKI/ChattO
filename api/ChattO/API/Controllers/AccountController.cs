@@ -15,6 +15,10 @@ public class AccountController : BaseController
     }
 
     [HttpPost("Login")]
+    [ProducesResponseType<string>(StatusCodes.Status200OK)]
+    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest) 
     {
         var loginResult = await _userService.AuthenticateUserAsync(loginRequest.Username, loginRequest.Password);
@@ -24,6 +28,7 @@ public class AccountController : BaseController
 
     [Authorize]
     [HttpGet("Logout")]
+    [ProducesResponseType<string>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Logout() 
     {
         await _userService.SignOutAsync();
