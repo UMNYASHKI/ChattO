@@ -1,0 +1,154 @@
+openapi: 3.0.1
+info:
+  title: 'API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
+  version: '1.0'
+paths:
+  /api/Account/Login:
+    post:
+      tags:
+        - Account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Success
+  /api/Account/Logout:
+    get:
+      tags:
+        - Account
+      responses:
+        '200':
+          description: Success
+  /api/Organization:
+    post:
+      tags:
+        - Organization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrganizationRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrganizationRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateOrganizationRequest'
+      responses:
+        '200':
+          description: Success
+  '/api/Organization/{id}':
+    get:
+      tags:
+        - Organization
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+    delete:
+      tags:
+        - Organization
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+    put:
+      tags:
+        - Organization
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrganizationRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrganizationRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrganizationRequest'
+      responses:
+        '200':
+          description: Success
+components:
+  schemas:
+    CreateOrganizationRequest:
+      required:
+        - domain
+        - email
+        - name
+        - password
+        - userName
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+        domain:
+          minLength: 1
+          type: string
+        userName:
+          minLength: 1
+          type: string
+        email:
+          minLength: 1
+          type: string
+          format: email
+        password:
+          minLength: 1
+          type: string
+          format: password
+      additionalProperties: false
+    LoginRequest:
+      required:
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          minLength: 1
+          type: string
+        password:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    UpdateOrganizationRequest:
+      required:
+        - domain
+        - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+        domain:
+          minLength: 1
+          type: string
+      additionalProperties: false
