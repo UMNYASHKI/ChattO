@@ -6,8 +6,6 @@ using Application.Organizations.Queries;
 using Domain.Enums;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -24,6 +22,10 @@ public class OrganizationController : BaseController
 
     [HttpPost]
     [AllowAnonymous]
+    [ProducesResponseType<bool>(StatusCodes.Status200OK)]
+    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Create([FromBody] CreateOrganizationRequest request)
     {
         var result = await Mediator.Send(Mapper.Map<CreateOrganization.Command>(request));
@@ -39,6 +41,10 @@ public class OrganizationController : BaseController
 
 
     [HttpGet("{id}")]
+    [ProducesResponseType<GetDetailsOrganizationResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id)
     {
         var organizationResult = await Mediator.Send(new GetDetailsOrganization.Query { Id = id });
@@ -50,6 +56,11 @@ public class OrganizationController : BaseController
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType<bool>(StatusCodes.Status200OK)]
+    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete(Guid id)
     {
         var result = await Mediator.Send(new DeleteOrganization.Command { Id = id });
@@ -61,6 +72,11 @@ public class OrganizationController : BaseController
     }
 
     [HttpPut("{id}")]
+    [ProducesResponseType<bool>(StatusCodes.Status200OK)]
+    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Update(Guid id, UpdateOrganizationRequest request)
     {
         var organization = Mapper.Map<UpdateOrganization.Command>(request);

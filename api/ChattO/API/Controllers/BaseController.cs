@@ -23,7 +23,7 @@ public class BaseController : ControllerBase
     protected ActionResult HandleResult<T>(Result<T> result)
     {
         if (result == null) 
-            return NotFound();
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 
         if (result.IsSuccessful && result.Data != null)
             return Ok(result.Data);
