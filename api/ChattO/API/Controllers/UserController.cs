@@ -92,7 +92,7 @@ public class UserController : BaseController
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] JsonPatchDocument<AppUser> document)
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] JsonPatchDocument<UpdateUserRequest> document)
     {
         return Ok();//Validate (user can update only himself)
     }
