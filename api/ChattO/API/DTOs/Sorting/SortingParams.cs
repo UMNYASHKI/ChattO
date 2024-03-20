@@ -2,7 +2,7 @@
 
 public class SortingParams
 {
-    public string? ColumnName { get; set; }
+    public string? ColumnName { get; set; } = "Id";
 
-    public SortingOrder? SortingOrder { get; set; }
+    public bool? Descending { get; set; } = true;
 }
