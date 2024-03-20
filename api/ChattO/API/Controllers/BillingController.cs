@@ -2,9 +2,7 @@
 using API.DTOs.Responses.Billing;
 using API.Helpers;
 using Application.Helpers;
-using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -42,7 +40,7 @@ public class BillingController : BaseController
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get([FromQuery] Guid organizationId)
+    public async Task<IActionResult> Get([FromQuery] GetOrganizationBillingsRequest request)
     {
         return Ok();
     }

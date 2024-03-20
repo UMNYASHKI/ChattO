@@ -1,5 +1,7 @@
-﻿using API.DTOs.Requests.User;
+﻿using API.DTOs.Paging;
+using API.DTOs.Requests.User;
 using API.DTOs.Responses.User;
+using API.DTOs.Sorting;
 using API.Helpers;
 using Application.Helpers;
 using Domain.Models;
@@ -49,7 +51,7 @@ public class UserController : BaseController
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get([FromQuery] UserFilteringRequest request)
+    public async Task<IActionResult> Get([FromQuery] UserFilterRequest request)
     {
         return Ok();
     }
@@ -66,7 +68,7 @@ public class UserController : BaseController
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetUsersInOrganization([FromQuery] UserFilteringRequest request)
+    public async Task<IActionResult> GetUsersInOrganization([FromQuery] UserFilterRequest request)
     {
         return Ok();
         //OrganizationId is admin's organizationId
@@ -80,7 +82,7 @@ public class UserController : BaseController
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetByName([FromQuery] string displayName)
+    public async Task<IActionResult> GetByName([FromQuery]GetUsersByNameRequest request)
     {
         return Ok();
     }

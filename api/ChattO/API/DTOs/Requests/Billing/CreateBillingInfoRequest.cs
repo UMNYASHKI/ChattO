@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs.Requests.Billing;
 
-public class CreateBillingInfoRequest: IMapWith<BillingInfo>
+public class CreateBillingInfoRequest: IMapWith<Domain.Models.BillingInfo>
 {
     [Required]
     public BillingType Type { get; set; }

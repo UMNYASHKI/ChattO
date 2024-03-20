@@ -2,7 +2,7 @@
 
 namespace API.DTOs.Requests.User;
 
-public class UserFilteringRequest
+public class UserFilterRequest
 {
     public Guid? GroupId { get; set; }
 

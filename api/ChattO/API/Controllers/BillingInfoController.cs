@@ -1,4 +1,5 @@
 ﻿using API.DTOs.Requests.Billing;
+using API.DTOs.Requests.BillingInfo;
 using API.DTOs.Responses.Billing;
 using API.Helpers;
 using Application.Helpers;
@@ -28,7 +29,7 @@ public class BillingInfoController : BaseController
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery]GetBillingInfosRequest request)
     {
         return Ok();
     }
