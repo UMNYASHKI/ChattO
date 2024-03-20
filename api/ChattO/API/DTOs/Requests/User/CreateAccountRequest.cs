@@ -2,12 +2,12 @@
 
 namespace API.DTOs.Requests.User;
 
-public class CreateUserRequest
+public class CreateAccountRequest
 {
     [Required]
     public string UserName { get; set; }
 
-    [Required(ErrorMessage = "Email address is required")]
+    [Required]
     [DataType(DataType.EmailAddress)]
     public string Email { get; set; }  
 }
