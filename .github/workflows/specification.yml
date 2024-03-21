@@ -17,8 +17,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check folder existence
+        run: mkdir -p specifications
+
       - name: Copy file to specifications
-        run: cp api/ChattO/API/openapi.yml Specifications/
+        run: cp api/ChattO/API/openapi.yml specifications/
 
       - name: Setup git global credentials
         run: |
@@ -27,7 +30,7 @@ jobs:
 
       - name: Adding new file and performing commit
         run: |
-          git add Specifications/openapi.yml
+          git add specifications/openapi.yml
           git commit -m "[skip ci] Copy file to specifications folder" --allow-empty
 
       - name: Pushing to main
