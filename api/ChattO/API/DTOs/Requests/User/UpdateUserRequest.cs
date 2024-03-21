@@ -1,9 +1,10 @@
-﻿using Application.Helpers.Mappings;
+﻿using API.DTOs.Sorting;
+using Application.Helpers.Mappings;
 using Domain.Models;
 
 namespace API.DTOs.Requests.User;
 
-public class UpdateUserRequest :IMapWith<AppUser>
+public class UpdateUserRequest 
 {
     public string? DisplayName { get; set; }
 

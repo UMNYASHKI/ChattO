@@ -1,10 +1,11 @@
-﻿using Application.Helpers.Mappings;
+﻿using API.DTOs.Sorting;
+using Application.Helpers.Mappings;
 using Domain.Enums;
 using Domain.Models;
 
 namespace API.DTOs.Requests.User;
 
-public class UserInOrganizationFilteringRequest : IMapWith<AppUser>
+public class UserInOrganizationFilteringRequest : SortingParams
 {
     public Guid? GroupId { get; set; }
 

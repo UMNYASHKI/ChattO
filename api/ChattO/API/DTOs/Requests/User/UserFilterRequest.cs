@@ -1,8 +1,9 @@
-﻿using Domain.Enums;
+﻿using API.DTOs.Sorting;
+using Domain.Enums;
 
 namespace API.DTOs.Requests.User;
 
-public class UserFilterRequest
+public class UserFilterRequest : SortingParams
 {
     public Guid? GroupId { get; set; }
 

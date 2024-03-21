@@ -1,6 +1,8 @@
 ﻿using API.DTOs.Requests.Organization;
 using API.DTOs.Responses.Organization;
+using API.Helpers;
 using Application.Abstractions;
+using Application.Helpers;
 using Application.Organizations.Commands;
 using Application.Organizations.Queries;
 using Domain.Enums;
@@ -39,6 +41,16 @@ public class OrganizationController : BaseController
         return HandleResult(await _userService.RegisterUserAsync(user));
     }
 
+    [Authorize(Roles = RolesConstants.SystemAdmin)]
+    [HttpGet]
+    [ProducesResponseType<PagingResponse<GetDetailsOrganizationResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Get([FromQuery] OrganizationFilteringRequest request)
+    {
+        return Ok();
+    }
 
     [HttpGet("{id}")]
     [ProducesResponseType<GetDetailsOrganizationResponse>(StatusCodes.Status200OK)]

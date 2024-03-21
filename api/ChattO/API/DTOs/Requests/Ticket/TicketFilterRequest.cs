@@ -4,7 +4,7 @@ using Domain.Enums;
 
 namespace API.DTOs.Requests.Ticket;
 
-public class TicketFilterRequest
+public class TicketFilterRequest : SortingParams
 {
     public string? Text { get; set; }
 
@@ -13,8 +13,4 @@ public class TicketFilterRequest
     public TicketTheme? Theme { get; set; }
 
     public Guid? AppUserId { get; set; }
-
-    public PagingParams? PagingParams { get; set; }
-
-    public SortingParams? SortingParams { get; set; }
 }

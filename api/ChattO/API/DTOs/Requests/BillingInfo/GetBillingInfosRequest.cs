@@ -1,11 +1,14 @@
 ﻿using API.DTOs.Paging;
 using API.DTOs.Sorting;
+using Domain.Enums;
 
 namespace API.DTOs.Requests.BillingInfo;
 
-public class GetBillingInfosRequest
+public class GetBillingInfosRequest : SortingParams
 {
-    public SortingParams? SortingParams { get; set; }
+    public BillingType? Type { get; set; }
 
-    public PagingParams? PagingParams { get; set; }
+    public double? MinPrice { get; set; }
+
+    public double? MaxPrice { get; set; }
 }

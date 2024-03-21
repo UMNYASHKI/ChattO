@@ -3,11 +3,7 @@ using API.DTOs.Sorting;
 
 namespace API.DTOs.Requests.Billing;
 
-public class GetOrganizationBillingsRequest
+public class GetOrganizationBillingsRequest : SortingParams
 {
     public Guid OrganizationId { get; set; }
-
-    public SortingParams SortingParams { get; set; }    
-
-    public PagingParams PagingParams { get; set; }
 }

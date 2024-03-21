@@ -1,6 +1,8 @@
-﻿namespace API.DTOs.Sorting;
+﻿using API.DTOs.Paging;
 
-public class SortingParams
+namespace API.DTOs.Sorting;
+
+public class SortingParams : PagingParams
 {
     public string? ColumnName { get; set; } = "Id";
 
