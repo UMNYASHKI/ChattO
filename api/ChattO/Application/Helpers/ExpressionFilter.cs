@@ -2,23 +2,23 @@
 
 namespace Application.Helpers;
 
-public static class ExpressionFilter<TResult, TSourse> 
+public static class ExpressionFilter<TResult, TSource> 
     where TResult : class
-    where TSourse : class
+    where TSource : class
 {
     private class Filter
     {
         public string ColumnName { get; set; }
         public string Value { get; set; }
     }
-    public static Expression<Func<TResult, bool>> GetFilter(TSourse sourse)
+    public static Expression<Func<TResult, bool>> GetFilter(TSource sourсe)
     {
         Expression<Func<TResult, bool>> filters = null;
 
         try
         {
             var parameter = Expression.Parameter(typeof(TResult), nameof(TResult));
-            var columnFilters = GetFilters(sourse);
+            var columnFilters = GetFilters(sourсe);
 
             Expression filterExpression = null;
 
@@ -40,11 +40,11 @@ public static class ExpressionFilter<TResult, TSourse>
         return filters;
     }
 
-    private static List<Filter> GetFilters(TSourse request)
+    private static List<Filter> GetFilters(TSource request)
     {
-        var properties = typeof(TSourse)
+        var properties = typeof(TSource)
             .GetProperties()
-            .Where(p => Attribute.IsDefined(p, typeof(FilterAttribute)));
+            .Where(p => p.DeclaringType.IsDefined(typeof(FilterAttribute), false));
 
         var filters = properties.Aggregate(new List<Filter>(), (list, property) =>
         {

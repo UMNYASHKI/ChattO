@@ -9,7 +9,7 @@ public interface IRepository<TEntity> where TEntity : class
 
     Task<Result<TEntity>> GetByIdAsync(Guid id);
 
-    Task<Result<IEnumerable<TEntity>>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate, int? pageNum, int? count);
+    Task<Result<IEnumerable<TEntity>>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate = null, int? pageNum = null, int? count = null);
 
     Task<Result<bool>> DeleteItemAsync(Guid id);
 

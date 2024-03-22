@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  api:
+    image: ${DOCKER_REGISTRY-}api
+    container_name: chatto.api
+    build:
+      context: .
+      dockerfile: API/Dockerfile
+  chatto.database:
+    image: postgres:latest
+    container_name: chatto.database
+    environment:
+     POSTGRES_DB : chatto
+     POSTGRES_USER : postgres
+     POSTGRES_PASSWORD : postgres
+    volumes:
+    - "./.containers/chatto-db:/var/lib/postgresql/data"
+    ports:
+    - 5432:5432
+  
+

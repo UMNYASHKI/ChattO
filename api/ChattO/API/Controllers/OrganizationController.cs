@@ -5,7 +5,6 @@ using Application.Abstractions;
 using Application.Helpers;
 using Application.Organizations.Commands;
 using Application.Organizations.Queries;
-using Domain.Enums;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
