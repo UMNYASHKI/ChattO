@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
+    "\\api",
     "\\api\\ChattO"
   ],
-  "SelectedNode": "\\api",
+  "SelectedNode": "\\api\\ChattO\\DockerFile",
   "PreviewInSolutionExplorer": false
 }

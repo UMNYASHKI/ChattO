@@ -2,11 +2,13 @@
 using Domain.Models.Files;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Infrastructure.Abstractions;
 
 public interface IChattoDbContext
 {
+    public DatabaseFacade Database { get; }
     public DbSet<Organization> Organizations { get; set; }
     public DbSet<Ticket> Tickets { get; set; }
     public DbSet<AppUserFeed> AppUserFeeds { get; set; }

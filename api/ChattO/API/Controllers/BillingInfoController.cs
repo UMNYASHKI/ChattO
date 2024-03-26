@@ -10,7 +10,6 @@ namespace API.Controllers;
 
 public class BillingInfoController : BaseController
 {
-    // Create a new billing info
     [Authorize(Roles = RolesConstants.SystemAdmin)]
     [HttpPost]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]

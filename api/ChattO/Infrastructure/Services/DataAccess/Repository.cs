@@ -34,7 +34,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     }
 
     public async Task<Result<IEnumerable<TEntity>>> GetAllAsync(
-        Expression<Func<TEntity, bool>> filter = null, int? pageNum = null, int? count = null)
+        Expression<Func<TEntity, bool>>? filter = null, int? pageNum = null, int? count = null)
     {
         try
         {

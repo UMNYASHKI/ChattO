@@ -1,0 +1,46 @@
+version: '3.4'
+
+networks:
+  dev:
+    driver: bridge
+
+services:
+  api:
+    image: ${DOCKER_REGISTRY-}api
+    depends_on:
+        - "chatto.database"
+    container_name: chatto.api
+    ports:
+        - "8080:80" 
+    build:
+        context: .
+        dockerfile: API/Dockerfile
+    environment:
+        - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Server=chatto.database;Port=5432;Database=chatto;
+        - ASPNETCORE_URLS=http://+:80
+        - JwtSettings__Key=c5bb980c73014f67ad5b6b3e052bafdb
+        - JwtSettings__Issuer=https://localhost:7195/
+        - JwtSettings__Audience=https://localhost:7195/
+        - JwtSettings__TokenValidityFromDays=3
+    networks:
+        - dev
+
+  chatto.database:
+    image: postgres:latest
+    container_name: chatto.database
+    environment:
+        POSTGRES_DB : chatto
+        POSTGRES_USER : postgres
+        POSTGRES_PASSWORD : postgres
+    ports:
+        - 5433:5432
+    volumes:
+        - "chatto-db:/var/lib/postgresql/data"
+    networks:
+            - dev
+
+volumes:
+    chatto-db:
+    
+  
+
