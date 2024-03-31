@@ -1,9 +1,11 @@
 using API.Extensions;
+using API.Helpers;
 using Application;
 using Application.Abstractions;
 using Application.Helpers.Mappings;
 using Infrastructure;
 using Persistence;
+using System.Net;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +38,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.AddWebSocket();
 
 app.MapControllers();
 

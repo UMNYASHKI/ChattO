@@ -3,6 +3,7 @@ using Infrastructure.Extensions;
 using Infrastructure.Helpers;
 using Infrastructure.Services.Authentication;
 using Infrastructure.Services.DataAccess;
+using Infrastructure.Services.WebSockets;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +23,10 @@ public static class DependencyInjection
         services.AddScoped<ITokenService, JwtService>();
 
         services.AddJwtAuthentication(apiConfiguration);
+
+        services.AddSingleton<ConnectionManager>();
+        services.AddScoped<WebSocketService>();
+        services.AddScoped<WebSocketHandler>();
 
         return services;
     }
