@@ -12,5 +12,5 @@ public class UpdateUserRequest
 
     public string? UserName { get; set; }
 
-    public Guid? ProfileImageId { get; set; }
+    public IFormFile? ProfileImage { get; set; } 
 }
