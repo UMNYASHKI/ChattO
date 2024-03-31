@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions;
 using Application.Helpers;
 using System.Net.WebSockets;
+using System.Text;
 
 namespace Infrastructure.Services.WebSockets;
 
@@ -36,5 +37,21 @@ public class WebSocketHandler
             return Result.Failure<bool>("Failed to remove connection");
 
         return Result.Success<bool>();
+    }
+
+    //public async Task<Result<bool>> BroadcastMessage()//message
+    //{
+
+    //}
+
+    public async Task HandleTextMessage(WebSocketReceiveResult result, byte[] buffer) 
+    {
+        var content = ReceiveString(result, buffer);
+
+    }
+
+    private string ReceiveString(WebSocketReceiveResult result, byte[] buffer)
+    {
+        return Encoding.UTF8.GetString(buffer, 0, result.Count);
     }
 }

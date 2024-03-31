@@ -1,6 +1,8 @@
 ﻿using Application.Abstractions;
+using Application.Helpers;
 using Domain.Models;
 using MediatR;
+using System.Net.WebSockets;
 
 namespace Infrastructure.Services.WebSockets;
 
@@ -13,4 +15,9 @@ public class WebSocketService
         _mediator = mediator;
         _connectionManager = connectionManager;
     }
+
+    public async Task<Result<List<WebSocket>>> GetActiveConnections(Guid feedId) 
+    {
+        throw new NotImplementedException();
+    } 
 }

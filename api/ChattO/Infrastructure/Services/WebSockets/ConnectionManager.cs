@@ -6,8 +6,8 @@ namespace Infrastructure.Services.WebSockets;
 
 public class ConnectionManager
 {
-    private ConcurrentDictionary<WebSocket, Guid> _sockets = new();
-    private ConcurrentDictionary<Guid, Guid> _users = new();
+    private ConcurrentDictionary<WebSocket, Guid> _sockets = new();//socketId
+    private ConcurrentDictionary<Guid, Guid> _users = new();//socketId, userId
 
     public Result<bool> AddConnection(WebSocket webSocket, Guid userId)
     {
