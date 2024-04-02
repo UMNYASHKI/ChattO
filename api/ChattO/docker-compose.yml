@@ -22,6 +22,10 @@ services:
         - JwtSettings__Issuer=https://localhost:8080/
         - JwtSettings__Audience=https://localhost:8080/
         - JwtSettings__TokenValidityFromDays=3
+        - BackBlaze__Secrets__KeyId=005ad6ae25eb3650000000005
+        - BackBlaze__Secrets__ApplicationKey=K005/iqZb+15EPSJ6FJTKtwG4fofF/E
+        - BackBlaze__Bucket__Name=ChattO
+        - BackBlaze__Bucket__Id=2a4dd68afe82958e8be30615
     networks:
         - dev
 
