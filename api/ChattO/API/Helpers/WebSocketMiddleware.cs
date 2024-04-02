@@ -1,5 +1,6 @@
 ﻿using Application.Helpers;
 using Infrastructure.Services.WebSockets;
+using System.Net.Sockets;
 using System.Net.WebSockets;
 
 namespace API.Helpers;
@@ -34,21 +35,27 @@ public class WebSocketMiddleware
             if (result.MessageType == WebSocketMessageType.Close)
             {
                 await _webSocketHandler.OnDisconnected(_webSocket);
+                await _webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
             }
             else if (result.MessageType == WebSocketMessageType.Text)
             {
-
+                var handleMessageResult = await _webSocketHandler.HandleMessageText(result, buffer);
+                if (!handleMessageResult.IsSuccessful)
+                {
+                    await FailResonse(context, handleMessageResult.Message);
+                }
             }
             else
             {
+                //get feedId from query GUID
+                // feedId through query string
                 //binary
             }
         });
 
         if (!result.IsSuccessful)
         {
-            context.Response.StatusCode = 400;
-            await context.Response.WriteAsync(result.Message);
+            await FailResonse(context, result.Message);
         }
     }
 
@@ -70,7 +77,15 @@ public class WebSocketMiddleware
         catch (Exception ex)
         {
             await _webSocketHandler.OnDisconnected(_webSocket);
+            await _webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, ex.Message, CancellationToken.None);
+
             return Result.Failure<bool>(ex.Message);
         }
+    }
+
+    private async Task FailResonse(HttpContext context, string message)
+    {
+        context.Response.StatusCode = 400;
+        await context.Response.WriteAsync(message);
     }
 }

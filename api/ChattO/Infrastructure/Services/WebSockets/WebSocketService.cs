@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions;
 using Application.Helpers;
 using Domain.Models;
+using Infrastructure.DTOs.WebSockets;
 using MediatR;
 using System.Net.WebSockets;
 
@@ -20,4 +21,14 @@ public class WebSocketService
     {
         throw new NotImplementedException();
     } 
+
+    public async Task<Result<bool>> SaveMessage(ClientMessage message)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Result<AppUser>> GetAppUserBySocket(WebSocket socket)
+    {
+        throw new NotImplementedException();
+    }
 }
