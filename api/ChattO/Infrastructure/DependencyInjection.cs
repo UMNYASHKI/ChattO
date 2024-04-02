@@ -14,8 +14,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection
             services, IConfiguration apiConfiguration)
     {
-        var configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-        services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
+        services.Configure<JwtSettings>(apiConfiguration.GetSection(nameof(JwtSettings)));
 
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
