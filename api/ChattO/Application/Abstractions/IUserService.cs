@@ -10,5 +10,7 @@ namespace Application.Abstractions
         Task<Result<string>> AuthenticateUserAsync(string username, string password);
 
         Task SignOutAsync();
+
+        Task<Result<AppUser>> GetCurrentUser();
     }
 }
