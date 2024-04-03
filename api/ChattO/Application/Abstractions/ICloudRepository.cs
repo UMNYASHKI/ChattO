@@ -8,5 +8,5 @@ public interface ICloudRepository
 {
     Task<Result<bool>> UploadFile(IFormFile file, string path);
 
-    Task<Result<IFormFile>> DownloadFile(string fileName);
+    Task<Result<byte[]>> DownloadFile(string fileName);
 }

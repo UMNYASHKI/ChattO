@@ -21,28 +21,30 @@ public class CloudRepository : ICloudRepository
         _bucketSettings = bucketOptions.Value;
     }
 
-    public async Task<Result<IFormFile>> DownloadFile(string fileName)
+    public async Task<Result<byte[]>> DownloadFile(string fileName)
     {
         var buffer = new byte[1024 * 100];
 
         try
         {
-            using var memoryStream = new MemoryStream(buffer);
-
-            await _storageClient.ConnectAsync();
-
-            var result = await _storageClient.DownloadAsync(_bucketSettings.Name, fileName, memoryStream);
-            if (!result.IsSuccessStatusCode)
+            using (var memoryStream = new MemoryStream(buffer))
             {
-                return Result.Failure<IFormFile>(result.Error.Message);
-            }
+                await _storageClient.ConnectAsync();
 
-            return Result.Success<IFormFile>(new FormFile(memoryStream, 0, buffer.Length, fileName, fileName));
+                var result = await _storageClient.DownloadAsync(_bucketSettings.Name, fileName, memoryStream);
+                if (!result.IsSuccessStatusCode)
+                {
+                    return Result.Failure<byte[]>(result.Error.Message);
+                }
+
+            };
+
+            return Result.Success(buffer);
 
         }
         catch (Exception ex)
         {
-            return Result.Failure<IFormFile>(ex.Message);
+            return Result.Failure<byte[]>(ex.Message);
         }
     }
 

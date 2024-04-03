@@ -11,16 +11,16 @@ services:
         - "chatto.database"
     container_name: chatto.api
     ports:
-        - "8080:80" 
+        - "8081:81" 
     build:
         context: .
         dockerfile: API/Dockerfile
     environment:
         - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Server=chatto.database;Port=5432;Database=chatto;
-        - ASPNETCORE_URLS=http://+:80
+        - ASPNETCORE_URLS=http://+:81
         - JwtSettings__Key=c5bb980c73014f67ad5b6b3e052bafdb
-        - JwtSettings__Issuer=https://localhost:8080/
-        - JwtSettings__Audience=https://localhost:8080/
+        - JwtSettings__Issuer=https://localhost:8081/
+        - JwtSettings__Audience=https://localhost:8081/
         - JwtSettings__TokenValidityFromDays=3
         - BackBlaze__Secrets__KeyId=005ad6ae25eb3650000000005
         - BackBlaze__Secrets__ApplicationKey=K005/iqZb+15EPSJ6FJTKtwG4fofF/E
