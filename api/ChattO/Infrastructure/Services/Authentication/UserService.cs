@@ -65,11 +65,22 @@ public class UserService : IUserService
 
     public async Task SignOutAsync()
     {
-        var principal = _contextAccessor?.HttpContext?.User;
-        var user = await _userManager.GetUserAsync(principal);
-        await UpdateUsersSecurityStamp(user, "");
+        var userResult = await GetCurrentUser();
+
+        await UpdateUsersSecurityStamp(userResult.Data, "");
         await _signInManager.SignOutAsync();
     }
+
+    public async Task<Result<AppUser>> GetCurrentUser()
+    {
+        var principal = _contextAccessor?.HttpContext?.User;
+        var user = await _userManager.GetUserAsync(principal);
+
+        if (user is null)
+            return Result.Failure<AppUser>("Fail to get current user");
+
+        return Result.Success<AppUser>(user);
+    } 
 
     private async Task UpdateUsersSecurityStamp(AppUser user, string securityStamp)
     {
