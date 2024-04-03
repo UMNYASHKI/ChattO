@@ -1,33 +1,33 @@
-﻿using Application.Helpers;
+﻿using API.Helpers;
+using Application.Helpers;
 using Infrastructure.Services.WebSockets;
-using System.Net.Sockets;
+using Microsoft.AspNetCore.Mvc;
 using System.Net.WebSockets;
 
-namespace API.Helpers;
+namespace API.Controllers;
 
-public class WebSocketMiddleware
+[Route("api/ws")]
+[ApiController]
+public class WebSocketController : Controller
 {
-    private readonly RequestDelegate _next;
-
     private readonly WebSocketHandler _webSocketHandler;
 
     private WebSocket _webSocket;
 
-    public WebSocketMiddleware(RequestDelegate request, WebSocketHandler webSocketHandler)
+    public WebSocketController(WebSocketHandler webSocketHandler)
     {
-        _next = request;
         _webSocketHandler = webSocketHandler;
     }
 
-    public async Task Invoke(HttpContext context)
+    [HttpGet]
+    public async Task<IActionResult> Get()
     {
-        if (!context.WebSockets.IsWebSocketRequest)
+        if (!HttpContext.WebSockets.IsWebSocketRequest)
         {
-            await _next(context);
-            return;
+            return BadRequest("Accepts only web socket requests");
         }
 
-        _webSocket = await context.WebSockets.AcceptWebSocketAsync();
+        _webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
         var connectResult = await _webSocketHandler.OnConnected(_webSocket);
 
         var result = await ReceiveAsync(async (result, buffer) =>
@@ -40,23 +40,27 @@ public class WebSocketMiddleware
             else if (result.MessageType == WebSocketMessageType.Text)
             {
                 var handleMessageResult = await _webSocketHandler.HandleMessageText(result, buffer);
-                if (!handleMessageResult.IsSuccessful)
-                {
-                    await FailResonse(context, handleMessageResult.Message);
-                }
+                //if (!handleMessageResult.IsSuccessful)
+                //{
+                //    return handleMessageResult;
+                //}
+                //return Result.Failure<bool>("");
             }
             else
             {
                 //get feedId from query GUID
                 // feedId through query string
                 //binary
+                //return Result.Failure<bool>("");
             }
         });
 
         if (!result.IsSuccessful)
         {
-            await FailResonse(context, result.Message);
+            return BadRequest(result.Message);
         }
+
+        return NoContent();
     }
 
     private async Task<Result<bool>> ReceiveAsync(Action<WebSocketReceiveResult, byte[]> handleMessage)
