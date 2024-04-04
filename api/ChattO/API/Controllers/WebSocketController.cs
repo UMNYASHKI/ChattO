@@ -1,6 +1,7 @@
 ﻿using API.Helpers;
 using Application.Helpers;
 using Infrastructure.Services.WebSockets;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.WebSockets;
 
@@ -8,6 +9,7 @@ namespace API.Controllers;
 
 [Route("api/ws")]
 [ApiController]
+[Authorize]
 public class WebSocketController : Controller
 {
     private readonly WebSocketHandler _webSocketHandler;
@@ -20,6 +22,8 @@ public class WebSocketController : Controller
     }
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Get()
     {
         if (!HttpContext.WebSockets.IsWebSocketRequest)
@@ -40,11 +44,10 @@ public class WebSocketController : Controller
             else if (result.MessageType == WebSocketMessageType.Text)
             {
                 var handleMessageResult = await _webSocketHandler.HandleMessageText(result, buffer);
-                //if (!handleMessageResult.IsSuccessful)
-                //{
-                //    return handleMessageResult;
-                //}
-                //return Result.Failure<bool>("");
+                if (!handleMessageResult.IsSuccessful)
+                {
+                    return handleMessageResult;
+                }
             }
             else
             {
@@ -53,6 +56,8 @@ public class WebSocketController : Controller
                 //binary
                 //return Result.Failure<bool>("");
             }
+
+            return Result.Success<bool>();
         });
 
         if (!result.IsSuccessful)
@@ -63,7 +68,7 @@ public class WebSocketController : Controller
         return NoContent();
     }
 
-    private async Task<Result<bool>> ReceiveAsync(Action<WebSocketReceiveResult, byte[]> handleMessage)
+    private async Task<Result<bool>> ReceiveAsync(Func<WebSocketReceiveResult, byte[], Task<Result<bool>>> handleMessage)
     {
         var buffer = new byte[WebSocketOptionsConstants.ReceiveBufferSize];
 
@@ -73,7 +78,11 @@ public class WebSocketController : Controller
             {
                 var receiveResult = await _webSocket.ReceiveAsync(buffer, CancellationToken.None);
 
-                handleMessage(receiveResult, buffer);
+                var handleResult = await handleMessage(receiveResult, buffer);
+                if (!handleResult.IsSuccessful)
+                {
+                    return Result.Failure<bool>(handleResult.Message);
+                }
             }
 
             return Result.Success<bool>();
@@ -85,11 +94,5 @@ public class WebSocketController : Controller
 
             return Result.Failure<bool>(ex.Message);
         }
-    }
-
-    private async Task FailResonse(HttpContext context, string message)
-    {
-        context.Response.StatusCode = 400;
-        await context.Response.WriteAsync(message);
     }
 }
