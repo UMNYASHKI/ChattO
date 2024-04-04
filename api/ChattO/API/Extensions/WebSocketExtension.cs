@@ -12,7 +12,7 @@ public static class WebSocketExtension
         };
 
         app.UseWebSockets(webSocketOptions);
-        app.UseMiddleware<WebSocketMiddleware>();
+        //app.UseMiddleware<WebSocketMiddleware>();
 
         return app;
     }

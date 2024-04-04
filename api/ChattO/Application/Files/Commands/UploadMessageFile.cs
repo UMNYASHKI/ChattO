@@ -37,7 +37,7 @@ public class UploadMessageFile
             var fileName = Guid.NewGuid();
 
             var path = PathExtension.GetPath<MessageFile>(request.Domain, fileName.ToString(), request.FeedId.ToString());
-            
+
             var uploadResult = await _cloudRepository.UploadFile(request.File, path);
             if (!uploadResult.IsSuccessful)
             {

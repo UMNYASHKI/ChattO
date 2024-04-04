@@ -35,7 +35,7 @@ public class UploadProfileImage
             var fileName = Guid.NewGuid();
 
             var path = PathExtension.GetPath<ProfileImage>(request.Domain, fileName.ToString());
-            
+
             var uploadResult = await _cloudRepository.UploadFile(request.File, path);
             if (!uploadResult.IsSuccessful)
             {

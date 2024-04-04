@@ -35,7 +35,7 @@ public class UploadFeedImage
             var fileName = Guid.NewGuid();
 
             var path = PathExtension.GetPath<FeedImage>(request.Domain, fileName.ToString(), request.FeedId.ToString());
-            
+
             var uploadResult = await _cloudRepository.UploadFile(request.File, path);
             if (!uploadResult.IsSuccessful)
             {
