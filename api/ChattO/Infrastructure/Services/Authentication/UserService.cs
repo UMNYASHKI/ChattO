@@ -1,8 +1,12 @@
 ﻿using Application.Abstractions;
 using Application.Helpers;
 using Domain.Models;
+using Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace Infrastructure.Services.Authentication;
 
@@ -41,7 +45,7 @@ public class UserService : IUserService
         return Result.Success<bool>(true);
     }
 
-    public async Task<Result<string>> AuthenticateUserAsync(string username, string password)
+    public async Task<Result<string>> AuthenticateUserAsync(string username, string password) // email??
     {
         var user = await _userManager.FindByNameAsync(username);
         const string errorMesage = "Invalid credentials";
@@ -53,6 +57,34 @@ public class UserService : IUserService
         if (!await _userManager.CheckPasswordAsync(user, password))
         {
             return Result.Failure<string>(errorMesage);
+        }
+
+        await UpdateUsersSecurityStamp(user, Guid.NewGuid().ToString());
+        await _signInManager.SignInAsync(user, true);
+
+        var jwt = _jwtService.GenerateToken(user);
+
+        return Result.Success(jwt);
+    }
+
+    public async Task<Result<string>> AuthenticateUserByGoogleAsync()
+    {
+        var externalLogin = await _contextAccessor.HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+        var signInResult = externalLogin.GetSigInData();
+
+        var user = await _userManager.FindByEmailAsync(signInResult.Email);
+        if (user == null)
+            return Result.Failure<string>("Fail to find user by email");
+
+        var loginUser = await _userManager.FindByLoginAsync(signInResult.Provider, signInResult.ProviderKey);
+
+        if (loginUser is null)
+        {
+            UserLoginInfo login = new UserLoginInfo(signInResult.Provider, signInResult.ProviderKey, signInResult.Provider.ToUpper());
+            var result = await _userManager.AddLoginAsync(user, login);
+
+            if (!result.Succeeded)
+                return Result.Failure<string>("Fail to add user log in");
         }
 
         await UpdateUsersSecurityStamp(user, Guid.NewGuid().ToString());
