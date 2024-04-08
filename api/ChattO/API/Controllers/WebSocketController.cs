@@ -1,33 +1,37 @@
-﻿using Application.Helpers;
+﻿using API.Helpers;
+using Application.Helpers;
 using Infrastructure.Services.WebSockets;
-using System.Net.Sockets;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net.WebSockets;
 
-namespace API.Helpers;
+namespace API.Controllers;
 
-public class WebSocketMiddleware
+[Route("api/ws")]
+[ApiController]
+[Authorize]
+public class WebSocketController : Controller
 {
-    private readonly RequestDelegate _next;
-
     private readonly WebSocketHandler _webSocketHandler;
 
     private WebSocket _webSocket;
 
-    public WebSocketMiddleware(RequestDelegate request, WebSocketHandler webSocketHandler)
+    public WebSocketController(WebSocketHandler webSocketHandler)
     {
-        _next = request;
         _webSocketHandler = webSocketHandler;
     }
 
-    public async Task Invoke(HttpContext context)
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Get()
     {
-        if (!context.WebSockets.IsWebSocketRequest)
+        if (!HttpContext.WebSockets.IsWebSocketRequest)
         {
-            await _next(context);
-            return;
+            return BadRequest("Accepts only web socket requests");
         }
 
-        _webSocket = await context.WebSockets.AcceptWebSocketAsync();
+        _webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
         var connectResult = await _webSocketHandler.OnConnected(_webSocket);
 
         var result = await ReceiveAsync(async (result, buffer) =>
@@ -42,7 +46,7 @@ public class WebSocketMiddleware
                 var handleMessageResult = await _webSocketHandler.HandleMessageText(result, buffer);
                 if (!handleMessageResult.IsSuccessful)
                 {
-                    await FailResonse(context, handleMessageResult.Message);
+                    return handleMessageResult;
                 }
             }
             else
@@ -50,16 +54,21 @@ public class WebSocketMiddleware
                 //get feedId from query GUID
                 // feedId through query string
                 //binary
+                //return Result.Failure<bool>("");
             }
+
+            return Result.Success<bool>();
         });
 
         if (!result.IsSuccessful)
         {
-            await FailResonse(context, result.Message);
+            return BadRequest(result.Message);
         }
+
+        return NoContent();
     }
 
-    private async Task<Result<bool>> ReceiveAsync(Action<WebSocketReceiveResult, byte[]> handleMessage)
+    private async Task<Result<bool>> ReceiveAsync(Func<WebSocketReceiveResult, byte[], Task<Result<bool>>> handleMessage)
     {
         var buffer = new byte[WebSocketOptionsConstants.ReceiveBufferSize];
 
@@ -69,7 +78,11 @@ public class WebSocketMiddleware
             {
                 var receiveResult = await _webSocket.ReceiveAsync(buffer, CancellationToken.None);
 
-                handleMessage(receiveResult, buffer);
+                var handleResult = await handleMessage(receiveResult, buffer);
+                if (!handleResult.IsSuccessful)
+                {
+                    return Result.Failure<bool>(handleResult.Message);
+                }
             }
 
             return Result.Success<bool>();
@@ -81,11 +94,5 @@ public class WebSocketMiddleware
 
             return Result.Failure<bool>(ex.Message);
         }
-    }
-
-    private async Task FailResonse(HttpContext context, string message)
-    {
-        context.Response.StatusCode = 400;
-        await context.Response.WriteAsync(message);
     }
 }
