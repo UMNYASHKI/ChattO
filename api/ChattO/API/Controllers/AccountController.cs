@@ -1,6 +1,5 @@
 ﻿using API.DTOs.Requests.Account;
 using Application.Abstractions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -26,7 +25,6 @@ public class AccountController : BaseController
         return HandleResult(loginResult);
     }
 
-    [Authorize]
     [HttpGet("Logout")]
     [ProducesResponseType<string>(StatusCodes.Status200OK)]
     public async Task<IActionResult> Logout() 
