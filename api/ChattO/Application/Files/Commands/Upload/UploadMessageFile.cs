@@ -6,7 +6,7 @@ using Domain.Models.Files;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Files.Commands;
+namespace Application.Files.Commands.Upload;
 
 public class UploadMessageFile
 {
@@ -60,7 +60,7 @@ public class UploadMessageFile
             return Result.Success<bool>();
         }
 
-        private async Task SetMessageFileId(Guid messageId, Guid messageFileId) 
+        private async Task SetMessageFileId(Guid messageId, Guid messageFileId)
         {
             var message = (await _messageRepository.GetByIdAsync(messageId)).Data;
             message.MessageFileId = messageFileId;

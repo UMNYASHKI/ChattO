@@ -6,7 +6,7 @@ using Domain.Models.Files;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Files.Commands;
+namespace Application.Files.Commands.Upload;
 
 public class UploadFeedImage
 {
@@ -57,7 +57,7 @@ public class UploadFeedImage
             return Result.Success<bool>();
         }
 
-        private async Task SetFeedImageId(Guid feedId, Guid feedImageId) 
+        private async Task SetFeedImageId(Guid feedId, Guid feedImageId)
         {
             var feed = (await _feedRepository.GetByIdAsync(feedId)).Data;
             feed.FeedImageId = feedImageId;

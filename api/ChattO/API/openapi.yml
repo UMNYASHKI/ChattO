@@ -1356,38 +1356,6 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
         '204':
           description: No Content
-  /api/Test/Download:
-    get:
-      tags:
-        - Test
-      parameters:
-        - name: profileId
-          in: query
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Success
-  /api/Test/Upload:
-    post:
-      tags:
-        - Test
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-            encoding:
-              file:
-                style: form
-      responses:
-        '200':
-          description: Success
   /api/Ticket:
     post:
       tags:

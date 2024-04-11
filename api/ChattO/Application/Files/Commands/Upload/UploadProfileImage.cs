@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
-namespace Application.Files.Commands;
+namespace Application.Files.Commands.Upload;
 
 public class UploadProfileImage
 {
@@ -61,7 +61,7 @@ public class UploadProfileImage
             return Result.Success<bool>();
         }
 
-        private async Task CheckPreviousFile(AppUser user) 
+        private async Task CheckPreviousFile(AppUser user)
         {
             if (user.ProfileImageId == null)
             {
