@@ -10,14 +10,14 @@ namespace Application.Files.Queries;
 
 public class DownloadFeedImage
 {
-    public class Command : IRequest<Result<byte[]>>
+    public class Command : IRequest<Result<string>>
     {
         public string Domain { get; set; }
 
         public Guid FeedId { get; set; }
     }
 
-    public class Handler : IRequestHandler<Command, Result<byte[]>>
+    public class Handler : IRequestHandler<Command, Result<string>>
     {
         private readonly ICloudRepository _cloudRepository;
 
@@ -29,22 +29,22 @@ public class DownloadFeedImage
             _feedRepository = feedRepository;
         }
 
-        public async Task<Result<byte[]>> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(Command request, CancellationToken cancellationToken)
         {
             var getFeedResult = await _feedRepository.GetByIdAsync(request.FeedId);
-            if (!getFeedResult.IsSuccessful) 
+            if (!getFeedResult.IsSuccessful)
             {
-                return Result.Failure<byte[]>(getFeedResult.Message);
+                return Result.Failure<string>(getFeedResult.Message);
             }
 
-            if (getFeedResult.Data.FeedImageId == null)
+            var feed = getFeedResult.Data;
+
+            if (feed.FeedImageId != null && await _cloudRepository.FileExists(feed.FeedImage.Name))
             {
-                return Result.Success<byte[]>(null);
+                return Result.Success(feed.FeedImage.PublicUrl);
             }
 
-            var path = PathExtension.GetPath<ProfileImage>(request.Domain, getFeedResult.Data.FeedImageId.ToString(), request.FeedId.ToString());
-
-            return await _cloudRepository.DownloadFile(path);
+            return Result.Success<string>(null);
         }
     }
 }

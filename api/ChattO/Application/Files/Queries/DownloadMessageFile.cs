@@ -10,7 +10,7 @@ namespace Application.Files.Queries;
 
 public class DownloadMessageFile
 {
-    public class Command : IRequest<Result<byte[]>>
+    public class Command : IRequest<Result<string>>
     {
         public string Domain { get; set; }
 
@@ -19,7 +19,7 @@ public class DownloadMessageFile
         public Guid MessageId { get; set; }
     }
 
-    public class Handler : IRequestHandler<Command, Result<byte[]>>
+    public class Handler : IRequestHandler<Command, Result<string>>
     {
         private readonly ICloudRepository _cloudRepository;
 
@@ -30,22 +30,22 @@ public class DownloadMessageFile
             _cloudRepository = cloudRepository;
         }
 
-        public async Task<Result<byte[]>> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(Command request, CancellationToken cancellationToken)
         {
             var getMessageResult = await _repository.GetByIdAsync(request.MessageId);
             if (!getMessageResult.IsSuccessful) 
             {
-                return Result.Failure<byte[]>(getMessageResult.Message);
+                return Result.Failure<string>(getMessageResult.Message);
             }
 
-            if (getMessageResult.Data.MessageFileId == null)
+            var message = getMessageResult.Data;
+
+            if (message.MessageFileId != null && await _cloudRepository.FileExists(message.MessageFile.Name))
             {
-                return Result.Success<byte[]>(null);
+                return Result.Success(message.MessageFile.PublicUrl);
             }
 
-            var path = PathExtension.GetPath<ProfileImage>(request.Domain, getMessageResult.Data.MessageFileId.ToString(), request.FeedId.ToString());
-
-            return await _cloudRepository.DownloadFile(path);
+            return Result.Success<string>(null);
         }
     }
 }

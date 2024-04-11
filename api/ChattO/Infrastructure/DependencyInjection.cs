@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions;
+using Domain.Models.Files;
 using Infrastructure.Extensions;
 using Infrastructure.Helpers;
 using Infrastructure.Services.Authentication;

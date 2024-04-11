@@ -2,7 +2,7 @@
 using Application.Extensions;
 using Application.Helpers;
 using Bytewizer.Backblaze.Client;
-using Domain.Models.Files;
+using Bytewizer.Backblaze.Models;
 using Infrastructure.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -21,36 +21,39 @@ public class CloudRepository : ICloudRepository
         _bucketSettings = bucketOptions.Value;
     }
 
-    public async Task<Result<byte[]>> DownloadFile(string fileName)
+    public async Task<Result<bool>> DeleteFile(string fileName)
     {
-        var buffer = new byte[1024 * 100];
-
         try
         {
-            using (var memoryStream = new MemoryStream(buffer))
-            {
-                await _storageClient.ConnectAsync();
+            await _storageClient.ConnectAsync();
+            var fileItem = (await _storageClient.Files.GetEnumerableAsync(new ListFileNamesRequest(_bucketSettings.Id))).FirstOrDefault(file => file.FileName == fileName);
+            await _storageClient.Files.DeleteAsync(fileItem.FileId, fileName);
 
-                var result = await _storageClient.DownloadAsync(_bucketSettings.Name, fileName, memoryStream);
-                if (!result.IsSuccessStatusCode)
-                {
-                    return Result.Failure<byte[]>(result.Error.Message);
-                }
-
-            };
-
-            return Result.Success(buffer);
-
+            return Result.Success(true);
         }
         catch (Exception ex)
         {
-            return Result.Failure<byte[]>(ex.Message);
+            return Result.Failure<bool>(ex.Message);
         }
+    }
+
+    public async Task<bool> FileExists(string fileName)
+    {
+        await _storageClient.ConnectAsync();
+
+        var fileItemExists = (await _storageClient.Files.GetEnumerableAsync(new ListFileNamesRequest(_bucketSettings.Id))).Any(file => file.FileName == fileName);
+
+        if (!fileItemExists)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public async Task<Result<bool>> UploadFile(IFormFile file, string path)
     {
-        var buffer = new byte[1024 * 100];
+        var buffer = new byte[FilesConstants.UploadBufferSize];
 
         try
         {
@@ -70,5 +73,10 @@ public class CloudRepository : ICloudRepository
         {
             return Result.Failure<bool>(ex.Message);
         }
+    }
+
+    public string GetFileUrl(string fileName) 
+    {
+        return $"https://f005.backblazeb2.com/file/{_bucketSettings.Name}/{fileName}";
     }
 }

@@ -10,14 +10,12 @@ namespace Application.Files.Queries;
 
 public class DownloadProfileImage
 {
-    public class Command : IRequest<Result<byte[]>>
+    public class Command : IRequest<Result<string>>
     {
-        public string Domain { get; set; }
-
         public Guid AccountId { get; set; }
     }
 
-    public class Handler : IRequestHandler<Command, Result<byte[]>>
+    public class Handler : IRequestHandler<Command, Result<string>>
     {
         private readonly UserManager<AppUser> _userManager;
 
@@ -29,23 +27,22 @@ public class DownloadProfileImage
             _cloudRepository = cloudRepository;
         }
 
-        public async Task<Result<byte[]>> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(Command request, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByIdAsync(request.AccountId.ToString());
 
             if (user == null)
             {
-                return Result.Failure<byte[]>("Invalid account id provided");
+                return Result.Failure<string>("Invalid account id provided");
             }
 
-            if (user.ProfileImageId == null)
+            var image = user.ProfileImage;
+            if (image != null && await _cloudRepository.FileExists(image.Name))
             {
-                return Result.Success<byte[]>(null);
+                return Result.Success(image.PublicUrl);
             }
 
-            var path = PathExtension.GetPath<ProfileImage>(request.Domain, user.ProfileImageId.ToString());
-
-            return await _cloudRepository.DownloadFile(path);
+            return Result.Success<string>(null);
         }
     }
 }

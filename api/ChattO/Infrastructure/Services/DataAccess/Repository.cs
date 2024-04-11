@@ -18,7 +18,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         _dbSet = _context.Set<TEntity>();
     }
 
-    public async Task<Result<bool>> AddItemAsync(TEntity entity)
+    public virtual async Task<Result<bool>> AddItemAsync(TEntity entity)
     {
         try
         {

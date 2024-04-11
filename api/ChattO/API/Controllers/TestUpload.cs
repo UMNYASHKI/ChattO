@@ -19,8 +19,7 @@ public class TestController : BaseController
     [HttpGet("Download")]
     public async Task<IActionResult> Index(Guid profileId)
     {
-        var user = await _userManager.GetUserAsync(User);
-        return HandleResult(await Mediator.Send(new DownloadProfileImage.Command() { AccountId = profileId, Domain = user.Organization.Domain }));
+        return HandleResult(await Mediator.Send(new DownloadProfileImage.Command() { AccountId = profileId }));
     }
 
     [HttpPost("Upload")]

@@ -1,4 +1,5 @@
 ﻿using Domain.Models.Files;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Extensions;
 
@@ -29,4 +30,19 @@ public static class PathExtension
         }
     }
 
+    public static string GetFileExtension(this IFormFile file) 
+    {
+        return file.FileName.Split('.').Last();
+    }
+
+    public static string GetfileNameWithoutExtension(string fileName)
+    {
+        var separated = fileName.Split('.');
+        return string.Join("", separated.Take(separated.Length - 1));
+    }
+
+    public static string GetImageUrl(string bucketName, string fileName) 
+    {
+        return $"https://f001.backblazeb2.com/file/{bucketName}/{fileName}";
+    }
 }
