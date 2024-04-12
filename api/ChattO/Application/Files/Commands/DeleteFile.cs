@@ -1,128 +1,86 @@
 ﻿using Application.Abstractions;
 using Application.Helpers;
 using Domain.Models.Files;
+using FluentValidation;
 using MediatR;
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.Files.Commands;
 
 public class DeleteFile
 {
-    public class Command<T> : IRequest<Result<bool>> where T : BaseFile
+    public class Command : IRequest<Result<bool>>
     {
         public Guid FileId { get; set; }
+
+        public Type FileType { get; set; }
     }
 
-    public class ProfileImageHandler : IRequestHandler<Command<ProfileImage>, Result<bool>>
+    public class CommanValidator : AbstractValidator<Command>
     {
-        private readonly ICloudRepository _cloudRepository;
-
-        private readonly IRepository<ProfileImage> _fileRepository;
-
-        public ProfileImageHandler(ICloudRepository cloudRepository, IRepository<ProfileImage> fileRepository)
+        public CommanValidator()
         {
-            _cloudRepository = cloudRepository;
-            _fileRepository = fileRepository;
-        }
-
-        public async Task<Result<bool>> Handle(Command<ProfileImage> request, CancellationToken cancellationToken)
-        {
-            var getFileResult = await _fileRepository.GetByIdAsync(request.FileId);
-            if (!getFileResult.IsSuccessful)
-            {
-                return Result.Failure<bool>(getFileResult.Message);
-            }
-
-            var deleteFileFromCloudResult = await _cloudRepository.DeleteFile(getFileResult.Data.Name);
-
-            if (!deleteFileFromCloudResult.IsSuccessful)
-            {
-                return Result.Failure<bool>("Cannot delete file from cloud" + deleteFileFromCloudResult.Message);
-            }
-
-            var deleteFileFromDbResult = await _fileRepository.DeleteItemAsync(request.FileId);
-
-            if (!deleteFileFromDbResult.IsSuccessful)
-            {
-                return Result.Failure<bool>(deleteFileFromDbResult.Message);
-            }
-
-            return Result.Success<bool>();
+            RuleFor(x => x.FileId).NotEmpty();
+            RuleFor(x => x.FileType).NotNull().Must(type => type.BaseType == typeof(BaseFile));
         }
     }
 
-    public class FeedImageHandler : IRequestHandler<Command<FeedImage>, Result<bool>>
+    public class ProfileImageHandler : IRequestHandler<Command, Result<bool>>
     {
         private readonly ICloudRepository _cloudRepository;
 
-        private readonly IRepository<FeedImage> _fileRepository;
+        private readonly IValidator<Command> _validator;
 
-        public FeedImageHandler(ICloudRepository cloudRepository, IRepository<FeedImage> fileRepository)
+        private readonly IRepository<BaseFile> _fileRepository;
+
+        public ProfileImageHandler(ICloudRepository cloudRepository, IRepository<BaseFile> fileRepository, IValidator<Command> validator)
         {
             _cloudRepository = cloudRepository;
             _fileRepository = fileRepository;
+            _validator = validator;
         }
 
-        public async Task<Result<bool>> Handle(Command<FeedImage> request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var getFileResult = await _fileRepository.GetByIdAsync(request.FileId);
-            if (!getFileResult.IsSuccessful)
+            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+            if (!validationResult.IsValid)
             {
-                return Result.Failure<bool>(getFileResult.Message);
+                return Result.Failure<bool>(string.Join(". ", validationResult.Errors));
             }
 
-            var deleteFileFromCloudResult = await _cloudRepository.DeleteFile(getFileResult.Data.Name);
-
-            if (!deleteFileFromCloudResult.IsSuccessful)
+            var wrapper = new DeleteFile();
+            return request.FileType switch
             {
-                return Result.Failure<bool>("Cannot delete file from cloud" + deleteFileFromCloudResult.Message);
-            }
-
-            var deleteFileFromDbResult = await _fileRepository.DeleteItemAsync(request.FileId);
-
-            if (!deleteFileFromDbResult.IsSuccessful)
-            {
-                return Result.Failure<bool>(deleteFileFromDbResult.Message);
-            }
-
-            return Result.Success<bool>();
+                Type t when t == typeof(ProfileImage) => await wrapper.Handle<ProfileImage>(_cloudRepository, _fileRepository, request),
+                Type t when t == typeof(FeedImage) => await wrapper.Handle<FeedImage>(_cloudRepository, _fileRepository, request),
+                Type t when t == typeof(MessageFile) => await wrapper.Handle<MessageFile>(_cloudRepository, _fileRepository, request),
+                _ => Result.Failure<bool>("Invalid file type"),
+            };
         }
     }
 
-    public class MessageFileHandler : IRequestHandler<Command<MessageFile>, Result<bool>>
+    public async Task<Result<bool>> Handle<TFile>(ICloudRepository cloudRepository, IRepository<BaseFile> fileRepository, Command request) where TFile : BaseFile
     {
-        private readonly ICloudRepository _cloudRepository;
-
-        private readonly IRepository<MessageFile> _fileRepository;
-
-        public MessageFileHandler(ICloudRepository cloudRepository, IRepository<MessageFile> fileRepository)
+        var getFileResult = await fileRepository.GetByIdAsync<TFile>(request.FileId);
+        if (!getFileResult.IsSuccessful)
         {
-            _cloudRepository = cloudRepository;
-            _fileRepository = fileRepository;
+            return Result.Failure<bool>(getFileResult.Message);
         }
 
-        public async Task<Result<bool>> Handle(Command<MessageFile> request, CancellationToken cancellationToken)
+        var deleteFileFromCloudResult = await cloudRepository.DeleteFile(getFileResult.Data.Name);
+
+        if (!deleteFileFromCloudResult.IsSuccessful)
         {
-            var getFileResult = await _fileRepository.GetByIdAsync(request.FileId);
-            if (!getFileResult.IsSuccessful)
-            {
-                return Result.Failure<bool>(getFileResult.Message);
-            }
-
-            var deleteFileFromCloudResult = await _cloudRepository.DeleteFile(getFileResult.Data.Name);
-
-            if (!deleteFileFromCloudResult.IsSuccessful)
-            {
-                return Result.Failure<bool>("Cannot delete file from cloud" + deleteFileFromCloudResult.Message);
-            }
-
-            var deleteFileFromDbResult = await _fileRepository.DeleteItemAsync(request.FileId);
-
-            if (!deleteFileFromDbResult.IsSuccessful)
-            {
-                return Result.Failure<bool>(deleteFileFromDbResult.Message);
-            }
-
-            return Result.Success<bool>();
+            return Result.Failure<bool>("Cannot delete file from cloud" + deleteFileFromCloudResult.Message);
         }
+
+        var deleteFileFromDbResult = await fileRepository.DeleteItemAsync<TFile>(request.FileId);
+
+        if (!deleteFileFromDbResult.IsSuccessful)
+        {
+            return Result.Failure<bool>(deleteFileFromDbResult.Message);
+        }
+
+        return Result.Success<bool>();
     }
 }

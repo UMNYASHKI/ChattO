@@ -3,6 +3,7 @@ using Application.Extensions;
 using Application.Helpers;
 using Domain.Models;
 using Domain.Models.Files;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -13,6 +14,14 @@ public class DownloadProfileImage
     public class Command : IRequest<Result<string>>
     {
         public Guid AccountId { get; set; }
+    }
+
+    public class CommandValidator : AbstractValidator<Command>
+    {
+        public CommandValidator()
+        {
+            RuleFor(x => x.AccountId).NotEmpty();
+        }
     }
 
     public class Handler : IRequestHandler<Command, Result<string>>

@@ -41,7 +41,7 @@ public static class PathExtension
         return string.Join("", separated.Take(separated.Length - 1));
     }
 
-    public static string GetImageUrl(string bucketName, string fileName) 
+    public static string GetFileUrl(string bucketName, string fileName) 
     {
         return $"https://f001.backblazeb2.com/file/{bucketName}/{fileName}";
     }

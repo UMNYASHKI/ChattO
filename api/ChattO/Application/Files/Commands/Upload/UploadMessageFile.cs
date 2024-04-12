@@ -3,6 +3,7 @@ using Application.Extensions;
 using Application.Helpers;
 using Domain.Models;
 using Domain.Models.Files;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
@@ -21,6 +22,17 @@ public class UploadMessageFile
         public Guid MessageId { get; set; }
     }
 
+    public class CommandValidator : AbstractValidator<Command>
+    {
+        public CommandValidator()
+        {
+            RuleFor(x => x.File).NotNull();
+            RuleFor(x => x.Domain).NotEmpty();
+            RuleFor(x => x.FeedId).NotEmpty();
+            RuleFor(x => x.MessageId).NotEmpty();
+        }
+    }
+
     public class Handler : IRequestHandler<Command, Result<bool>>
     {
         private readonly ICloudRepository _cloudRepository;
@@ -29,15 +41,24 @@ public class UploadMessageFile
 
         private readonly IRepository<Message> _messageRepository;
 
-        public Handler(ICloudRepository cloudRepository, IRepository<MessageFile> repository, IRepository<Message> messageRepository)
+        private readonly IValidator<Command> _validator;
+
+        public Handler(ICloudRepository cloudRepository, IRepository<MessageFile> repository, IRepository<Message> messageRepository, IValidator<Command> validator)
         {
             _cloudRepository = cloudRepository;
             _fileRepository = repository;
             _messageRepository = messageRepository;
+            _validator = validator;
         }
 
         public async Task<Result<bool>> Handle(Command request, CancellationToken cancellationToken)
         {
+            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                return Result.Failure<bool>(string.Join(". ", validationResult.Errors));
+            }
+
             var fileName = Guid.NewGuid();
             var extension = request.File.GetFileExtension();
 
