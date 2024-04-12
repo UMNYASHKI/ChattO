@@ -14,22 +14,19 @@ public class UserService : IUserService
 {
     private readonly UserManager<AppUser> _userManager;
 
-    private readonly SignInManager<AppUser> _signInManager;
-
     private readonly ITokenService _jwtService;
 
     private readonly IHttpContextAccessor _contextAccessor;
 
-    public UserService(UserManager<AppUser> userManager, ITokenService jwtService, SignInManager<AppUser> signInManager, IHttpContextAccessor contextAccessor)
+    public UserService(UserManager<AppUser> userManager, ITokenService jwtService, IHttpContextAccessor contextAccessor)
     {
         _userManager = userManager;
         _jwtService = jwtService;
-        _signInManager = signInManager;
         _contextAccessor = contextAccessor;
     }
 
     public async Task<Result<bool>> RegisterUserAsync(AppUser user)
-    { 
+    {
         var registerResult = await _userManager.CreateAsync(user, user.PasswordHash);
         if (!registerResult.Succeeded)
         {
@@ -42,7 +39,7 @@ public class UserService : IUserService
             return Result.Failure<bool>("Failed to give user role:\n" + string.Join('\n', registerResult.Errors));
         }
 
-        return Result.Success<bool>(true);
+        return Result.Success(true);
     }
 
     public async Task<Result<string>> AuthenticateUserAsync(string username, string password) // email??
@@ -60,8 +57,6 @@ public class UserService : IUserService
         }
 
         await UpdateUsersSecurityStamp(user, Guid.NewGuid().ToString());
-        await _signInManager.SignInAsync(user, true);
-
         var jwt = _jwtService.GenerateToken(user);
 
         return Result.Success(jwt);
@@ -100,7 +95,6 @@ public class UserService : IUserService
         var userResult = await GetCurrentUser();
 
         await UpdateUsersSecurityStamp(userResult.Data, "");
-        await _signInManager.SignOutAsync();
     }
 
     public async Task<Result<AppUser>> GetCurrentUser()
@@ -111,8 +105,8 @@ public class UserService : IUserService
         if (user is null)
             return Result.Failure<AppUser>("Fail to get current user");
 
-        return Result.Success<AppUser>(user);
-    } 
+        return Result.Success(user);
+    }
 
     private async Task UpdateUsersSecurityStamp(AppUser user, string securityStamp)
     {

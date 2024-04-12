@@ -1,8 +1,10 @@
 ﻿using Application.Abstractions;
+using Domain.Models.Files;
 using Infrastructure.Extensions;
 using Infrastructure.Helpers;
 using Infrastructure.Services.Authentication;
 using Infrastructure.Services.DataAccess;
+using Infrastructure.Services.FilesStorage;
 using Infrastructure.Services.WebSockets;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +25,10 @@ public static class DependencyInjection
 
         services.AddGoogleAuthentification(apiConfiguration)
             .AddJwtAuthentication(apiConfiguration);
+
+        services.InitializeBackblaze(apiConfiguration);
+
+        services.AddScoped<ICloudRepository, CloudRepository>();
 
         services.AddSingleton<ConnectionManager>();
         services.AddScoped<WebSocketService>();

@@ -1,11 +1,9 @@
 using API.Extensions;
-using API.Helpers;
 using Application;
 using Application.Abstractions;
 using Application.Helpers.Mappings;
 using Infrastructure;
 using Persistence;
-using System.Net;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,12 +24,11 @@ builder.Services.AddCors(opt =>
             .AllowAnyOrigin();
     });
 });
+builder.Services.AddIdentity();
 
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
-
-builder.Services.AddIdentity();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers().AddNewtonsoftJson();
@@ -44,7 +41,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.ApplyMigration();
+    await app.ApplyMigration();
 }
 
 app.UseHttpsRedirection();
