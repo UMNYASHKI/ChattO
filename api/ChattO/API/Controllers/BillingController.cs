@@ -11,7 +11,7 @@ public class BillingController : BaseController
 {
     //Create billing by organization
     [Authorize(Roles = RolesConstants.SuperAdmin)]
-    [HttpGet("{organizationId}")]
+    [HttpPost]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

@@ -15,7 +15,13 @@ public static class JwtExtension
         var jwtAudience = configuration.GetSection("JwtSettings:Audience").Get<string>();
         var jwtKey = configuration.GetSection("JwtSettings:Key").Get<string>();
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services.AddScoped<UserSecurityValidation>();
+
+        services.AddAuthentication(options => 
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
          .AddJwtBearer(options =>
          {
              options.TokenValidationParameters = new TokenValidationParameters

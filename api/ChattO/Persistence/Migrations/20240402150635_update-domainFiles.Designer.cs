@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistence.DataAccess;
@@ -11,9 +12,11 @@ using Persistence.DataAccess;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ChattoDbContext))]
-    partial class ChattoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240402150635_update-domainFiles")]
+    partial class updatedomainFiles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,12 +242,6 @@ namespace Persistence.Migrations
                     b.Property<Guid>("FeedId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PublicUrl")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FeedId")
@@ -262,12 +259,6 @@ namespace Persistence.Migrations
                     b.Property<Guid>("MessageId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PublicUrl")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.ToTable("MessageFiles");
@@ -281,12 +272,6 @@ namespace Persistence.Migrations
 
                     b.Property<Guid>("AppUserId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PublicUrl")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
