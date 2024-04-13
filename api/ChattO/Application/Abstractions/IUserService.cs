@@ -12,5 +12,7 @@ namespace Application.Abstractions
         Task SignOutAsync();
 
         Task<Result<AppUser>> GetCurrentUser();
+
+        Task<Result<string>> AuthenticateUserByGoogleAsync();
     }
 }

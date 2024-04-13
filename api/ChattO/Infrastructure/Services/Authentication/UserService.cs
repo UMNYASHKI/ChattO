@@ -1,8 +1,12 @@
 ﻿using Application.Abstractions;
 using Application.Helpers;
 using Domain.Models;
+using Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace Infrastructure.Services.Authentication;
 
@@ -53,6 +57,35 @@ public class UserService : IUserService
         }
 
         await UpdateUsersSecurityStamp(user, Guid.NewGuid().ToString());
+        var jwt = _jwtService.GenerateToken(user);
+
+        return Result.Success(jwt);
+    }
+
+    public async Task<Result<string>> AuthenticateUserByGoogleAsync()
+    {
+        var externalLogin = await _contextAccessor.HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+        var signInResult = externalLogin.GetSigInData();
+        if (!signInResult.IsSuccessful)
+            return Result.Failure<string>("Fail to get sign in data");
+
+        var user = await _userManager.FindByEmailAsync(signInResult.Data.Email);
+        if (user == null)
+            return Result.Failure<string>("Fail to find user by email");
+
+        var loginUser = await _userManager.FindByLoginAsync(signInResult.Data.Provider, signInResult.Data.ProviderKey);
+
+        if (loginUser is null)
+        {
+            UserLoginInfo login = new UserLoginInfo(signInResult.Data.Provider, signInResult.Data.ProviderKey, signInResult.Data.Provider.ToUpper());
+            var result = await _userManager.AddLoginAsync(user, login);
+
+            if (!result.Succeeded)
+                return Result.Failure<string>("Fail to add user log in");
+        }
+
+        await UpdateUsersSecurityStamp(user, Guid.NewGuid().ToString());
+
         var jwt = _jwtService.GenerateToken(user);
 
         return Result.Success(jwt);

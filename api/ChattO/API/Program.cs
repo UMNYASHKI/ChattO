@@ -14,6 +14,16 @@ builder.Services.AddAutoMapper(config =>
     config.AddProfile(new AssemblyMappingProfile(typeof(IUserService).Assembly));
 });
 
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("CorsPolicy", policy =>
+    {
+        policy
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyOrigin();
+    });
+});
 builder.Services.AddIdentity();
 
 builder.Services.AddPersistence(builder.Configuration);
@@ -34,6 +44,8 @@ if (app.Environment.IsDevelopment())
     await app.ApplyMigration();
 }
 
+
+app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
