@@ -44,9 +44,10 @@ if (app.Environment.IsDevelopment())
     await app.ApplyMigration();
 }
 
-app.UseHttpsRedirection();
 
 app.UseCors("CorsPolicy");
+app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

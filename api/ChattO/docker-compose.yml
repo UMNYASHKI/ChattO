@@ -26,7 +26,7 @@ services:
         - BackBlaze__Secrets__ApplicationKey=K005vu4PI//XBsVoxGO3xRFsWaOwnt4
         - BackBlaze__Bucket__Name=chatto-cloud-repository
         - BackBlaze__Bucket__Id=ac3fb827bf72ce1a8de80e1c
-        - BackBlaze__Bucket__Endpoint=s3.us-east-005.backblazeb2.com
+        - BackBlaze__Bucket__Endpoint=s3.us-east-005.backblazeb2.com       
     networks:
         - dev
 
