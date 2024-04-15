@@ -111,12 +111,6 @@ public class WebSocketHandler
         }
     }
 
-    public async Task HandleTextMessage(WebSocketReceiveResult result, byte[] buffer) 
-    {
-        var content = ReceiveString(result, buffer);
-
-    }
-
     private string ReceiveString(WebSocketReceiveResult result, byte[] buffer)
     {
         return Encoding.UTF8.GetString(buffer, 0, result.Count);
