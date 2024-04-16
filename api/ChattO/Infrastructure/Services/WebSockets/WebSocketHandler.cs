@@ -53,7 +53,7 @@ public class WebSocketHandler
         if (!saveMessageResult.IsSuccessful)
             return Result.Failure<bool>("Failed to save message");
 
-        var serverMessage = new ServerTextMessage()
+        var serverMessage = new ServerMessage()
         {
             SenderId = recivedDataEntity.SenderId,
             Content = recivedDataEntity.Content,
@@ -87,14 +87,14 @@ public class WebSocketHandler
         return Result.Success<bool>();
     }
 
-    public async Task SendMessageAsync(WebSocket socket, ServerTextMessage serverMessage)
+    public async Task SendMessageAsync(WebSocket socket, ServerMessage serverMessage)
     {
         var serializedMessage = JsonSerializer.Serialize(serverMessage);
         var bytes = Encoding.UTF8.GetBytes(serializedMessage);
         await socket.SendAsync(new ArraySegment<byte>(bytes, 0, bytes.Length), WebSocketMessageType.Text, true, CancellationToken.None);
     }
 
-    public async Task<Result<bool>> BroadcastMessage(ServerTextMessage serverMessage, List<WebSocket> sockets)
+    public async Task<Result<bool>> BroadcastMessage(ServerMessage serverMessage, List<WebSocket> sockets)
     {
         try
         {

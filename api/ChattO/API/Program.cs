@@ -1,4 +1,5 @@
 using API.Extensions;
+using API.Helpers;
 using Application;
 using Application.Abstractions;
 using Application.Helpers.Mappings;
@@ -42,6 +43,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     await app.ApplyMigration();
+    await AsyncApiSpecificationManager.CheckExistence();
 }
 
 app.UseCors("CorsPolicy");
