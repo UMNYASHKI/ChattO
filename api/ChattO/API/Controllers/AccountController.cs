@@ -1,11 +1,8 @@
 ﻿using API.DTOs.Requests.Account;
 using Application.Abstractions;
-using Domain.Enums;
-using Domain.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;

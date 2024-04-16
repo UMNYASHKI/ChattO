@@ -1,5 +1,4 @@
 using API.Extensions;
-using API.Helpers;
 using Application;
 using Application.Abstractions;
 using Application.Helpers.Mappings;
@@ -44,7 +43,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     await app.ApplyMigration();
 }
-
 
 app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
