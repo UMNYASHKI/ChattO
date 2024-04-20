@@ -4,6 +4,8 @@ using Application;
 using Application.Abstractions;
 using Application.Helpers.Mappings;
 using Infrastructure;
+using Infrastructure.Extensions;
+using Microsoft.AspNetCore.Builder.Extensions;
 using Persistence;
 using System.Reflection;
 
@@ -37,6 +39,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.AddFirbaseApp();
 
 if (app.Environment.IsDevelopment())
 {
