@@ -24,7 +24,7 @@ public class FirebaseMessagingService
 
         var activeConnections = _connectionManager.GetActiveUserIds();
         var userFeeds = feedResult.Data.AppUserFeeds
-            .Where(f => f.FeedId == feedId); //it's really needed??
+            .Where(f => f.FeedId == feedId); 
 
         var inActiveUserIds = userFeeds
             .Select(x => x.AppUserId)
