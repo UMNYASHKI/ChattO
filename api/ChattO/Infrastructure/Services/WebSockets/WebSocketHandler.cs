@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions;
 using Application.Helpers;
 using Infrastructure.DTOs.WebSockets;
+using Infrastructure.Services.Firebase;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -12,11 +13,14 @@ public class WebSocketHandler
     private readonly WebSocketService _webSocketService;
     private readonly IUserService _userService;
     private readonly ConnectionManager _connectionManager;
-    public WebSocketHandler(WebSocketService webSocketService, IUserService userService, ConnectionManager connectionManager)
+    private readonly FirebaseMessagingHandler _firebaseMessagingHandler;
+    public WebSocketHandler(WebSocketService webSocketService, IUserService userService, 
+        ConnectionManager connectionManager, FirebaseMessagingHandler firebaseMessagingHandler)
     {
         _webSocketService = webSocketService;
         _userService = userService;
         _connectionManager = connectionManager;
+        _firebaseMessagingHandler = firebaseMessagingHandler;
     }
 
     public async Task<Result<bool>> OnConnected(WebSocket webSocket)
@@ -60,9 +64,16 @@ public class WebSocketHandler
             FeedId = recivedDataEntity.FeedId
         };
 
-        var broadcastResult = await BroadcastMessage(serverMessage, activeConnectionsResult.Data);
-        if (!broadcastResult.IsSuccessful)
+        var broadcastTask = BroadcastMessage(serverMessage, activeConnectionsResult.Data);
+        var cloudMessageTask = _firebaseMessagingHandler.SendPushMessageAsync(serverMessage);
+
+        await Task.WhenAll(broadcastTask, cloudMessageTask);
+
+        if (!broadcastTask.Result.IsSuccessful)
             return Result.Failure<bool>("Failed to broadcast message");
+
+        if (!cloudMessageTask.Result.IsSuccessful)
+            return Result.Failure<bool>("Failed to send push message");
 
         return Result.Success<bool>();
     }
@@ -98,10 +109,13 @@ public class WebSocketHandler
     {
         try
         {
+            List<Task> sendTasks = new List<Task>();
             foreach (var socket in sockets)
             {
-                await SendMessageAsync(socket, serverMessage);
+                sendTasks.Add(SendMessageAsync(socket, serverMessage));
             }
+
+            await Task.WhenAll(sendTasks);
 
             return Result.Success<bool>();
         }

@@ -50,6 +50,11 @@ public class ConnectionManager
         }
     }
 
+    public List<Guid?> GetActiveUserIds()
+    {
+        return (List<Guid?>)[.. _users.Values];
+    }
+
     private Guid CreateConnectionId()
     {
         return Guid.NewGuid();
