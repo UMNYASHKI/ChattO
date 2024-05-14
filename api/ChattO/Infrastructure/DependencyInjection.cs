@@ -5,6 +5,7 @@ using Infrastructure.Helpers;
 using Infrastructure.Services.Authentication;
 using Infrastructure.Services.DataAccess;
 using Infrastructure.Services.FilesStorage;
+using Infrastructure.Services.Firebase;
 using Infrastructure.Services.WebSockets;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +24,7 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITokenService, JwtService>();
 
-        services.AddGoogleAuthentification(apiConfiguration)
+        services/*.AddGoogleAuthentification(apiConfiguration)*/
             .AddJwtAuthentication(apiConfiguration);
 
         services.InitializeBackblaze(apiConfiguration);
@@ -33,6 +34,8 @@ public static class DependencyInjection
         services.AddSingleton<ConnectionManager>();
         services.AddScoped<WebSocketService>();
         services.AddScoped<WebSocketHandler>();
+        services.AddScoped<FirebaseMessagingHandler>();
+        services.AddScoped<FirebaseMessagingService>();
 
         return services;
     }

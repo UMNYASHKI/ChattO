@@ -10,14 +10,11 @@
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
-  <Target Name="OpenAPI" AfterTargets="Build" Condition="$(Configuration)=='Debug'">
-    <PropertyGroup>
-      <AssemblyFullPath>$([System.IO.Path]::GetFullPath($(MSBuildProjectDirectory)\$(OutDir)$(TargetFileName)))</AssemblyFullPath>
-    </PropertyGroup>
-    <Exec Command="swagger tofile --output openapi.yml --yaml $(AssemblyFullPath) v1" WorkingDirectory="$(MSBuildProjectDirectory)" />
-  </Target>
 
   <ItemGroup>
+    <PackageReference Include="AsyncAPI.NET" Version="5.2.0" />
+    <PackageReference Include="AsyncAPI.NET.Bindings" Version="5.2.0" />
+    <PackageReference Include="AsyncAPI.NET.Readers" Version="5.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">

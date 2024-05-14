@@ -42,7 +42,7 @@ public class UserService : IUserService
         return Result.Success(true);
     }
 
-    public async Task<Result<string>> AuthenticateUserAsync(string username, string password) // email??
+    public async Task<Result<string>> AuthenticateUserAsync(string username, string password)
     {
         var user = await _userManager.FindByNameAsync(username);
         const string errorMesage = "Invalid credentials";
@@ -66,16 +66,18 @@ public class UserService : IUserService
     {
         var externalLogin = await _contextAccessor.HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
         var signInResult = externalLogin.GetSigInData();
+        if (!signInResult.IsSuccessful)
+            return Result.Failure<string>("Fail to get sign in data");
 
-        var user = await _userManager.FindByEmailAsync(signInResult.Email);
+        var user = await _userManager.FindByEmailAsync(signInResult.Data.Email);
         if (user == null)
             return Result.Failure<string>("Fail to find user by email");
 
-        var loginUser = await _userManager.FindByLoginAsync(signInResult.Provider, signInResult.ProviderKey);
+        var loginUser = await _userManager.FindByLoginAsync(signInResult.Data.Provider, signInResult.Data.ProviderKey);
 
         if (loginUser is null)
         {
-            UserLoginInfo login = new UserLoginInfo(signInResult.Provider, signInResult.ProviderKey, signInResult.Provider.ToUpper());
+            UserLoginInfo login = new UserLoginInfo(signInResult.Data.Provider, signInResult.Data.ProviderKey, signInResult.Data.Provider.ToUpper());
             var result = await _userManager.AddLoginAsync(user, login);
 
             if (!result.Succeeded)
@@ -83,7 +85,6 @@ public class UserService : IUserService
         }
 
         await UpdateUsersSecurityStamp(user, Guid.NewGuid().ToString());
-        await _signInManager.SignInAsync(user, true);
 
         var jwt = _jwtService.GenerateToken(user);
 

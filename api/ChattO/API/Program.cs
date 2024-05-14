@@ -1,8 +1,11 @@
 using API.Extensions;
+using API.Helpers;
 using Application;
 using Application.Abstractions;
 using Application.Helpers.Mappings;
 using Infrastructure;
+using Infrastructure.Extensions;
+using Microsoft.AspNetCore.Builder.Extensions;
 using Persistence;
 using System.Reflection;
 
@@ -37,16 +40,19 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//app.AddFirbaseApp();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
     await app.ApplyMigration();
+    await AsyncApiSpecificationManager.CheckExistence();
 }
 
+app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
 
-app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 

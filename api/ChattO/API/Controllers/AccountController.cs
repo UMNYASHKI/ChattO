@@ -1,11 +1,8 @@
 ﻿using API.DTOs.Requests.Account;
 using Application.Abstractions;
-using Domain.Enums;
-using Domain.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -26,42 +23,50 @@ public class AccountController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest) 
     {
+        await _userService.RegisterUserAsync(new Domain.Models.AppUser() 
+        {
+            UserName = "nikita",
+            PasswordHash = "Nikita2004*",
+            Email = "example@gmail.com",
+            Role = Domain.Enums.AppUserRole.Admin,
+            OrganizationId = Guid.Parse("085b1d65-7c78-4289-934b-7d63c88fc411")
+        });
         var loginResult = await _userService.AuthenticateUserAsync(loginRequest.Username, loginRequest.Password);
 
         return HandleResult(loginResult);
     }
 
-    [HttpGet("GoogleLogin")]
-    [ProducesResponseType<string>(StatusCodes.Status200OK)]
-    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GoogleLogin()
-    {
-        var properties = new AuthenticationProperties
-        {
-            RedirectUri = Url.Action(nameof(GoogleCallBack)),
-            Items =
-            {
-                { "scheme", GoogleDefaults.AuthenticationScheme }
-            }
-        };
+    //[HttpGet("GoogleLogin")]
+    //[ProducesResponseType<string>(StatusCodes.Status200OK)]
+    //[ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    //[ProducesResponseType(StatusCodes.Status404NotFound)]
+    //public async Task<IActionResult> GoogleLogin()
+    //{
+    //    var properties = new AuthenticationProperties
+    //    {
+    //        RedirectUri = Url.Action(nameof(GoogleCallBack)),
+    //        Items =
+    //        {
+    //            { "scheme", GoogleDefaults.AuthenticationScheme }
+    //        }
+    //    };
 
-        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
-    }
+    //    return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+    //}
 
-    [HttpGet("signin-google")]
-    [ProducesResponseType<string>(StatusCodes.Status200OK)]
-    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GoogleCallBack(string remoteError = null)
-    {
-        if (remoteError != null) 
-            return BadRequest(remoteError);
-        
-        return HandleResult(await _userService.AuthenticateUserByGoogleAsync());
-    }
+    //[HttpGet("signin-google")]
+    //[ProducesResponseType<string>(StatusCodes.Status200OK)]
+    //[ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    //[ProducesResponseType(StatusCodes.Status404NotFound)]
+    //public async Task<IActionResult> GoogleCallBack(string remoteError = null)
+    //{
+    //    if (remoteError != null) 
+    //        return BadRequest(remoteError);
+
+    //    return HandleResult(await _userService.AuthenticateUserByGoogleAsync());
+    //}
 
     [Authorize]
     [HttpGet("Logout")]
