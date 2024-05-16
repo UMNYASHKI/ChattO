@@ -29,6 +29,8 @@ services:
         - BackBlaze__Bucket__Endpoint=s3.us-east-005.backblazeb2.com  
         - GoogleAuthSettings__ClientId=
         - GoogleAuthSettings__ClientSecret=
+        - MailjetSettings__ApiKey=1f9de662735a6ae3d84a7941551e0e16
+        - MailjetSettings__ApiSecret=1caf1ff40f05d230cf27f8e685a8c822
     networks:
         - dev
 
