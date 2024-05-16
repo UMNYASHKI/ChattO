@@ -10,4 +10,9 @@ public class EmailService : IEmailService
     {
         _mailjetClient = mailjetClient;
     }
+
+    public async Task SendEmailOnUserRegistration()
+    {
+
+    }
 }
