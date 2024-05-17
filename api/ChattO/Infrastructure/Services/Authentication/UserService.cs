@@ -42,9 +42,9 @@ public class UserService : IUserService
         return Result.Success(true);
     }
 
-    public async Task<Result<string>> AuthenticateUserAsync(string username, string password)
+    public async Task<Result<string>> AuthenticateUserAsync(string email, string password)
     {
-        var user = await _userManager.FindByNameAsync(username);
+        var user = await _userManager.FindByEmailAsync(email);
         const string errorMesage = "Invalid credentials";
         if (user == null)
         {
