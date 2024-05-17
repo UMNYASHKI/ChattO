@@ -42,7 +42,7 @@ public class EmailService : IEmailService
         var response = await _mailjetClient.PostAsync(request);
         if (!response.IsSuccessStatusCode)
         {
-            return Result.Failure<bool>("Failed to send emails");
+            return Result.Failure<bool>(response.GetErrorMessage());
         }
 
         return Result.Success<bool>();
