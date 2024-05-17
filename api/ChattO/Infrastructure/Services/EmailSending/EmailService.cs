@@ -65,7 +65,8 @@ public class EmailService : IEmailService
         {
             {"password", userData.GenaratedPassword},
             {"username", userData.DisplayName},
-            {"role", userData.Role.ToString() }
+            {"role", userData.Role.ToString() },
+            {"email", userData.Email}
         };
     }
 
