@@ -2,5 +2,5 @@
 
 public class EmailTemplate
 {
-    public const int RegistrationId = 5972711;
+    public const int RegistrationId = 5971149;
 }

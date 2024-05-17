@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions;
+using Infrastructure.Helpers;
 using Infrastructure.Services.EmailSending;
 using Mailjet.Client;
 using Microsoft.Extensions.Configuration;
@@ -20,5 +21,6 @@ public static class EmailExtension
         }); 
 
         services.AddScoped<IEmailService, EmailService>();
+        services.Configure<EmailSettings>(configuration.GetSection(nameof(EmailSettings)));
     }
 }
