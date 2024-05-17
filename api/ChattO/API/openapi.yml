@@ -2559,11 +2559,11 @@ components:
       additionalProperties: false
     LoginRequest:
       required:
+        - email
         - password
-        - username
       type: object
       properties:
-        username:
+        email:
           minLength: 1
           type: string
         password:

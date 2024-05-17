@@ -3,6 +3,7 @@ using API.DTOs.Requests.User;
 using API.DTOs.Responses.User;
 using API.DTOs.Sorting;
 using API.Helpers;
+using Application.AppUsers.Commands;
 using Application.Helpers;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -22,6 +23,10 @@ public class UserController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Create([FromBody] CreateAccountsRequest request)
     {
+        var result = await Mediator.Send(Mapper.Map<CreateAppUser.Command>(request));
+        if(!result.IsSuccessful)
+            return HandleResult(result);
+
         return Ok();//Validate (admin cannot create admins)
     }
 
