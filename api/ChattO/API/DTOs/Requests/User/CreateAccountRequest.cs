@@ -5,6 +5,11 @@ namespace API.DTOs.Requests.User;
 public class CreateAccountRequest
 {
     [Required]
+    public string FirstName { get; set; }
+    [Required]
+    public string LastName { get; set; }
+
+    [Required]
     public string UserName { get; set; }
 
     [Required]
