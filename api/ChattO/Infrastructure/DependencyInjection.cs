@@ -36,6 +36,7 @@ public static class DependencyInjection
         services.AddScoped<WebSocketHandler>();
         services.AddScoped<FirebaseMessagingHandler>();
         services.AddScoped<FirebaseMessagingService>();
+        services.AddEmailSending(apiConfiguration);
 
         return services;
     }

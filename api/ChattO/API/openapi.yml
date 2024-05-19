@@ -2337,9 +2337,17 @@ components:
     CreateAccountRequest:
       required:
         - email
+        - firstName
+        - lastName
         - userName
       type: object
       properties:
+        firstName:
+          minLength: 1
+          type: string
+        lastName:
+          minLength: 1
+          type: string
         userName:
           minLength: 1
           type: string
@@ -2551,11 +2559,11 @@ components:
       additionalProperties: false
     LoginRequest:
       required:
+        - email
         - password
-        - username
       type: object
       properties:
-        username:
+        email:
           minLength: 1
           type: string
         password:

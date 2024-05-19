@@ -23,15 +23,7 @@ public class AccountController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest) 
     {
-        await _userService.RegisterUserAsync(new Domain.Models.AppUser() 
-        {
-            UserName = "nikita",
-            PasswordHash = "Nikita2004*",
-            Email = "example@gmail.com",
-            Role = Domain.Enums.AppUserRole.Admin,
-            OrganizationId = Guid.Parse("085b1d65-7c78-4289-934b-7d63c88fc411")
-        });
-        var loginResult = await _userService.AuthenticateUserAsync(loginRequest.Username, loginRequest.Password);
+        var loginResult = await _userService.AuthenticateUserAsync(loginRequest.Email, loginRequest.Password);
 
         return HandleResult(loginResult);
     }
