@@ -1,5 +1,7 @@
 ﻿using API.DTOs.Requests.Account;
 using Application.Abstractions;
+using Domain.Enums;
+using Domain.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
@@ -23,7 +25,7 @@ public class AccountController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest) 
     {
-        var loginResult = await _userService.AuthenticateUserAsync(loginRequest.Username, loginRequest.Password);
+        var loginResult = await _userService.AuthenticateUserAsync(loginRequest.Email, loginRequest.Password);
 
         return HandleResult(loginResult);
     }

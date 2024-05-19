@@ -27,8 +27,12 @@ services:
         - BackBlaze__Bucket__Name=chatto-cloud-repository
         - BackBlaze__Bucket__Id=ac3fb827bf72ce1a8de80e1c
         - BackBlaze__Bucket__Endpoint=s3.us-east-005.backblazeb2.com  
-        - GoogleAuthSettings__ClientId=
+        - GoogleAuthSettings__ClientId=953801166712-jb4hndv21h7psofhgrs7v6akmdv8iama.apps.googleusercontent.com
         - GoogleAuthSettings__ClientSecret=
+        - MailjetSettings__ApiId=1f9de662735a6ae3d84a7941551e0e16
+        - MailjetSettings__ApiSecret=
+        - EmailSettings__FromEmail=chatto.community@gmail.com
+        - EmailSettings__FromName=ChattO
     networks:
         - dev
 

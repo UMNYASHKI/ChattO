@@ -33,6 +33,21 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         }
     }
 
+    public async Task<Result<bool>> AddItemsAsync(IEnumerable<TEntity> entities)
+    {
+        try
+        {
+            await _dbSet.AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+
+            return Result.Success(true);
+        }
+        catch
+        {
+            return Result.Failure<bool>($"Cannot add {typeof(TEntity).Name}s");
+        }
+    }
+
     public async Task<Result<IEnumerable<TEntity>>> GetAllAsync(
         Expression<Func<TEntity, bool>>? filter = null, int? pageNum = null, int? count = null)
     {
