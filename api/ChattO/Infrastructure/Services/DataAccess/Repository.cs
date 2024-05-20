@@ -61,7 +61,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 
             if (pageNum != null && count != null)
             {
-                query = query.Skip((int)(pageNum * count)).Take((int)count);
+                query = query.Skip((int)((pageNum - 1) * count)).Take((int)count);
             }
             else if (count != null)
             {

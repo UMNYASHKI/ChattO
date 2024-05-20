@@ -44,7 +44,7 @@ public static class ExpressionFilter<TResult, TSource>
     {
         var properties = typeof(TSource)
             .GetProperties()
-            .Where(p => p.DeclaringType.IsDefined(typeof(FilterAttribute), false));
+            .Where(p => Attribute.IsDefined(p, typeof(FilterAttribute)));
 
         var filters = properties.Aggregate(new List<Filter>(), (list, property) =>
         {
