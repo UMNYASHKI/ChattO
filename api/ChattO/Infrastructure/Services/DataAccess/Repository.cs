@@ -2,6 +2,7 @@
 using Application.Helpers;
 using Infrastructure.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Infrastructure.Services.DataAccess;
@@ -49,7 +50,9 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     }
 
     public async Task<Result<IEnumerable<TEntity>>> GetAllAsync(
-        Expression<Func<TEntity, bool>>? filter = null, int? pageNum = null, int? count = null)
+        Expression<Func<TEntity, bool>>? filter = null,
+         Expression<Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>> orderBy = null,
+         int ? pageNum = null, int? count = null)
     {
         try
         {
@@ -68,7 +71,15 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
                 query = query.Take((int)count);
             }
 
-            return Result.Success<IEnumerable<TEntity>>(await query.ToListAsync());
+            if (orderBy != null)
+            {
+                  return Result.Success<IEnumerable<TEntity>>(await orderBy.Compile()(query).ToListAsync());
+            }
+            else
+            {
+                return Result.Success<IEnumerable<TEntity>>(await query.ToListAsync());
+            }
+           
         }
         catch
         {
@@ -194,6 +205,23 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         {
             return Result.Failure<bool>($"Cannot check uniqueness of {typeof(TEntity).Name}");
         }
+    }
 
+    public async Task<Result<int>> GetTotalCountAsync(Expression<Func<TEntity, bool>>? filter = null)
+    {
+        try
+        {
+            IQueryable<TEntity> query = _dbSet.AsQueryable();
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return Result.Success(await query.CountAsync());
+        }
+        catch
+        {
+            return Result.Failure<int>($"Cannot get total count of {typeof(TEntity).Name}");
+        }
     }
 }

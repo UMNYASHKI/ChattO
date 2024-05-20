@@ -13,7 +13,10 @@ public interface IRepository<TEntity> where TEntity : class
 
     Task<Result<TCurrent>> GetByIdAsync<TCurrent>(Guid id) where TCurrent : class;
 
-    Task<Result<IEnumerable<TEntity>>> GetAllAsync(Expression<Func<TEntity, bool>>? predicate = null, int? pageNum = null, int? count = null);
+    Task<Result<IEnumerable<TEntity>>> GetAllAsync(
+         Expression<Func<TEntity, bool>>? filter = null,
+          Expression<Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>> orderBy = null,
+          int? pageNum = null, int? count = null);
 
     Task<Result<bool>> DeleteItemAsync(Guid id);
 
@@ -22,4 +25,6 @@ public interface IRepository<TEntity> where TEntity : class
     Task<Result<bool>> UpdateItemAsync(TEntity entity);
 
     Task<Result<bool>> IsUnique(Expression<Func<TEntity, bool>> filter);
+
+    Task<Result<int>> GetTotalCountAsync(Expression<Func<TEntity, bool>>? filter = null);
 }
