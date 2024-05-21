@@ -18,7 +18,7 @@ namespace API.Controllers;
 public class UserController : BaseController
 {
     // Create a new users (admin or user) within an organization
-    [Authorize(Roles = $"{RolesConstants.SuperAdmin}, {RolesConstants.Admin}")]
+    //[Authorize(Roles = $"{RolesConstants.SuperAdmin}, {RolesConstants.Admin}")]
     [HttpPost]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
@@ -81,7 +81,19 @@ public class UserController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] JsonPatchDocument<UpdateUserRequest> document)
     {
-        return Ok();//Validate (user can update only himself)
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var request = new UpdateUserRequest();
+        document.ApplyTo(request, ModelState);
+        var user = Mapper.Map<UpdateAppUser.Command>(request);
+        user.Id = id;
+
+        var updateResult = await Mediator.Send(user);
+        if (!updateResult.IsSuccessful)
+            return HandleResult(updateResult);
+
+        return NoContent();
     }
 
     // Delete user
