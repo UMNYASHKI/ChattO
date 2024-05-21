@@ -105,36 +105,14 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         {
             return Result.Failure<TEntity>($"Error when finding {typeof(TEntity).Name}");
         }
-    }
 
-    public async Task<Result<TCurrent>> GetByIdAsync<TCurrent>(Guid id) where TCurrent : class
-    {
-        try
-        {
-            var inheritedDbSet = _context.Set<TCurrent>();
-            var result = await inheritedDbSet.FindAsync(id);
-
-            if (result is null)
-            {
-                return Result.Failure<TCurrent>($"Cannot find {typeof(TCurrent).Name}");
-            }
-
-            return Result.Success(result);
-        }
-        catch
-        {
-            return Result.Failure<TCurrent>($"Error when finding {typeof(TCurrent).Name}");
-        }
     }
 
     public async Task<Result<bool>> UpdateItemAsync(TEntity entityToUpdate)
     {
         try
         {
-            if (_context.Entry(entityToUpdate).State == EntityState.Detached)
-            {
-                _dbSet.Attach(entityToUpdate);
-            }
+            CheckEntityEntryState(entityToUpdate);
             _dbSet.Update(entityToUpdate);
 
             await _context.SaveChangesAsync();
@@ -152,13 +130,8 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         try
         {
             var entityToDelete = await _dbSet.FindAsync(id);
-
-            if (_context.Entry(entityToDelete).State == EntityState.Detached)
-            {
-                _dbSet.Attach(entityToDelete);
-            }
+            CheckEntityEntryState(entityToDelete);
             _dbSet.Remove(entityToDelete);
-
             await _context.SaveChangesAsync();
 
             return Result.Success<bool>();
@@ -166,30 +139,6 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         catch
         {
             return Result.Failure<bool>($"Cannot delete the {typeof(TEntity).Name}");
-        }
-    }
-
-    public async Task<Result<bool>> DeleteItemAsync<TCurrent>(Guid id) where TCurrent : class
-    {
-        try
-        {
-            var currentDbSet = _context.Set<TCurrent>();
-
-            var entityToDelete = await currentDbSet.FindAsync(id);
-
-            if (_context.Entry(entityToDelete).State == EntityState.Detached)
-            {
-                currentDbSet.Attach(entityToDelete);
-            }
-            currentDbSet.Remove(entityToDelete);
-
-            await _context.SaveChangesAsync();
-
-            return Result.Success<bool>();
-        }
-        catch
-        {
-            return Result.Failure<bool>($"Cannot delete the {typeof(TCurrent).Name}");
         }
     }
 
@@ -222,6 +171,14 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         catch
         {
             return Result.Failure<int>($"Cannot get total count of {typeof(TEntity).Name}");
+        }
+    }
+
+    private void CheckEntityEntryState(TEntity entity)
+    {
+        if (_context.Entry(entity).State == EntityState.Detached)
+        {
+            _dbSet.Attach(entity);
         }
     }
 }
