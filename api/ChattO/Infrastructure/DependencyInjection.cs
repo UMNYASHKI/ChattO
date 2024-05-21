@@ -38,6 +38,8 @@ public static class DependencyInjection
         services.AddScoped<FirebaseMessagingService>();
         services.AddEmailSending(apiConfiguration);
 
+        services.AddPaypalClient(apiConfiguration);
+
         return services;
     }
 }
