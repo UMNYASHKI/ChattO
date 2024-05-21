@@ -4,7 +4,7 @@ using Domain.Models;
 using FluentValidation;
 using MediatR;
 
-namespace Application.Users.Queries;
+namespace Application.AppUsers.Queries;
 
 public class GetDetailsAppUser
 {
