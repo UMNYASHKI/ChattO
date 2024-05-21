@@ -236,7 +236,16 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
                 return Result.Failure<bool>($"Cannot find {typeof(TEntity).Name}");
             }
 
-            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+            var entityType = entity.GetType();
+
+            foreach (var property in entityType.GetProperties())
+            {
+                var value = property.GetValue(entity);
+                if (value != null)
+                {
+                    _context.Entry(entityToUpdate).Property(property.Name).CurrentValue = value;
+                }
+            }
 
             await _context.SaveChangesAsync();
 
