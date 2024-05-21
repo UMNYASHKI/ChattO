@@ -1,4 +1,6 @@
-﻿namespace Application.Helpers;
+﻿using FluentValidation;
+
+namespace Application.Helpers;
 
 public class PagingProps
 {
@@ -7,3 +9,13 @@ public class PagingProps
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 10;
 }
+
+public class PagingPropsValidator : AbstractValidator<PagingProps>
+{
+    public PagingPropsValidator()
+    {
+        RuleFor(x => x.PageNumber).GreaterThan(0);
+        RuleFor(x => x.PageSize).GreaterThan(0);
+    }
+}
+
