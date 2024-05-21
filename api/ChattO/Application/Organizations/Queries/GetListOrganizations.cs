@@ -34,8 +34,10 @@ public class GetListOrganizations
 
             var filter = ExpressionFilter<Organization, Query>.GetFilter(request);
             var sortBy = SortingBuilder<Organization>.GetSortBy(request.ColumnName, request.Descending ?? true);
+            if (!sortBy.IsSuccessful)
+                return Result.Failure<PagingResponse<Organization>>(sortBy.Message);
 
-            var listResult = await _repository.GetAllAsync(filter, sortBy, request.PageNumber, request.PageSize);
+            var listResult = await _repository.GetAllAsync(filter, sortBy.Data, request.PageNumber, request.PageSize);
             if(!listResult.IsSuccessful)
                 return Result.Failure<PagingResponse<Organization>>(listResult.Message);
             
