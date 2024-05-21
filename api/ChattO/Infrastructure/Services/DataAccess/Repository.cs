@@ -224,4 +224,27 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
             return Result.Failure<int>($"Cannot get total count of {typeof(TEntity).Name}");
         }
     }
+
+    public async Task<Result<bool>> PartialUpdateAsync(Guid id, object entity)
+    {
+        try
+        {
+            var entityToUpdate = await _dbSet.FindAsync(id);
+
+            if (entityToUpdate is null)
+            {
+                return Result.Failure<bool>($"Cannot find {typeof(TEntity).Name}");
+            }
+
+            _context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+
+            await _context.SaveChangesAsync();
+
+            return Result.Success(true);
+        }
+        catch
+        {
+            return Result.Failure<bool>($"Cannot update {typeof(TEntity).Name}");
+        }
+    }
 }

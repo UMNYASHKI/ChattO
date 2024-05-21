@@ -27,4 +27,6 @@ public interface IRepository<TEntity> where TEntity : class
     Task<Result<bool>> IsUnique(Expression<Func<TEntity, bool>> filter);
 
     Task<Result<int>> GetTotalCountAsync(Expression<Func<TEntity, bool>>? filter = null);
+
+    Task<Result<bool>> PartialUpdateAsync(Guid id, object entity);
 }
