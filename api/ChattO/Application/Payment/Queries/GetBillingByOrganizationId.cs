@@ -14,13 +14,7 @@ public class GetBillingByOrganizationId
     {
         public Guid OrganizationId { get; set; }
 
-        public int PageSize { get; set; }
-
-        public int PageNumber { get; set; }
-
-        public string ColumnName { get; set; }
-
-        public bool Descending { get; set; }
+        public PagingProps PagingProps { get; set; }
     }
 
     public class Validator : AbstractValidator<Query> 
@@ -51,8 +45,8 @@ public class GetBillingByOrganizationId
                 return Result.Failure<PagingResponse<Billing>>(validationResult.ToString(" "));
             }
 
-            var sorting = SortingBuilder<Billing>.GetSortBy(request.ColumnName, request.Descending);
-            var getResult = await _repository.GetAllAsync(billing=>billing.OrganizationId == request.OrganizationId, sorting, request.PageNumber, request.PageSize);
+            var sorting = SortingBuilder<Billing>.GetSortBy(request.PagingProps.ColumnName, (bool)request.PagingProps.Descending);
+            var getResult = await _repository.GetAllAsync(billing=>billing.OrganizationId == request.OrganizationId, sorting, request.PagingProps.PageNumber, request.PagingProps.PageSize);
             if (!getResult.IsSuccessful)
             {
                 return Result.Failure<PagingResponse<Billing>>(getResult.Message);
@@ -60,7 +54,7 @@ public class GetBillingByOrganizationId
 
             var totalCount = await _repository.GetTotalCountAsync();
 
-            return Result.Success(new PagingResponse<Billing>(getResult.Data, totalCount.Data, request.PageNumber, request.PageSize));
+            return Result.Success(new PagingResponse<Billing>(getResult.Data, totalCount.Data, request.PagingProps.PageNumber, request.PagingProps.PageSize));
         }
     }
 }

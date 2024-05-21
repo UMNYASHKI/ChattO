@@ -14,9 +14,9 @@ public class GetOrganizationBillingsRequest : SortingParams, IMapWith<GetBilling
     {
         profile.CreateMap<GetOrganizationBillingsRequest, GetBillingByOrganizationId.Query>()
             .ForMember(c => c.OrganizationId, opt => opt.MapFrom(r => r.OrganizationId))
-            .ForMember(c => c.PageNumber, opt => opt.MapFrom(r => r.PageNumber))
-            .ForMember(c => c.PageSize, opt => opt.MapFrom(r => r.PageSize))
-            .ForMember(c => c.ColumnName, opt => opt.MapFrom(r => r.ColumnName))
-            .ForMember(c => c.Descending, opt => opt.MapFrom(r => r.Descending));
+            .ForMember(c => c.PagingProps.PageNumber, opt => opt.MapFrom(r => r.PageNumber))
+            .ForMember(c => c.PagingProps.PageSize, opt => opt.MapFrom(r => r.PageSize))
+            .ForMember(c => c.PagingProps.ColumnName, opt => opt.MapFrom(r => r.ColumnName))
+            .ForMember(c => c.PagingProps.Descending, opt => opt.MapFrom(r => r.Descending));
     }
 }

@@ -19,13 +19,7 @@ public class Get
         [Filter]
         public double? Price { get; set; }
 
-        public int PageSize { get; set; }
-
-        public int PageNumber { get; set; }
-
-        public string ColumnName { get; set; }
-
-        public bool Descending { get; set; }
+        public PagingProps PagingProps { get; set; }
     }
 
     public class Handler : IRequestHandler<Query, Result<PagingResponse<BillingInfo>>>
@@ -40,9 +34,9 @@ public class Get
         public async Task<Result<PagingResponse<BillingInfo>>> Handle(Query request, CancellationToken cancellationToken)
         {
             var expression = ExpressionFilter<BillingInfo, Query>.GetFilter(request);
-            var sorting = SortingBuilder<BillingInfo>.GetSortBy(request.ColumnName, request.Descending);
+            var sorting = SortingBuilder<BillingInfo>.GetSortBy(request.PagingProps.ColumnName, (bool)request.PagingProps.Descending);
 
-            var getResult = await _repository.GetAllAsync(expression, sorting, request.PageNumber, request.PageSize);
+            var getResult = await _repository.GetAllAsync(expression, sorting, request.PagingProps.PageNumber, request.PagingProps.PageSize);
             if (!getResult.IsSuccessful)
             {
                 return Result.Failure<PagingResponse<BillingInfo>>(getResult.Message);
@@ -50,7 +44,7 @@ public class Get
 
             var totalCount = await _repository.GetTotalCountAsync(expression);
 
-            return Result.Success(new PagingResponse<BillingInfo>(getResult.Data, totalCount.Data, request.PageNumber, request.PageSize));
+            return Result.Success(new PagingResponse<BillingInfo>(getResult.Data, totalCount.Data, request.PagingProps.PageNumber, request.PagingProps.PageSize));
         }
     }
 }
