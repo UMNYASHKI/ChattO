@@ -1,9 +1,10 @@
 ﻿using Application.Abstractions;
 using Application.Extensions;
 using Application.Helpers;
+using Domain.Models.Files;
 using Domain.Models;
 using MediatR;
-using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.Files.Queries;
 
@@ -11,15 +12,11 @@ public class DownloadMessageFile
 {
     public class Command : IRequest<Result<string>>
     {
-        public Guid MessageId { get; set; }
-    }
+        public string Domain { get; set; }
 
-    public class CommandValidator : AbstractValidator<Command>
-    {
-        public CommandValidator()
-        {
-            RuleFor(x => x.MessageId).NotEmpty();
-        }
+        public Guid FeedId { get; set; }
+
+        public Guid MessageId { get; set; }
     }
 
     public class Handler : IRequestHandler<Command, Result<string>>
