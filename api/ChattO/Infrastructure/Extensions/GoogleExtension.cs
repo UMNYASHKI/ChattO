@@ -11,12 +11,12 @@ public static class GoogleExtension
         var clientId = configuration.GetSection("GoogleAuthSettings:ClientId").Get<string>();
         var clientSecret = configuration.GetSection("GoogleAuthSettings:ClientSecret").Get<string>();
 
-        services.AddAuthentication()
-            .AddGoogle(options =>
-            {
-                options.ClientId = clientId;
-                options.ClientSecret = clientSecret;
-            });
+        //services.AddAuthentication();
+            //.AddGoogle(options =>
+            //{
+            //    options.ClientId = clientId;
+            //    options.ClientSecret = clientSecret;
+            //});
 
         return services;
     }
