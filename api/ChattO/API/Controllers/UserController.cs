@@ -1,10 +1,13 @@
 ﻿using API.DTOs.Paging;
 using API.DTOs.Requests.User;
+using API.DTOs.Responses.File;
+using API.DTOs.Responses.Organization;
 using API.DTOs.Responses.User;
 using API.DTOs.Sorting;
 using API.Helpers;
 using Application.AppUsers.Commands;
 using Application.Helpers;
+using Application.Users.Queries;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
@@ -27,7 +30,7 @@ public class UserController : BaseController
         if(!result.IsSuccessful)
             return HandleResult(result);
 
-        return Ok();//Validate (admin cannot create admins)
+        return Ok();
     }
 
     // Get user by id
@@ -39,7 +42,15 @@ public class UserController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
-        return Ok();
+        var userResult = await Mediator.Send(new GetDetailsAppUser.Query { Id = id });
+        if (!userResult.IsSuccessful)
+            return HandleResult(userResult);
+
+        var response = Mapper.Map<UserDetailsResponse>(userResult.Data);
+        response.Organization = Mapper.Map<GetDetailsOrganizationResponse>(userResult.Data.Organization);
+        response.ProfileImage = Mapper.Map<FileResponse>(userResult.Data.ProfileImage);
+
+        return Ok(response);
     }
 
     // Get all users (system admin permission)
@@ -50,44 +61,13 @@ public class UserController : BaseController
     //displayname
     //email
     //isEmailSent
-    [Authorize(Roles = RolesConstants.SystemAdmin)]
-    [HttpGet("GetUsersInSystem")]
+    [Authorize]
+    [HttpGet]
     [ProducesResponseType<PagingResponse<UserResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([FromQuery] UserFilterRequest request)
-    {
-        return Ok();
-    }
-
-    // Get all users (organization admin permission)
-    //groupId
-    //username
-    //displayname
-    //email
-    //isEmailSent
-    [Authorize(Roles = $"{RolesConstants.SuperAdmin},{RolesConstants.Admin}")]
-    [HttpGet("GetUsersInsideOrganization")]
-    [ProducesResponseType<PagingResponse<UserResponse>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetUsersInOrganization([FromQuery] UserFilterRequest request)
-    {
-        return Ok();
-        //OrganizationId is admin's organizationId
-        //Finding role is User
-    }
-
-    //Find users by name(for simple users)
-    [Authorize(Roles = RolesConstants.User)]
-    [HttpGet("GetUsersByName")]
-    [ProducesResponseType<PagingResponse<UserResponse>>(StatusCodes.Status200OK)]
-    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetByName([FromQuery]GetUsersByNameRequest request)
     {
         return Ok();
     }
@@ -113,6 +93,10 @@ public class UserController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        return Ok();
+        var result = await Mediator.Send(new DeleteAppUser.Command { Id = id });
+        if (!result.IsSuccessful)
+            return HandleResult(result);
+
+        return NoContent();
     }
 }
