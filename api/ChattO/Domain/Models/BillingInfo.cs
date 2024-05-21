@@ -7,5 +7,6 @@ public class BillingInfo
     public Guid Id { get; set; }
     public BillingType Type { get; set; }
     public double Price { get; set; }
+    public Currency Currency { get; set; }
     public virtual ICollection<Billing> Billings { get; set; }
 }
