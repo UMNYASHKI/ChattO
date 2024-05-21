@@ -1,11 +1,10 @@
-﻿using API.DTOs.Paging;
-using API.DTOs.Requests.User;
+﻿using API.DTOs.Requests.User;
 using API.DTOs.Responses.File;
 using API.DTOs.Responses.Organization;
 using API.DTOs.Responses.User;
-using API.DTOs.Sorting;
 using API.Helpers;
 using Application.AppUsers.Commands;
+using Application.AppUsers.Queries;
 using Application.Helpers;
 using Application.Users.Queries;
 using Domain.Models;
@@ -69,7 +68,16 @@ public class UserController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([FromQuery] UserFilterRequest request)
     {
-        return Ok();
+        var listResult = await Mediator.Send(Mapper.Map<GetListAppUsers.Query>(request));
+        if (!listResult.IsSuccessful)
+            return HandleResult(listResult);
+
+        var response = new PagingResponse<UserResponse>(listResult.Data.Items.Select(Mapper.Map<AppUser, UserResponse>),
+             listResult.Data.TotalCount,
+             listResult.Data.CurrentPage,
+             listResult.Data.PageSize);
+
+        return Ok(response);
     }
 
     // Update user
