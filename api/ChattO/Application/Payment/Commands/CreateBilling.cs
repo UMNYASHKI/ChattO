@@ -1,6 +1,8 @@
 ﻿using Application.Abstractions;
 using Application.Helpers;
+using Application.Helpers.Mappings;
 using Application.Payment.DTOs;
+using AutoMapper;
 using Domain.Models;
 using FluentValidation;
 using MediatR;
@@ -9,11 +11,18 @@ namespace Application.Payment.Commands;
 
 public class CreateBilling
 {
-    public class Command : IRequest<Result<CreateOrderResponse>>
+    public class Command : IRequest<Result<CreateOrderResponse>>, IMapWith<Billing>
     {
         public Guid BillingInfoId { get; set; }
 
         public Guid OrganizationId { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Command, Billing>()
+                .ForMember(org => org.BillingInfoId, opt => opt.MapFrom(c => c.BillingInfoId))
+                .ForMember(org => org.OrganizationId, opt => opt.MapFrom(c => c.OrganizationId));
+        }
     }
 
     public class CommandValidator : AbstractValidator<Command>
@@ -35,12 +44,15 @@ public class CreateBilling
 
         private readonly IValidator<Command> _validator;
 
-        public Handler(IBillingService billingService, IRepository<Billing> repository, IRepository<BillingInfo> billingInfoRepository, IValidator<Command> validator)
+        private readonly IMapper _mapper;
+
+        public Handler(IBillingService billingService, IRepository<Billing> repository, IRepository<BillingInfo> billingInfoRepository, IValidator<Command> validator, IMapper mapper)
         {
             _billingService = billingService;
             _billingRepository = repository;
             _billingInfoRepository = billingInfoRepository;
             _validator = validator;
+            _mapper = mapper;
         }
 
         public async Task<Result<CreateOrderResponse>> Handle(Command request, CancellationToken cancellationToken)
@@ -52,12 +64,8 @@ public class CreateBilling
             }
 
             var billingId = Guid.NewGuid();
-            var billing = new Billing() 
-            {
-                Id = billingId,
-                OrganizationId = request.OrganizationId,
-                BillingInfoId = request.BillingInfoId
-            };
+            var billing = _mapper.Map<Billing>(request);
+            billing.Id = billingId;
 
             var createBillingResult = await _billingRepository.AddItemAsync(billing);
             if (!createBillingResult.IsSuccessful)

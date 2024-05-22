@@ -28,8 +28,7 @@ public class BillingController : BaseController
     public async Task<IActionResult> Create([FromQuery] Guid billingInfoId)
     {
         var user = await _userService.GetCurrentUser();
-        var request = new CreateBillingRequest() { OrganizationId = user.Data.OrganizationId, BillingInfoId = billingInfoId };
-        var result = await Mediator.Send(new CreateBilling.Command() { BillingInfoId = request.BillingInfoId, OrganizationId = request.OrganizationId });
+        var result = await Mediator.Send(new CreateBilling.Command() { BillingInfoId = billingInfoId, OrganizationId = user.Data.OrganizationId });
         if (!result.IsSuccessful)
         {
             return HandleResult(result);

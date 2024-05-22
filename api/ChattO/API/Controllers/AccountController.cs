@@ -28,37 +28,37 @@ public class AccountController : BaseController
         return HandleResult(loginResult);
     }
 
-    //[HttpGet("GoogleLogin")]
-    //[ProducesResponseType<string>(StatusCodes.Status200OK)]
-    //[ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
-    //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    //[ProducesResponseType(StatusCodes.Status404NotFound)]
-    //public async Task<IActionResult> GoogleLogin()
-    //{
-    //    var properties = new AuthenticationProperties
-    //    {
-    //        RedirectUri = Url.Action(nameof(GoogleCallBack)),
-    //        Items =
-    //        {
-    //            { "scheme", GoogleDefaults.AuthenticationScheme }
-    //        }
-    //    };
+    [HttpGet("GoogleLogin")]
+    [ProducesResponseType<string>(StatusCodes.Status200OK)]
+    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GoogleLogin()
+    {
+        var properties = new AuthenticationProperties
+        {
+            RedirectUri = Url.Action(nameof(GoogleCallBack)),
+            Items =
+            {
+                { "scheme", GoogleDefaults.AuthenticationScheme }
+            }
+        };
 
-    //    return Challenge(properties, GoogleDefaults.AuthenticationScheme);
-    //}
+        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+    }
 
-    //[HttpGet("signin-google")]
-    //[ProducesResponseType<string>(StatusCodes.Status200OK)]
-    //[ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
-    //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    //[ProducesResponseType(StatusCodes.Status404NotFound)]
-    //public async Task<IActionResult> GoogleCallBack(string remoteError = null)
-    //{
-    //    if (remoteError != null) 
-    //        return BadRequest(remoteError);
+    [HttpGet("signin-google")]
+    [ProducesResponseType<string>(StatusCodes.Status200OK)]
+    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GoogleCallBack(string remoteError = null)
+    {
+        if (remoteError != null)
+            return BadRequest(remoteError);
 
-    //    return HandleResult(await _userService.AuthenticateUserByGoogleAsync());
-    //}
+        return HandleResult(await _userService.AuthenticateUserByGoogleAsync());
+    }
 
     [Authorize]
     [HttpGet("Logout")]
