@@ -14,7 +14,6 @@ namespace API.Controllers;
 
 public class UserController : BaseController
 {
-    // Create a new users (admin or user) within an organization
     [Authorize(Roles = $"{RolesConstants.SuperAdmin}, {RolesConstants.Admin}")]
     [HttpPost]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]
@@ -24,13 +23,12 @@ public class UserController : BaseController
     public async Task<IActionResult> Create([FromBody] CreateAccountsRequest request)
     {
         var result = await Mediator.Send(Mapper.Map<CreateAppUser.Command>(request));
-        if(!result.IsSuccessful)
+        if (!result.IsSuccessful)
             return HandleResult(result);
 
-        return Ok();//Validate (admin cannot create admins)
+        return Ok();
     }
 
-    // Get user by id
     [Authorize]
     [HttpGet("{id}")]
     [ProducesResponseType<UserDetailsResponse>(StatusCodes.Status200OK)]
@@ -87,7 +85,7 @@ public class UserController : BaseController
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetByName([FromQuery]GetUsersByNameRequest request)
+    public async Task<IActionResult> GetByName([FromQuery] GetUsersByNameRequest request)
     {
         return Ok();
     }

@@ -6,7 +6,7 @@ namespace Infrastructure.Extensions;
 
 public static class FirebaseMessagingExtension
 {
-    public static void AddFirbaseApp(this IApplicationBuilder builder)
+    public static void AddFirebaseApp(this IApplicationBuilder builder)
     {
         var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "chatto-419213-firebase-adminsdk-xq7rm-ca2456e87b.json");
         if (!File.Exists(filePath))

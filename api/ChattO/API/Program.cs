@@ -40,7 +40,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.AddFirbaseApp();
+app.AddFirebaseApp();
 
 if (app.Environment.IsDevelopment())
 {
