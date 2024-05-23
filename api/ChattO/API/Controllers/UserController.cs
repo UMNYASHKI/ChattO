@@ -43,8 +43,6 @@ public class UserController : BaseController
             return HandleResult(userResult);
 
         var response = Mapper.Map<UserDetailsResponse>(userResult.Data);
-        response.Organization = Mapper.Map<GetDetailsOrganizationResponse>(userResult.Data.Organization);
-        response.ProfileImage = Mapper.Map<FileResponse>(userResult.Data.ProfileImage);
 
         return Ok(response);
     }

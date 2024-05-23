@@ -40,6 +40,8 @@ public class UserDetailsResponse : IMapWith<AppUser>
             .ForMember(q => q.Email, opt => opt.MapFrom(r => r.Email))
             .ForMember(q => q.DisplayName, opt => opt.MapFrom(r => r.DisplayName))
             .ForMember(q => q.Role, opt => opt.MapFrom(r => r.Role))
-            .ForMember(q => q.IsEmailSent, opt => opt.MapFrom(r => r.IsEmailSent));
+            .ForMember(q => q.IsEmailSent, opt => opt.MapFrom(r => r.IsEmailSent))
+            .ForMember(q => q.Organization, opt => opt.MapFrom(r => r.Organization))
+            .ForMember(q => q.ProfileImage, opt => opt.MapFrom(r => r.ProfileImage));
     }
 }
