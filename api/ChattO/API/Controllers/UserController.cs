@@ -6,7 +6,6 @@ using API.Helpers;
 using Application.AppUsers.Commands;
 using Application.AppUsers.Queries;
 using Application.Helpers;
-using Application.Users.Queries;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;

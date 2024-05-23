@@ -41,7 +41,7 @@ public class BillingInfoController : BaseController
         }
 
         var data = getResult.Data;
-        var items = data.Items.Select(Mapper.Map<BillingInfoResponse>);
+        var items = data.Items.Select(Mapper.Map<BillingInfoResponse>).ToList();
 
         return HandleResult(Result.Success(new PagingResponse<BillingInfoResponse>() { Items = items, CurrentPage = data.CurrentPage, TotalCount = data.TotalCount, PageSize = data.PageSize, TotalPages = data.TotalPages }));
     }
