@@ -258,19 +258,13 @@ paths:
           content:
             text/plain:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/BillingResponse'
+                $ref: '#/components/schemas/BillingResponsePagingResponse'
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/BillingResponse'
+                $ref: '#/components/schemas/BillingResponsePagingResponse'
             text/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/BillingResponse'
+                $ref: '#/components/schemas/BillingResponsePagingResponse'
         '400':
           description: Bad Request
           content:
@@ -446,19 +440,13 @@ paths:
           content:
             text/plain:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/BillingInfoResponse'
+                $ref: '#/components/schemas/BillingInfoResponsePagingResponse'
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/BillingInfoResponse'
+                $ref: '#/components/schemas/BillingInfoResponsePagingResponse'
             text/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/BillingInfoResponse'
+                $ref: '#/components/schemas/BillingInfoResponsePagingResponse'
         '400':
           description: Bad Request
           content:
@@ -637,19 +625,13 @@ paths:
           content:
             text/plain:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FeedResponse'
+                $ref: '#/components/schemas/FeedResponsePagingResponse'
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FeedResponse'
+                $ref: '#/components/schemas/FeedResponsePagingResponse'
             text/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FeedResponse'
+                $ref: '#/components/schemas/FeedResponsePagingResponse'
         '400':
           description: Bad Request
           content:
@@ -940,19 +922,13 @@ paths:
           content:
             text/plain:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GroupResponse'
+                $ref: '#/components/schemas/GroupResponsePagingResponse'
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GroupResponse'
+                $ref: '#/components/schemas/GroupResponsePagingResponse'
             text/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GroupResponse'
+                $ref: '#/components/schemas/GroupResponsePagingResponse'
         '400':
           description: Bad Request
           content:
@@ -1242,19 +1218,13 @@ paths:
           content:
             text/plain:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GetDetailsOrganizationResponse'
+                $ref: '#/components/schemas/GetDetailsOrganizationResponsePagingResponse'
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GetDetailsOrganizationResponse'
+                $ref: '#/components/schemas/GetDetailsOrganizationResponsePagingResponse'
             text/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GetDetailsOrganizationResponse'
+                $ref: '#/components/schemas/GetDetailsOrganizationResponsePagingResponse'
         '400':
           description: Bad Request
           content:
@@ -1550,19 +1520,13 @@ paths:
           content:
             text/plain:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TicketResponse'
+                $ref: '#/components/schemas/TicketResponsePagingResponse'
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TicketResponse'
+                $ref: '#/components/schemas/TicketResponsePagingResponse'
             text/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TicketResponse'
+                $ref: '#/components/schemas/TicketResponsePagingResponse'
         '400':
           description: Bad Request
           content:
@@ -1816,6 +1780,97 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+    get:
+      tags:
+        - User
+      parameters:
+        - name: GroupId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: UserName
+          in: query
+          schema:
+            type: string
+        - name: AppUserRole
+          in: query
+          schema:
+            $ref: '#/components/schemas/AppUserRole'
+        - name: Email
+          in: query
+          schema:
+            type: string
+        - name: OrganizationId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: IsEmailSent
+          in: query
+          schema:
+            type: boolean
+        - name: DisplayName
+          in: query
+          schema:
+            type: string
+        - name: ColumnName
+          in: query
+          schema:
+            type: string
+        - name: Descending
+          in: query
+          schema:
+            type: boolean
+        - name: PageNumber
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: PageSize
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/UserResponsePagingResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponsePagingResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/UserResponsePagingResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+        '500':
+          description: Server Error
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   '/api/User/{id}':
     get:
       tags:
@@ -1986,274 +2041,6 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
-  /api/User/GetUsersInSystem:
-    get:
-      tags:
-        - User
-      parameters:
-        - name: GroupId
-          in: query
-          schema:
-            type: string
-            format: uuid
-        - name: UserName
-          in: query
-          schema:
-            type: string
-        - name: AppUserRole
-          in: query
-          schema:
-            $ref: '#/components/schemas/AppUserRole'
-        - name: Email
-          in: query
-          schema:
-            type: string
-        - name: OrganizationId
-          in: query
-          schema:
-            type: string
-            format: uuid
-        - name: IsEmailSent
-          in: query
-          schema:
-            type: boolean
-        - name: DisplayName
-          in: query
-          schema:
-            type: string
-        - name: ColumnName
-          in: query
-          schema:
-            type: string
-        - name: Descending
-          in: query
-          schema:
-            type: boolean
-        - name: PageNumber
-          in: query
-          schema:
-            type: integer
-            format: int32
-        - name: PageSize
-          in: query
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserResponse'
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserResponse'
-            text/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserResponse'
-        '400':
-          description: Bad Request
-          content:
-            text/plain:
-              schema:
-                type: string
-            application/json:
-              schema:
-                type: string
-            text/json:
-              schema:
-                type: string
-        '500':
-          description: Server Error
-        '404':
-          description: Not Found
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-  /api/User/GetUsersInsideOrganization:
-    get:
-      tags:
-        - User
-      parameters:
-        - name: GroupId
-          in: query
-          schema:
-            type: string
-            format: uuid
-        - name: UserName
-          in: query
-          schema:
-            type: string
-        - name: AppUserRole
-          in: query
-          schema:
-            $ref: '#/components/schemas/AppUserRole'
-        - name: Email
-          in: query
-          schema:
-            type: string
-        - name: OrganizationId
-          in: query
-          schema:
-            type: string
-            format: uuid
-        - name: IsEmailSent
-          in: query
-          schema:
-            type: boolean
-        - name: DisplayName
-          in: query
-          schema:
-            type: string
-        - name: ColumnName
-          in: query
-          schema:
-            type: string
-        - name: Descending
-          in: query
-          schema:
-            type: boolean
-        - name: PageNumber
-          in: query
-          schema:
-            type: integer
-            format: int32
-        - name: PageSize
-          in: query
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserResponse'
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserResponse'
-            text/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserResponse'
-        '400':
-          description: Bad Request
-          content:
-            text/plain:
-              schema:
-                type: string
-            application/json:
-              schema:
-                type: string
-            text/json:
-              schema:
-                type: string
-        '500':
-          description: Server Error
-        '404':
-          description: Not Found
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-  /api/User/GetUsersByName:
-    get:
-      tags:
-        - User
-      parameters:
-        - name: DisplayName
-          in: query
-          schema:
-            type: string
-        - name: ColumnName
-          in: query
-          schema:
-            type: string
-        - name: Descending
-          in: query
-          schema:
-            type: boolean
-        - name: PageNumber
-          in: query
-          schema:
-            type: integer
-            format: int32
-        - name: PageSize
-          in: query
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserResponse'
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserResponse'
-            text/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserResponse'
-        '400':
-          description: Bad Request
-          content:
-            text/plain:
-              schema:
-                type: string
-            application/json:
-              schema:
-                type: string
-            text/json:
-              schema:
-                type: string
-        '500':
-          description: Server Error
-        '404':
-          description: Not Found
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
   /api/ws:
     get:
       tags:
@@ -2313,6 +2100,27 @@ components:
           type: number
           format: double
       additionalProperties: false
+    BillingInfoResponsePagingResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BillingInfoResponse'
+          nullable: true
+        currentPage:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type: integer
+          format: int32
+      additionalProperties: false
     BillingResponse:
       type: object
       properties:
@@ -2327,6 +2135,27 @@ components:
           format: uuid
         billingInfo:
           $ref: '#/components/schemas/BillingInfoResponse'
+      additionalProperties: false
+    BillingResponsePagingResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BillingResponse'
+          nullable: true
+        currentPage:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type: integer
+          format: int32
       additionalProperties: false
     BillingType:
       enum:
@@ -2510,6 +2339,27 @@ components:
             $ref: '#/components/schemas/FeedAppUserResponse'
           nullable: true
       additionalProperties: false
+    FeedResponsePagingResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeedResponse'
+          nullable: true
+        currentPage:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type: integer
+          format: int32
+      additionalProperties: false
     FeedType:
       enum:
         - 0
@@ -2542,6 +2392,27 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+    GetDetailsOrganizationResponsePagingResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetDetailsOrganizationResponse'
+          nullable: true
+        currentPage:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type: integer
+          format: int32
+      additionalProperties: false
     GroupResponse:
       type: object
       properties:
@@ -2556,6 +2427,27 @@ components:
           items:
             $ref: '#/components/schemas/AppUserGroupResponse'
           nullable: true
+      additionalProperties: false
+    GroupResponsePagingResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupResponse'
+          nullable: true
+        currentPage:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type: integer
+          format: int32
       additionalProperties: false
     LoginRequest:
       required:
@@ -2654,6 +2546,27 @@ components:
         status:
           $ref: '#/components/schemas/TicketStatus'
       additionalProperties: false
+    TicketResponsePagingResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TicketResponse'
+          nullable: true
+        currentPage:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type: integer
+          format: int32
+      additionalProperties: false
     TicketStatus:
       enum:
         - 0
@@ -2726,4 +2639,25 @@ components:
           type: boolean
         profileImage:
           $ref: '#/components/schemas/FileResponse'
+      additionalProperties: false
+    UserResponsePagingResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponse'
+          nullable: true
+        currentPage:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        totalCount:
+          type: integer
+          format: int32
       additionalProperties: false
