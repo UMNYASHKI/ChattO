@@ -1,9 +1,12 @@
 ﻿using API.DTOs.Sorting;
+using Application.AppUsers.Queries;
+using Application.Helpers.Mappings;
 using Domain.Enums;
+using AutoMapper;
 
 namespace API.DTOs.Requests.User;
 
-public class UserFilterRequest : SortingParams
+public class UserFilterRequest : SortingParams, IMapWith<GetListAppUsers.Query>
 {
     public Guid? GroupId { get; set; }
 
@@ -18,4 +21,23 @@ public class UserFilterRequest : SortingParams
     public bool? IsEmailSent { get; set; }
 
     public string? DisplayName { get; set; }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<UserFilterRequest, GetListAppUsers.Query>()
+            .ForMember(query => query.GroupId,
+                                  opt => opt.MapFrom(request => request.GroupId))
+            .ForMember(query => query.UserName,
+                                  opt => opt.MapFrom(request => request.UserName))
+            .ForMember(query => query.AppUserRole,
+                                  opt => opt.MapFrom(request => request.AppUserRole))
+            .ForMember(query => query.Email,
+                                  opt => opt.MapFrom(request => request.Email))
+            .ForMember(query => query.OrganizationId,
+                                  opt => opt.MapFrom(request => request.OrganizationId))
+            .ForMember(query => query.IsEmailSent,
+                                  opt => opt.MapFrom(request => request.IsEmailSent))
+            .ForMember(query => query.DisplayName,
+                                  opt => opt.MapFrom(request => request.DisplayName));
+    }
 }

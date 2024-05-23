@@ -44,7 +44,7 @@ public static class ExpressionFilter<TResult, TSource>
     {
         var properties = typeof(TSource)
             .GetProperties()
-            .Where(p => p.IsDefined(typeof(FilterAttribute), false));
+            .Where(p => Attribute.IsDefined(p, typeof(FilterAttribute)));
 
         var filters = properties.Aggregate(new List<Filter>(), (list, property) =>
         {
@@ -91,6 +91,10 @@ public static class ExpressionFilter<TResult, TSource>
         else if (property.Type.IsEnum)
         {
             comparison = Expression.Equal(property, Expression.Constant(Enum.Parse(property.Type, columnFilter.Value)));
+        }
+        else if (property.Type == typeof(bool))
+        {
+            comparison = Expression.Equal(property, Expression.Constant(Convert.ToBoolean(columnFilter.Value)));
         }
         else
         {

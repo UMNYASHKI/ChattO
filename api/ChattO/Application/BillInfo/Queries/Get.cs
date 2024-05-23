@@ -33,8 +33,12 @@ public class Get
         {
             var expression = ExpressionFilter<BillingInfo, Query>.GetFilter(request);
             var sorting = SortingBuilder<BillingInfo>.GetSortBy(request.ColumnName, (bool)request.Descending);
+            if (!sorting.IsSuccessful)
+            {
+                return Result.Failure<PagingResponse<BillingInfo>>(sorting.Message);
+            }
 
-            var getResult = await _repository.GetAllAsync(expression, sorting, request.PageNumber, request.PageSize);
+            var getResult = await _repository.GetAllAsync(expression, sorting.Data, request.PageNumber, request.PageSize);
             if (!getResult.IsSuccessful)
             {
                 return Result.Failure<PagingResponse<BillingInfo>>(getResult.Message);

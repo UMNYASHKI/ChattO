@@ -44,7 +44,12 @@ public class GetBillingByOrganizationId
             }
 
             var sorting = SortingBuilder<Billing>.GetSortBy(request.ColumnName, (bool)request.Descending);
-            var getResult = await _repository.GetAllAsync(billing=>billing.OrganizationId == request.OrganizationId, sorting, request.PageNumber, request.PageSize);
+            if (!sorting.IsSuccessful)
+            {
+                return Result.Failure<PagingResponse<Billing>>(sorting.Message);
+            }
+
+            var getResult = await _repository.GetAllAsync(billing=>billing.OrganizationId == request.OrganizationId, sorting.Data, request.PageNumber, request.PageSize);
             if (!getResult.IsSuccessful)
             {
                 return Result.Failure<PagingResponse<Billing>>(getResult.Message);

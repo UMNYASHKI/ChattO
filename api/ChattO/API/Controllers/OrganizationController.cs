@@ -37,7 +37,7 @@ public class OrganizationController : BaseController
         var user = Mapper.Map<AppUser>(request);
         user.OrganizationId = result.Data;
 
-        return HandleResult(await _userService.RegisterUserAsync(user));
+        return HandleResult(await _userService.RegisterUserAsync(user)); 
     }
 
     [Authorize(Roles = RolesConstants.SystemAdmin)]
@@ -48,7 +48,16 @@ public class OrganizationController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([FromQuery] OrganizationFilteringRequest request)
     {
-        return Ok();
+        var listResult = await Mediator.Send(Mapper.Map<GetListOrganizations.Query>(request));
+        if (!listResult.IsSuccessful)
+            return HandleResult(listResult);
+
+        var response = new PagingResponse<GetDetailsOrganizationResponse>(listResult.Data.Items.Select(Mapper.Map<Organization, GetDetailsOrganizationResponse>), 
+            listResult.Data.TotalCount, 
+            listResult.Data.CurrentPage, 
+            listResult.Data.PageSize);
+
+        return Ok(response);
     }
 
     [HttpGet("{id}")]
@@ -88,7 +97,7 @@ public class OrganizationController : BaseController
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> Update(Guid id, UpdateOrganizationRequest request)
+    public async Task<IActionResult> Update(Guid id, [FromBody]UpdateOrganizationRequest request)
     {
         var organization = Mapper.Map<UpdateOrganization.Command>(request);
         organization.Id = id;

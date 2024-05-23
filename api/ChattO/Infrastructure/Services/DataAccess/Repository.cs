@@ -174,6 +174,36 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         }
     }
 
+    public async Task<Result<bool>> PartialUpdateAsync<T>(Guid id, T entity)
+    {
+        try
+        {
+            var entityToUpdate = await _dbSet.FindAsync(id);
+
+            if (entityToUpdate is null)
+            {
+                return Result.Failure<bool>($"Cannot find {typeof(TEntity).Name}");
+            }
+
+            foreach (var property in typeof(T).GetProperties())
+            {
+                var value = property.GetValue(entity);
+                if (value != null)
+                {
+                    _context.Entry(entityToUpdate).Property(property.Name).CurrentValue = value;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Result.Success(true);
+        }
+        catch
+        {
+            return Result.Failure<bool>($"Cannot update {typeof(TEntity).Name}");
+        }
+    }
+  
     private void CheckEntityEntryState(TEntity entity)
     {
         if (_context.Entry(entity).State == EntityState.Detached)

@@ -60,6 +60,97 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+  /api/Account/GoogleLogin:
+    get:
+      tags:
+        - Account
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+        '500':
+          description: Server Error
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/Account/signin-google:
+    get:
+      tags:
+        - Account
+      parameters:
+        - name: remoteError
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+        '500':
+          description: Server Error
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   /api/Account/Logout:
     get:
       tags:
@@ -1724,6 +1815,97 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+    get:
+      tags:
+        - User
+      parameters:
+        - name: GroupId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: UserName
+          in: query
+          schema:
+            type: string
+        - name: AppUserRole
+          in: query
+          schema:
+            $ref: '#/components/schemas/AppUserRole'
+        - name: Email
+          in: query
+          schema:
+            type: string
+        - name: OrganizationId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: IsEmailSent
+          in: query
+          schema:
+            type: boolean
+        - name: DisplayName
+          in: query
+          schema:
+            type: string
+        - name: ColumnName
+          in: query
+          schema:
+            type: string
+        - name: Descending
+          in: query
+          schema:
+            type: boolean
+        - name: PageNumber
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: PageSize
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/UserResponsePagingResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponsePagingResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/UserResponsePagingResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+        '500':
+          description: Server Error
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   '/api/User/{id}':
     get:
       tags:
@@ -1868,256 +2050,6 @@ paths:
             text/json:
               schema:
                 type: boolean
-        '400':
-          description: Bad Request
-          content:
-            text/plain:
-              schema:
-                type: string
-            application/json:
-              schema:
-                type: string
-            text/json:
-              schema:
-                type: string
-        '500':
-          description: Server Error
-        '404':
-          description: Not Found
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-  /api/User/GetUsersInSystem:
-    get:
-      tags:
-        - User
-      parameters:
-        - name: GroupId
-          in: query
-          schema:
-            type: string
-            format: uuid
-        - name: UserName
-          in: query
-          schema:
-            type: string
-        - name: AppUserRole
-          in: query
-          schema:
-            $ref: '#/components/schemas/AppUserRole'
-        - name: Email
-          in: query
-          schema:
-            type: string
-        - name: OrganizationId
-          in: query
-          schema:
-            type: string
-            format: uuid
-        - name: IsEmailSent
-          in: query
-          schema:
-            type: boolean
-        - name: DisplayName
-          in: query
-          schema:
-            type: string
-        - name: ColumnName
-          in: query
-          schema:
-            type: string
-        - name: Descending
-          in: query
-          schema:
-            type: boolean
-        - name: PageNumber
-          in: query
-          schema:
-            type: integer
-            format: int32
-        - name: PageSize
-          in: query
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/UserResponsePagingResponse'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserResponsePagingResponse'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/UserResponsePagingResponse'
-        '400':
-          description: Bad Request
-          content:
-            text/plain:
-              schema:
-                type: string
-            application/json:
-              schema:
-                type: string
-            text/json:
-              schema:
-                type: string
-        '500':
-          description: Server Error
-        '404':
-          description: Not Found
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-  /api/User/GetUsersInsideOrganization:
-    get:
-      tags:
-        - User
-      parameters:
-        - name: GroupId
-          in: query
-          schema:
-            type: string
-            format: uuid
-        - name: UserName
-          in: query
-          schema:
-            type: string
-        - name: AppUserRole
-          in: query
-          schema:
-            $ref: '#/components/schemas/AppUserRole'
-        - name: Email
-          in: query
-          schema:
-            type: string
-        - name: OrganizationId
-          in: query
-          schema:
-            type: string
-            format: uuid
-        - name: IsEmailSent
-          in: query
-          schema:
-            type: boolean
-        - name: DisplayName
-          in: query
-          schema:
-            type: string
-        - name: ColumnName
-          in: query
-          schema:
-            type: string
-        - name: Descending
-          in: query
-          schema:
-            type: boolean
-        - name: PageNumber
-          in: query
-          schema:
-            type: integer
-            format: int32
-        - name: PageSize
-          in: query
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/UserResponsePagingResponse'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserResponsePagingResponse'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/UserResponsePagingResponse'
-        '400':
-          description: Bad Request
-          content:
-            text/plain:
-              schema:
-                type: string
-            application/json:
-              schema:
-                type: string
-            text/json:
-              schema:
-                type: string
-        '500':
-          description: Server Error
-        '404':
-          description: Not Found
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-  /api/User/GetUsersByName:
-    get:
-      tags:
-        - User
-      parameters:
-        - name: DisplayName
-          in: query
-          schema:
-            type: string
-        - name: ColumnName
-          in: query
-          schema:
-            type: string
-        - name: Descending
-          in: query
-          schema:
-            type: boolean
-        - name: PageNumber
-          in: query
-          schema:
-            type: integer
-            format: int32
-        - name: PageSize
-          in: query
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/UserResponsePagingResponse'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserResponsePagingResponse'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/UserResponsePagingResponse'
         '400':
           description: Bad Request
           content:

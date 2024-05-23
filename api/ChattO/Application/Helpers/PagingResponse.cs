@@ -1,6 +1,7 @@
 ﻿namespace Application.Helpers;
 
-public class PagingResponse<T>
+
+public class PagingResponse<T> 
 {
     public PagingResponse()
     {
@@ -12,9 +13,10 @@ public class PagingResponse<T>
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
         PageSize = pageSize;
         TotalCount = count;
-        Items = items;
+        Items = items.ToList();
     }
-    public IEnumerable<T> Items { get; set; }
+
+    public IList<T> Items { get; set; } = new List<T>();
     public int CurrentPage { get; set; }
     public int TotalPages { get; set; }
     public int PageSize { get; set; }
