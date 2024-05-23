@@ -60,97 +60,6 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
-  /api/Account/GoogleLogin:
-    get:
-      tags:
-        - Account
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                type: string
-            application/json:
-              schema:
-                type: string
-            text/json:
-              schema:
-                type: string
-        '400':
-          description: Bad Request
-          content:
-            text/plain:
-              schema:
-                type: string
-            application/json:
-              schema:
-                type: string
-            text/json:
-              schema:
-                type: string
-        '500':
-          description: Server Error
-        '404':
-          description: Not Found
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-  /api/Account/signin-google:
-    get:
-      tags:
-        - Account
-      parameters:
-        - name: remoteError
-          in: query
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                type: string
-            application/json:
-              schema:
-                type: string
-            text/json:
-              schema:
-                type: string
-        '400':
-          description: Bad Request
-          content:
-            text/plain:
-              schema:
-                type: string
-            application/json:
-              schema:
-                type: string
-            text/json:
-              schema:
-                type: string
-        '500':
-          description: Server Error
-        '404':
-          description: Not Found
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetails'
   /api/Account/Logout:
     get:
       tags:
@@ -172,20 +81,12 @@ paths:
     post:
       tags:
         - Billing
-      requestBody:
-        content:
-          application/json-patch+json:
-            schema:
-              $ref: '#/components/schemas/CreateBillingRequest'
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateBillingRequest'
-          text/json:
-            schema:
-              $ref: '#/components/schemas/CreateBillingRequest'
-          application/*+json:
-            schema:
-              $ref: '#/components/schemas/CreateBillingRequest'
+      parameters:
+        - name: billingInfoId
+          in: query
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
           description: Success
@@ -265,6 +166,54 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/BillingResponsePagingResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+        '500':
+          description: Server Error
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    put:
+      tags:
+        - Billing
+      parameters:
+        - name: billingId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: boolean
+            application/json:
+              schema:
+                type: boolean
+            text/json:
+              schema:
+                type: boolean
         '400':
           description: Bad Request
           content:
@@ -406,12 +355,7 @@ paths:
           in: query
           schema:
             $ref: '#/components/schemas/BillingType'
-        - name: MinPrice
-          in: query
-          schema:
-            type: number
-            format: double
-        - name: MaxPrice
+        - name: Price
           in: query
           schema:
             type: number
@@ -2210,16 +2154,8 @@ components:
         price:
           type: number
           format: double
-      additionalProperties: false
-    CreateBillingRequest:
-      type: object
-      properties:
-        organizationId:
-          type: string
-          format: uuid
-        billingInfoId:
-          type: string
-          format: uuid
+        currency:
+          $ref: '#/components/schemas/Currency'
       additionalProperties: false
     CreateFeedRequest:
       type: object
@@ -2298,6 +2234,11 @@ components:
         theme:
           $ref: '#/components/schemas/TicketTheme'
       additionalProperties: false
+    Currency:
+      enum:
+        - 0
+      type: integer
+      format: int32
     FeedAppUserResponse:
       type: object
       properties:

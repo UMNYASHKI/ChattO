@@ -16,7 +16,7 @@ namespace API.Controllers;
 
 public class UserController : BaseController
 {
-    //[Authorize(Roles = $"{RolesConstants.SuperAdmin}, {RolesConstants.Admin}")]
+    [Authorize(Roles = $"{RolesConstants.SuperAdmin}, {RolesConstants.Admin}")]
     [HttpPost]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
@@ -25,7 +25,7 @@ public class UserController : BaseController
     public async Task<IActionResult> Create([FromBody] CreateAccountsRequest request)
     {
         var result = await Mediator.Send(Mapper.Map<CreateAppUser.Command>(request));
-        if(!result.IsSuccessful)
+        if (!result.IsSuccessful)
             return HandleResult(result);
 
         return Ok();

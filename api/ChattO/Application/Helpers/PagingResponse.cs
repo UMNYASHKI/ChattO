@@ -1,7 +1,12 @@
 ﻿namespace Application.Helpers;
 
+
 public class PagingResponse<T> 
 {
+    public PagingResponse()
+    {
+        
+    }
     public PagingResponse(IEnumerable<T> items, int count, int pageNumber, int pageSize)
     {
         CurrentPage = pageNumber;

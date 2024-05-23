@@ -1,7 +1,5 @@
 ﻿using API.DTOs.Requests.Account;
 using Application.Abstractions;
-using Domain.Enums;
-using Domain.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
@@ -56,9 +54,9 @@ public class AccountController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GoogleCallBack(string remoteError = null)
     {
-        if (remoteError != null) 
+        if (remoteError != null)
             return BadRequest(remoteError);
-        
+
         return HandleResult(await _userService.AuthenticateUserByGoogleAsync());
     }
 

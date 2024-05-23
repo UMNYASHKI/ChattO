@@ -48,7 +48,6 @@ public static class ExpressionFilter<TResult, TSource>
 
         var filters = properties.Aggregate(new List<Filter>(), (list, property) =>
         {
-           
             var value = property.GetValue(request);
             if (value != null)
             {
