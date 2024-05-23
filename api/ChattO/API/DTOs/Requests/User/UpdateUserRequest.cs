@@ -13,7 +13,7 @@ public class UpdateUserRequest : IMapWith<UpdateAppUser.Command>
     public string? Email { get; set; }
 
     public string? UserName { get; set; }
-    //TODO: Separete endpoint for updating profile image
+
     //public IFormFile? ProfileImage { get; set; } 
 
     public void Mapping(Profile profile)

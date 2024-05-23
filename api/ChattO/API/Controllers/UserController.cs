@@ -16,7 +16,6 @@ namespace API.Controllers;
 
 public class UserController : BaseController
 {
-    // Create a new users (admin or user) within an organization
     //[Authorize(Roles = $"{RolesConstants.SuperAdmin}, {RolesConstants.Admin}")]
     [HttpPost]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]
@@ -32,7 +31,6 @@ public class UserController : BaseController
         return Ok();
     }
 
-    // Get user by id
     [Authorize]
     [HttpGet("{id}")]
     [ProducesResponseType<UserDetailsResponse>(StatusCodes.Status200OK)]
@@ -52,14 +50,6 @@ public class UserController : BaseController
         return Ok(response);
     }
 
-    // Get all users (system admin permission)
-    //groupId
-    //organizationId
-    //role
-    //username
-    //displayname
-    //email
-    //isEmailSent
     [Authorize]
     [HttpGet]
     [ProducesResponseType<PagingResponse<UserResponse>>(StatusCodes.Status200OK)]
@@ -80,7 +70,6 @@ public class UserController : BaseController
         return Ok(response);
     }
 
-    // Update user
     [Authorize(Roles = RolesConstants.User)]
     [HttpPatch("{id}")]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]
@@ -104,7 +93,6 @@ public class UserController : BaseController
         return NoContent();
     }
 
-    // Delete user
     [Authorize(Roles = $"{RolesConstants.SystemAdmin},{RolesConstants.SuperAdmin},{RolesConstants.Admin}")]
     [HttpDelete("{id}")]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]

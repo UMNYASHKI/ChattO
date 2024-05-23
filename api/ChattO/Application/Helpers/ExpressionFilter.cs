@@ -93,6 +93,10 @@ public static class ExpressionFilter<TResult, TSource>
         {
             comparison = Expression.Equal(property, Expression.Constant(Enum.Parse(property.Type, columnFilter.Value)));
         }
+        else if (property.Type == typeof(bool))
+        {
+            comparison = Expression.Equal(property, Expression.Constant(Convert.ToBoolean(columnFilter.Value)));
+        }
         else
         {
             comparison = Expression.Equal(property, Expression.Constant(Convert.ToInt32(columnFilter.Value)));
