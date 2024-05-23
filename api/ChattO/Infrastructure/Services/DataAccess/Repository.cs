@@ -174,7 +174,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         }
     }
 
-    public async Task<Result<bool>> PartialUpdateAsync(Guid id, object entity)
+    public async Task<Result<bool>> PartialUpdateAsync<T>(Guid id, T entity)
     {
         try
         {
@@ -185,9 +185,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
                 return Result.Failure<bool>($"Cannot find {typeof(TEntity).Name}");
             }
 
-            var entityType = entity.GetType();
-
-            foreach (var property in entityType.GetProperties())
+            foreach (var property in typeof(T).GetProperties())
             {
                 var value = property.GetValue(entity);
                 if (value != null)

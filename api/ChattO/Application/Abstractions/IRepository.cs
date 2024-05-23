@@ -24,5 +24,5 @@ public interface IRepository<TEntity> where TEntity : class
 
     Task<Result<int>> GetTotalCountAsync(Expression<Func<TEntity, bool>>? filter = null);
 
-    Task<Result<bool>> PartialUpdateAsync(Guid id, object entity);
+    Task<Result<bool>> PartialUpdateAsync<T>(Guid id, T entity);
 }
