@@ -211,4 +211,19 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
             _dbSet.Attach(entity);
         }
     }
+
+    public async Task<Result<bool>> DeleteItemsAsync(IEnumerable<TEntity> entities)
+    {
+        try
+        {
+            _dbSet.RemoveRange(entities);
+            await _context.SaveChangesAsync();
+
+            return Result.Success(true);
+        }
+        catch
+        {
+            return Result.Failure<bool>($"Cannot delete items");
+        }
+    }
 }

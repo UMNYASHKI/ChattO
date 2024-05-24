@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Folder Include="Feeds\Commands\" />
-    <Folder Include="Groups\Queries\" />
   </ItemGroup>
 
 </Project>
