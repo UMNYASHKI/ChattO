@@ -53,12 +53,16 @@ public class CreateFeed
         private readonly IRepository<Feed> _repository;
         private readonly IValidator<Command> _validator;
         private readonly IMapper _mapper;
-        public Handler(IRepository<Feed> repository, IValidator<Command> validator, IMapper mapper)
+        private readonly IRepository<AppUserGroup> _userGroupsRepository;
+        public Handler(IRepository<Feed> repository, IValidator<Command> validator, 
+            IMapper mapper, IRepository<AppUserGroup> userGroupsRepository)
         {
             _repository = repository;
             _validator = validator;
             _mapper = mapper;
+            _userGroupsRepository = userGroupsRepository;
         }
+
         public async Task<Result<Feed>> Handle(Command request, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(request, cancellationToken);
@@ -67,11 +71,33 @@ public class CreateFeed
 
             var feed = _mapper.Map<Feed>(request);
             feed.AppUserFeeds.Add(new AppUserFeed { AppUserId = request.CreatorId, IsCreator = true });
+
+            if (request.GroupId is not null)
+            {
+                var addUsersResult = await AddUsersFromGroup(feed);
+                if (!addUsersResult.IsSuccessful)
+                    return Result.Failure<Feed>(addUsersResult.Message);
+            }
+
             var createResult = await _repository.AddItemAsync(feed);
             if(!createResult.IsSuccessful)
                 return Result.Failure<Feed>(createResult.Message);
 
             return Result.Success(feed);
+        }
+
+        public async Task<Result<bool>> AddUsersFromGroup(Feed feed)
+        {
+            var userGroupsResult = await _userGroupsRepository.GetAllAsync(x => x.GroupId == feed.GroupId);
+            if (!userGroupsResult.IsSuccessful)
+                return Result.Failure<bool>(userGroupsResult.Message);
+
+            var appUserFeeds = userGroupsResult.Data.Select(userGroup => 
+                new AppUserFeed { AppUserId = userGroup.AppUserId, IsCreator = false }).ToList();
+
+            feed.AppUserFeeds.ToList().AddRange(appUserFeeds);
+
+            return Result.Success(true);
         }
     }
 }
