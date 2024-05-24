@@ -62,7 +62,11 @@ public class FeedController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        return Ok();
+        var result = await Mediator.Send(new DeleteFeed.Command { Id = id });
+        if (!result.IsSuccessful)
+            return HandleResult(result);
+
+        return NoContent();
     }
 
     // Get all feeds (by filter) ?? sort by, order by
