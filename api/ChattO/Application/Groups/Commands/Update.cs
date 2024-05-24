@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions;
 using Application.Helpers;
+using AutoMapper;
 using Domain.Models;
-using FluentValidation;
 using MediatR;
 
 namespace Application.Groups.Commands;
@@ -10,22 +10,31 @@ public class Update
 {
     public class Command : IRequest<Result<bool>>
     {
+        public Guid Id { get; set; }
         public string? Name { get; set; }
-        public List<Guid>? AddedUsersId { get; set; }
-        public List<Guid>? RemovedUsersId { get; set; }
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Command, Group>()
+                .ForMember(org => org.Id, opt => opt.MapFrom(c => c.Id))
+                .ForMember(org => org.Name, opt => opt.MapFrom(c => c.Name));
+        }
     }
 
     public class Handler : IRequestHandler<Command, Result<bool>>
     {
-        private readonly IRepository<Group> _repository;
+        private readonly IRepository<Group> _groupRepository;
 
-        public Handler(IRepository<Group> repository)
+        private readonly IMapper _mapper;
+
+        public Handler(IRepository<Group> groupRepository, IMapper mapper)
         {
-            _repository = repository;
+            _groupRepository = groupRepository;
+            _mapper = mapper;
         }
         public async Task<Result<bool>> Handle(Command request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _groupRepository.UpdateItemAsync(_mapper.Map<Group>(request));
         }
     }
 }

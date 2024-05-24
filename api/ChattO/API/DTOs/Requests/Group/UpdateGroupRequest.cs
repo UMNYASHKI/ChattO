@@ -1,8 +1,16 @@
-﻿namespace API.DTOs.Requests.Group;
+﻿using Application.Groups.Commands;
+using Application.Helpers.Mappings;
+using AutoMapper;
 
-public class UpdateGroupRequest
+namespace API.DTOs.Requests.Group;
+
+public class UpdateGroupRequest : IMapWith<Update.Command>
 {
     public string? Name { get; set; }
-    public List<Guid>? AddedUsersId { get; set; }
-    public List<Guid>? RemovedUsersId { get; set; }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<UpdateGroupRequest, Update.Command>()
+            .ForMember(org => org.Name, opt => opt.MapFrom(c => c.Name));
+    }
 }
