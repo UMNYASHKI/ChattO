@@ -1,6 +1,9 @@
 ﻿using API.DTOs.Requests.Feed;
 using API.DTOs.Responses.Feed;
+using API.Extensions;
 using API.Helpers;
+using Application.Abstractions;
+using Application.Feeds.Commands;
 using Application.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +23,13 @@ public class FeedController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Create([FromBody] CreateFeedRequest request)
     {
-        return Ok();
+        var command = Mapper.Map<CreateFeed.Command>(request);
+        command.CreatorId = User.GetIdFromPrincipal();
+        var result = await Mediator.Send(command);
+        if (!result.IsSuccessful)
+            return HandleResult(result);
+
+        return CreatedAtAction(nameof(this.GetById), new { id = result.Data.Id}, Mapper.Map<FeedResponse>(result.Data));
     }
 
     // Get feed by id
