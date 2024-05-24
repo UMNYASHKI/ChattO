@@ -12,7 +12,7 @@ public class DeleteUsersFromGroupRequest : IMapWith<Delete.Command>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<AddUsersToGroupRequest, Delete.Command>()
+        profile.CreateMap<DeleteUsersFromGroupRequest, Delete.Command>()
             .ForMember(org => org.GroupId, opt => opt.MapFrom(c => c.GroupId))
             .ForMember(org => org.UsersId, opt => opt.MapFrom(c => c.UsersId));
     }

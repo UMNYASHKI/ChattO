@@ -34,8 +34,12 @@ public class GroupController : BaseController
     public async Task<IActionResult> GetById(Guid id)
     {
         var getResult = await  Mediator.Send(new GetById.Query() { Id =  id });
+        if (!getResult.IsSuccessful)
+        {
+            return HandleResult(getResult);
+        }
 
-        return HandleResult(getResult);
+        return Ok(Mapper.Map<GroupResponse>(getResult.Data));
     }
 
     [HttpGet]
@@ -54,7 +58,7 @@ public class GroupController : BaseController
         var data = getResult.Data;
         var items = data.Items.Select(Mapper.Map<GroupResponse>);
 
-        return HandleResult(Result.Success(new PagingResponse<GroupResponse>() { Items = (IList<GroupResponse>)items, CurrentPage = data.CurrentPage, TotalCount = data.TotalCount, PageSize = data.PageSize, TotalPages = data.TotalPages }));
+        return HandleResult(Result.Success(new PagingResponse<GroupResponse>() { Items = items.ToList(), CurrentPage = data.CurrentPage, TotalCount = data.TotalCount, PageSize = data.PageSize, TotalPages = data.TotalPages }));
     }
 
     [HttpPut("{id}")]

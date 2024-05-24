@@ -67,7 +67,7 @@ public class UserController : BaseController
         return Ok(response);
     }
 
-    [Authorize(Roles = RolesConstants.User)]
+    //[Authorize(Roles = RolesConstants.User)]
     [HttpPatch("{id}")]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]

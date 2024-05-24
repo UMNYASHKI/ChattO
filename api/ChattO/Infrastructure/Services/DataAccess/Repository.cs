@@ -221,8 +221,9 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 
             return Result.Success(true);
         }
-        catch
+        catch (Exception e)
         {
+            var a = e.Message;
             return Result.Failure<bool>($"Cannot delete items");
         }
     }

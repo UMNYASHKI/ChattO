@@ -25,28 +25,28 @@ public class Delete
         }
     }
 
-    public class Handler : IRequestHandler<Command, Result<bool>>
-    {
-        private readonly IRepository<AppUserGroup> _userGroupsRepository;
+    //public class Handler : IRequestHandler<Command, Result<bool>>
+    //{
+    //    private readonly IRepository<AppUserGroup> _userGroupsRepository;
 
-        private readonly IValidator<Command> _validator;
+    //    private readonly IValidator<Command> _validator;
 
-        public Handler(IRepository<AppUserGroup> userGroupRepository, IValidator<Command> validator)
-        {
-            _userGroupsRepository = userGroupRepository;
-            _validator = validator;
-        }
-        public async Task<Result<bool>> Handle(Command request, CancellationToken cancellationToken)
-        {
-            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+    //    public Handler(IRepository<AppUserGroup> userGroupRepository, IValidator<Command> validator)
+    //    {
+    //        _userGroupsRepository = userGroupRepository;
+    //        _validator = validator;
+    //    }
+    //    public async Task<Result<bool>> Handle(Command request, CancellationToken cancellationToken)
+    //    {
+    //        var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
-            if (!validationResult.IsValid)
-            {
-                return Result.Failure<bool>(validationResult.ToString(" "));
-            }
+    //        if (!validationResult.IsValid)
+    //        {
+    //            return Result.Failure<bool>(validationResult.ToString(" "));
+    //        }
 
-            var userGroups = request.UsersId.Select(userId => new AppUserGroup() { AppUserId = userId, GroupId = request.GroupId });
-            return await _userGroupsRepository.DeleteItemsAsync(userGroups);
-        }
-    }
+    //        var userGroups = request.UsersId.Select(userId => new AppUserGroup() { AppUserId = userId, GroupId = request.GroupId });
+    //        return await _userGroupsRepository.DeleteItemsAsync(userGroups);
+    //    }
+    //}
 }

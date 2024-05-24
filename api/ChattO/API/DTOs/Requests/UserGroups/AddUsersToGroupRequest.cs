@@ -4,7 +4,7 @@ using AutoMapper;
 
 namespace API.DTOs.Requests.UserGroups;
 
-public class AddUsersToGroupRequest : IMapWith<Delete.Command>
+public class AddUsersToGroupRequest : IMapWith<Add.Command>
 {
     public Guid GroupId { get; set; }
 

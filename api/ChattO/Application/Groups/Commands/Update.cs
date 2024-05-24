@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions;
 using Application.Helpers;
+using Application.Helpers.Mappings;
 using AutoMapper;
 using Domain.Models;
 using MediatR;
@@ -8,7 +9,7 @@ namespace Application.Groups.Commands;
 
 public class Update
 {
-    public class Command : IRequest<Result<bool>>
+    public class Command : IRequest<Result<bool>>, IMapWith<Group>
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }
@@ -34,6 +35,14 @@ public class Update
         }
         public async Task<Result<bool>> Handle(Command request, CancellationToken cancellationToken)
         {
+            var original = await _groupRepository.GetByIdAsync(request.Id);
+            if (!original.IsSuccessful)
+            {
+                return Result.Failure<bool>(original.Message);
+            }
+
+            var data = _mapper.Map<Group>(request);
+
             return await _groupRepository.UpdateItemAsync(_mapper.Map<Group>(request));
         }
     }
