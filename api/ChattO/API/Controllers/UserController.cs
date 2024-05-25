@@ -1,6 +1,4 @@
 ﻿using API.DTOs.Requests.User;
-using API.DTOs.Responses.File;
-using API.DTOs.Responses.Organization;
 using API.DTOs.Responses.User;
 using API.Helpers;
 using Application.AppUsers.Commands;
@@ -67,7 +65,7 @@ public class UserController : BaseController
         return Ok(response);
     }
 
-    //[Authorize(Roles = RolesConstants.User)]
+    [Authorize(Roles = RolesConstants.User)]
     [HttpPatch("{id}")]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]

@@ -1,12 +1,10 @@
 ﻿using API.DTOs.Requests.Group;
-using API.DTOs.Responses.Billing;
 using API.DTOs.Responses.Group;
 using API.Helpers;
 using Application.Groups.Commands;
 using Application.Groups.Queries;
 using Application.Helpers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;

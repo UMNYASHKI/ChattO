@@ -41,9 +41,9 @@ public class Update
                 return Result.Failure<bool>(original.Message);
             }
 
-            var data = _mapper.Map<Group>(request);
+            var data = _mapper.Map(request, original.Data);
 
-            return await _groupRepository.UpdateItemAsync(_mapper.Map<Group>(request));
+            return await _groupRepository.UpdateItemAsync(data);
         }
     }
 }
