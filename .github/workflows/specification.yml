@@ -21,7 +21,7 @@ jobs:
         run: mkdir -p specifications
 
       - name: Copy file to specifications
-        run: cp api/ChattO/API/openapi.yml api/ChattO/API/async-api.yml specifications/
+        run: cp api/ChattO/API/{openapi.yml,async-api.yml} specifications/
 
       - name: Setup git global credentials
         run: |
