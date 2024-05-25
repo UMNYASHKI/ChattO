@@ -38,6 +38,9 @@ namespace Persistence.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<string>("DeviceToken")
+                        .HasColumnType("text");
+
                     b.Property<string>("DisplayName")
                         .HasColumnType("text");
 
@@ -77,7 +80,7 @@ namespace Persistence.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("ProfileImageId")
+                    b.Property<Guid?>("ProfileImageId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Role")
@@ -122,6 +125,9 @@ namespace Persistence.Migrations
                     b.Property<Guid>("FeedId")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("IsCreator")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
@@ -155,6 +161,53 @@ namespace Persistence.Migrations
                     b.ToTable("AppUserGroups");
                 });
 
+            modelBuilder.Entity("Domain.Models.Billing", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BillingInfoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BillingInfoId");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("Billing");
+                });
+
+            modelBuilder.Entity("Domain.Models.BillingInfo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BillingInfo");
+                });
+
             modelBuilder.Entity("Domain.Models.Feed", b =>
                 {
                     b.Property<Guid>("Id")
@@ -164,7 +217,7 @@ namespace Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("FeedImageId")
+                    b.Property<Guid?>("FeedImageId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("GroupId")
@@ -172,6 +225,9 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("TicketId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
@@ -195,7 +251,7 @@ namespace Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<string>("Url")
+                    b.Property<string>("PublicUrl")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -218,7 +274,7 @@ namespace Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<string>("Url")
+                    b.Property<string>("PublicUrl")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -238,7 +294,7 @@ namespace Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<string>("Url")
+                    b.Property<string>("PublicUrl")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -255,7 +311,12 @@ namespace Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Groups");
                 });
@@ -278,7 +339,7 @@ namespace Persistence.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("MessageFileId")
+                    b.Property<Guid?>("MessageFileId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Text")
@@ -320,6 +381,9 @@ namespace Persistence.Migrations
                     b.Property<Guid>("AppUserId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("FeedId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("SentAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -335,6 +399,9 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("FeedId")
+                        .IsUnique();
 
                     b.ToTable("Tickets");
                 });
@@ -480,8 +547,7 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Models.Files.ProfileImage", "ProfileImage")
                         .WithOne("AppUser")
                         .HasForeignKey("Domain.Models.AppUser", "ProfileImageId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Organization");
 
@@ -525,6 +591,25 @@ namespace Persistence.Migrations
                     b.Navigation("Group");
                 });
 
+            modelBuilder.Entity("Domain.Models.Billing", b =>
+                {
+                    b.HasOne("Domain.Models.BillingInfo", "BillingInfo")
+                        .WithMany("Billings")
+                        .HasForeignKey("BillingInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Models.Organization", "Organization")
+                        .WithMany("Billings")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BillingInfo");
+
+                    b.Navigation("Organization");
+                });
+
             modelBuilder.Entity("Domain.Models.Feed", b =>
                 {
                     b.HasOne("Domain.Models.Group", "Group")
@@ -546,6 +631,17 @@ namespace Persistence.Migrations
                     b.Navigation("Feed");
                 });
 
+            modelBuilder.Entity("Domain.Models.Group", b =>
+                {
+                    b.HasOne("Domain.Models.Organization", "Organization")
+                        .WithMany("Groups")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organization");
+                });
+
             modelBuilder.Entity("Domain.Models.Message", b =>
                 {
                     b.HasOne("Domain.Models.AppUserFeed", "AppUserFeed")
@@ -557,8 +653,7 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Models.Files.MessageFile", "MessageFile")
                         .WithOne("Message")
                         .HasForeignKey("Domain.Models.Message", "MessageFileId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("AppUserFeed");
 
@@ -573,7 +668,15 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Models.Feed", "Feed")
+                        .WithOne("Ticket")
+                        .HasForeignKey("Domain.Models.Ticket", "FeedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("AppUser");
+
+                    b.Navigation("Feed");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -641,11 +744,18 @@ namespace Persistence.Migrations
                     b.Navigation("Messages");
                 });
 
+            modelBuilder.Entity("Domain.Models.BillingInfo", b =>
+                {
+                    b.Navigation("Billings");
+                });
+
             modelBuilder.Entity("Domain.Models.Feed", b =>
                 {
                     b.Navigation("AppUserFeeds");
 
                     b.Navigation("FeedImage");
+
+                    b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("Domain.Models.Files.MessageFile", b =>
@@ -668,6 +778,10 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Models.Organization", b =>
                 {
                     b.Navigation("AppUsers");
+
+                    b.Navigation("Billings");
+
+                    b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
         }

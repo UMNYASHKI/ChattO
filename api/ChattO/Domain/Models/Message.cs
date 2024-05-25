@@ -11,6 +11,6 @@ public class Message
     public bool IsPinned { get; set; }
     public Guid AppUserFeedId { get; set; }
     public virtual AppUserFeed AppUserFeed { get; set; }
-    public Guid MessageFileId { get; set; }
+    public Guid? MessageFileId { get; set; }
     public virtual MessageFile MessageFile { get; set; }
 }

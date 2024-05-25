@@ -6,4 +6,6 @@ public class Organization
     public string Name { get; set; }
     public string Domain { get; set; }
     public virtual ICollection<AppUser> AppUsers { get; set; }
+    public virtual ICollection<Group> Groups { get; set; }
+    public virtual ICollection<Billing> Billings { get; set; }
 }
