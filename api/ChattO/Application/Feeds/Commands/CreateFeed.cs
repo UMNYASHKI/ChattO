@@ -40,10 +40,10 @@ public class CreateFeed
             RuleFor(x => x.Description).NotEmpty();
             RuleFor(x => x.Type).IsInEnum();
             RuleFor(x => x.CreatorId).NotEmpty();
-            RuleFor(x => x.AppUsersId).NotEmpty();
             When(c => c.GroupId == null, () =>
             {
                 RuleFor(c => c.Type).Equal(FeedType.Chat);
+                RuleFor(x => x.AppUsersId).NotEmpty();
             });
         }
     }
@@ -74,7 +74,7 @@ public class CreateFeed
 
             if (request.GroupId is not null)
             {
-                var addUsersResult = await AddUsersFromGroup(feed);
+                var addUsersResult = await AddUsersFromGroup(feed, request.CreatorId);
                 if (!addUsersResult.IsSuccessful)
                     return Result.Failure<Feed>(addUsersResult.Message);
             }
@@ -86,16 +86,16 @@ public class CreateFeed
             return Result.Success(feed);
         }
 
-        public async Task<Result<bool>> AddUsersFromGroup(Feed feed)
+        public async Task<Result<bool>> AddUsersFromGroup(Feed feed, Guid creatorId)
         {
-            var userGroupsResult = await _userGroupsRepository.GetAllAsync(x => x.GroupId == feed.GroupId);
+            var userGroupsResult = await _userGroupsRepository.GetAllAsync(x => x.GroupId == feed.GroupId && x.AppUserId != creatorId);
             if (!userGroupsResult.IsSuccessful)
                 return Result.Failure<bool>(userGroupsResult.Message);
 
             var appUserFeeds = userGroupsResult.Data.Select(userGroup => 
                 new AppUserFeed { AppUserId = userGroup.AppUserId, IsCreator = false }).ToList();
 
-            feed.AppUserFeeds.ToList().AddRange(appUserFeeds);
+            feed.AppUserFeeds = feed.AppUserFeeds.Concat(appUserFeeds).ToList();
 
             return Result.Success(true);
         }
