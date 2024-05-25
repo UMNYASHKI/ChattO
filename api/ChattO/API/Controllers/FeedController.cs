@@ -1,20 +1,14 @@
 ﻿using API.DTOs.Requests.Feed;
-using API.DTOs.Requests.User;
 using API.DTOs.Responses.Feed;
-using API.DTOs.Responses.User;
 using API.Extensions;
 using API.Helpers;
-using Application.Abstractions;
-using Application.AppUsers.Commands;
 using Application.Feeds.Commands;
 using Application.Feeds.Queries;
 using Application.Helpers;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata;
 
 namespace API.Controllers;
 
