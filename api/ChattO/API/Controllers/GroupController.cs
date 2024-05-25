@@ -1,10 +1,10 @@
 ﻿using API.DTOs.Requests.Group;
 using API.DTOs.Responses.Group;
 using API.Helpers;
+using Application.Groups.Commands;
+using Application.Groups.Queries;
 using Application.Helpers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -12,19 +12,18 @@ namespace API.Controllers;
 [Authorize(Roles = $"{RolesConstants.SuperAdmin},{RolesConstants.Admin}")]
 public class GroupController : BaseController
 {
-    // Create a new group within an organization
     [HttpPost]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Create([FromBody] CreateGroupRequest request)
-    {        
+    {
+        var createResult = await Mediator.Send(Mapper.Map<Create.Command>(request));
 
-        return Ok();
+        return HandleResult(createResult);
     }
 
-    // Get group by id
     [HttpGet("{id}")]
     [ProducesResponseType<GroupResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
@@ -32,10 +31,15 @@ public class GroupController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id)
     {
-        return Ok(new GroupResponse());
+        var getResult = await  Mediator.Send(new GetById.Query() { Id =  id });
+        if (!getResult.IsSuccessful)
+        {
+            return HandleResult(getResult);
+        }
+
+        return Ok(Mapper.Map<GroupResponse>(getResult.Data));
     }
 
-    // Get all groups (by filter) ?? sort by, order by
     [HttpGet]
     [ProducesResponseType<PagingResponse<GroupResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
@@ -43,21 +47,33 @@ public class GroupController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get([FromQuery] GroupFilterRequest request)
     {
-        return Ok();
+        var getResult = await Mediator.Send(Mapper.Map<Get.Query>(request));
+        if (!getResult.IsSuccessful)
+        {
+            return HandleResult(getResult);
+        }
+
+        var data = getResult.Data;
+        var items = data.Items.Select(Mapper.Map<GroupResponse>);
+
+        return HandleResult(Result.Success(new PagingResponse<GroupResponse>() { Items = items.ToList(), CurrentPage = data.CurrentPage, TotalCount = data.TotalCount, PageSize = data.PageSize, TotalPages = data.TotalPages }));
     }
 
-    // Update group
-    [HttpPatch("{id}")]
+    [HttpPut("{id}")]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody] JsonPatchDocument<UpdateGroupRequest> request)
+    public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody] UpdateGroupRequest request)
     {
-        return Ok();
+        var group = Mapper.Map<Update.Command>(request);
+        group.Id = id;
+
+        var updateResult = await Mediator.Send(group);
+
+        return HandleResult(updateResult);
     }
 
-    // Delete group
     [HttpDelete("{id}")]
     [ProducesResponseType<bool>(StatusCodes.Status200OK)]
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
@@ -65,6 +81,8 @@ public class GroupController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(Guid id)
     {
-        return Ok();
+        var deleteResult = await Mediator.Send(new Delete.Command() { Id = id });
+
+        return HandleResult(deleteResult);
     }
 }

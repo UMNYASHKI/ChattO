@@ -1,6 +1,4 @@
 ﻿using API.DTOs.Requests.User;
-using API.DTOs.Responses.File;
-using API.DTOs.Responses.Organization;
 using API.DTOs.Responses.User;
 using API.Helpers;
 using Application.AppUsers.Commands;
