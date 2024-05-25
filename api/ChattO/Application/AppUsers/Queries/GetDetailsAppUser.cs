@@ -4,7 +4,7 @@ using Domain.Models;
 using FluentValidation;
 using MediatR;
 
-namespace Application.Users.Queries;
+namespace Application.AppUsers.Queries;
 
 public class GetDetailsAppUser
 {
@@ -22,12 +22,18 @@ public class GetDetailsAppUser
     public class Handler : IRequestHandler<Query, Result<AppUser>>
     {
         private readonly IRepository<AppUser> _repository;
-        public Handler(IRepository<AppUser> repository)
+        private readonly IValidator<Query> _validator;
+        public Handler(IRepository<AppUser> repository, IValidator<Query> validator)
         {
             _repository = repository;
+            _validator = validator;
         }
         public async Task<Result<AppUser>> Handle(Query request, CancellationToken cancellationToken)
         {
+            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+            if (!validationResult.IsValid)
+                return Result.Failure<AppUser>(validationResult.ToString(" "));
+
             return await _repository.GetByIdAsync(request.Id);
         }
     }

@@ -11,8 +11,6 @@ public interface IRepository<TEntity> where TEntity : class
 
     Task<Result<TEntity>> GetByIdAsync(Guid id);
 
-    Task<Result<TCurrent>> GetByIdAsync<TCurrent>(Guid id) where TCurrent : class;
-
     Task<Result<IEnumerable<TEntity>>> GetAllAsync(
          Expression<Func<TEntity, bool>>? filter = null,
           Expression<Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>> orderBy = null,
@@ -25,4 +23,6 @@ public interface IRepository<TEntity> where TEntity : class
     Task<Result<bool>> IsUnique(Expression<Func<TEntity, bool>> filter);
 
     Task<Result<int>> GetTotalCountAsync(Expression<Func<TEntity, bool>>? filter = null);
+
+    Task<Result<bool>> PartialUpdateAsync<T>(Guid id, T entity);
 }

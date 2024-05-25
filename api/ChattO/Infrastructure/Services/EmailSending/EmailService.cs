@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions;
 using Application.DTOs.EmailData;
 using Application.Helpers;
+using Domain.Models;
 using Infrastructure.Helpers;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
@@ -14,10 +15,12 @@ public class EmailService : IEmailService
 {
     private readonly IMailjetClient _mailjetClient;
     private readonly EmailSettings _emailSettings;
-    public EmailService(IMailjetClient mailjetClient, IOptions<EmailSettings> options)
+    private readonly IRepository<AppUser> _repository;
+    public EmailService(IMailjetClient mailjetClient, IOptions<EmailSettings> options, IRepository<AppUser> repository)
     {
         _mailjetClient = mailjetClient;
         _emailSettings = options.Value;
+        _repository = repository;
     }
 
     public async Task<Result<bool>> SendEmailOnUserRegistration(UserRegistration userData)
@@ -31,6 +34,8 @@ public class EmailService : IEmailService
             return Result.Failure<bool>("Failed to send email");
         }
 
+        await UpdateIsSentStatus(GetSuccessfullySentEmails(response));
+
         return Result.Success<bool>();
     }
 
@@ -43,7 +48,9 @@ public class EmailService : IEmailService
         if (!response.IsSuccessStatusCode)
         {
             return Result.Failure<bool>(response.GetErrorMessage());
-        }
+        }        
+
+        await UpdateIsSentStatus(GetSuccessfullySentEmails(response));
 
         return Result.Success<bool>();
     }
@@ -80,5 +87,29 @@ public class EmailService : IEmailService
         .Property(Send.FromName, _emailSettings.FromName)
         .Property(Send.MjTemplateID, templateId)
         .Property(Send.MjTemplateLanguage, true);
+    }
+
+    private List<string> GetSuccessfullySentEmails(MailjetResponse response)
+    {
+        return response.GetData()
+            .Children()
+            .Select(d => d["Email"].ToString())
+            .ToList();
+    }
+
+    private async Task<Result<bool>> UpdateIsSentStatus(List<string> emails)
+    {
+        var usersResult = await _repository.GetAllAsync(u => emails.Contains(u.Email));
+        if (!usersResult.IsSuccessful)
+            return Result.Failure<bool>("Failed to get users");
+
+        var users = usersResult.Data.ToList();
+        users.ForEach(u => u.IsEmailSent = true);
+
+        var tasks = new List<Task<Result<bool>>>();
+        users.ForEach(u => tasks.Add(_repository.UpdateItemAsync(u)));
+        var results = await Task.WhenAll(tasks);
+
+        return Result.Success(true);
     }
 }

@@ -1,8 +1,11 @@
-﻿using API.DTOs.Requests.Billing;
-using API.DTOs.Requests.BillingInfo;
+﻿using API.DTOs.Requests.BillingInfo;
 using API.DTOs.Responses.Billing;
 using API.Helpers;
+using Application.BillInfo.Commands;
+using Application.BillInfo.Queries;
 using Application.Helpers;
+using Application.Payment.Commands;
+using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,22 +21,31 @@ public class BillingInfoController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Create([FromBody] CreateBillingInfoRequest request)
     {
-        return Ok();
+        var result = await Mediator.Send(Mapper.Map<CreateBillingInfo.Command>(request));
+
+        return HandleResult(result);
     }
 
-    // Get billingInfos
     [Authorize(Roles = $"{RolesConstants.SystemAdmin},{RolesConstants.SuperAdmin}")]
     [HttpGet]
     [ProducesResponseType<PagingResponse<BillingInfoResponse>>(StatusCodes.Status200OK)]
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get([FromQuery]GetBillingInfosRequest request)
+    public async Task<IActionResult> Get([FromQuery] GetBillingInfosRequest request)
     {
-        return Ok();
+        var getResult = await Mediator.Send(Mapper.Map<Get.Query>(request));
+        if (!getResult.IsSuccessful)
+        {
+            return HandleResult(getResult);
+        }
+
+        var data = getResult.Data;
+        var items = data.Items.Select(Mapper.Map<BillingInfoResponse>).ToList();
+
+        return HandleResult(Result.Success(new PagingResponse<BillingInfoResponse>() { Items = items, CurrentPage = data.CurrentPage, TotalCount = data.TotalCount, PageSize = data.PageSize, TotalPages = data.TotalPages }));
     }
 
-    // Get billingInfo by id
     [Authorize(Roles = $"{RolesConstants.SystemAdmin},{RolesConstants.SuperAdmin}")]
     [HttpGet("{id}")]
     [ProducesResponseType<BillingInfoResponse>(StatusCodes.Status200OK)]
@@ -42,6 +54,12 @@ public class BillingInfoController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
-        return Ok();
+        var result = await Mediator.Send(new GetById.Query() { Id = id });
+        if (!result.IsSuccessful)
+        {
+            return HandleResult(Result.Failure<BillingInfoResponse>(result.Message));
+        }
+
+        return HandleResult(Result.Success(Mapper.Map<BillingInfoResponse>(result)));
     }
 }
