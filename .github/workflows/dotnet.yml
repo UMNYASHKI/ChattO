@@ -21,7 +21,7 @@ jobs:
     - name: Setup swashBuckle
       run: dotnet tool install --global Swashbuckle.AspNetCore.Cli --version 6.3.1
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore api/ChattO/API/API.csproj
       working-directory: api/ChattO
     - name: Build
       run: dotnet build --no-restore
