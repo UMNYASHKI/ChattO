@@ -863,6 +863,62 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+  '/api/Feed/{id}/users':
+    get:
+      tags:
+        - Feed
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FeedAppUserResponse'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FeedAppUserResponse'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FeedAppUserResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+        '500':
+          description: Server Error
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   /api/Group:
     post:
       tags:
@@ -1040,7 +1096,7 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
-    patch:
+    put:
       tags:
         - Group
       parameters:
@@ -1054,24 +1110,16 @@ paths:
         content:
           application/json-patch+json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Operation'
+              $ref: '#/components/schemas/UpdateGroupRequest'
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Operation'
+              $ref: '#/components/schemas/UpdateGroupRequest'
           text/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Operation'
+              $ref: '#/components/schemas/UpdateGroupRequest'
           application/*+json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Operation'
+              $ref: '#/components/schemas/UpdateGroupRequest'
       responses:
         '200':
           description: Success
@@ -2076,6 +2124,119 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+  /api/UserGroup:
+    post:
+      tags:
+        - UserGroup
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/AddUsersToGroupRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddUsersToGroupRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AddUsersToGroupRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AddUsersToGroupRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: boolean
+            application/json:
+              schema:
+                type: boolean
+            text/json:
+              schema:
+                type: boolean
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+        '500':
+          description: Server Error
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    delete:
+      tags:
+        - UserGroup
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/DeleteUsersFromGroupRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteUsersFromGroupRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/DeleteUsersFromGroupRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/DeleteUsersFromGroupRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: boolean
+            application/json:
+              schema:
+                type: boolean
+            text/json:
+              schema:
+                type: boolean
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+        '500':
+          description: Server Error
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   /api/ws:
     get:
       tags:
@@ -2097,18 +2258,27 @@ paths:
           description: No Content
 components:
   schemas:
+    AddUsersToGroupRequest:
+      type: object
+      properties:
+        groupId:
+          type: string
+          format: uuid
+        usersId:
+          type: array
+          items:
+            type: string
+            format: uuid
+          nullable: true
+      additionalProperties: false
     AppUserGroupResponse:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        displayName:
-          type: string
-          nullable: true
-        email:
-          type: string
-          nullable: true
+        userInGroupResponse:
+          $ref: '#/components/schemas/UserInGroupResponse'
         isModerator:
           type: boolean
         groupId:
@@ -2330,6 +2500,19 @@ components:
         - 0
       type: integer
       format: int32
+    DeleteUsersFromGroupRequest:
+      type: object
+      properties:
+        groupId:
+          type: string
+          format: uuid
+        usersId:
+          type: array
+          items:
+            type: string
+            format: uuid
+          nullable: true
+      additionalProperties: false
     FeedAppUserResponse:
       type: object
       properties:
@@ -2342,14 +2525,15 @@ components:
         email:
           type: string
           nullable: true
-        isModerator:
-          type: boolean
         isCreator:
           type: boolean
       additionalProperties: false
     FeedResponse:
       type: object
       properties:
+        feedId:
+          type: string
+          format: uuid
         name:
           type: string
           nullable: true
@@ -2364,11 +2548,6 @@ components:
           nullable: true
         feedImageUrl:
           type: string
-          nullable: true
-        appUsers:
-          type: array
-          items:
-            $ref: '#/components/schemas/FeedAppUserResponse'
           nullable: true
       additionalProperties: false
     FeedResponsePagingResponse:
@@ -2613,6 +2792,13 @@ components:
         - 2
       type: integer
       format: int32
+    UpdateGroupRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+      additionalProperties: false
     UpdateOrganizationRequest:
       required:
         - domain
@@ -2649,6 +2835,16 @@ components:
           $ref: '#/components/schemas/GetDetailsOrganizationResponse'
         profileImage:
           $ref: '#/components/schemas/FileResponse'
+      additionalProperties: false
+    UserInGroupResponse:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
       additionalProperties: false
     UserResponse:
       type: object

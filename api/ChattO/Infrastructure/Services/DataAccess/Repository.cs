@@ -212,11 +212,19 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         }
     }
 
-    private void CheckEntityEntryState(TEntity entity)
+    public async Task<Result<bool>> DeleteItemsAsync(IEnumerable<TEntity> entities)
     {
-        if (_context.Entry(entity).State == EntityState.Detached)
+        try
         {
-            _dbSet.Attach(entity);
+            _dbSet.RemoveRange(entities);
+            await _context.SaveChangesAsync();
+
+            return Result.Success(true);
+        }
+        catch (Exception e)
+        {
+            var a = e.Message;
+            return Result.Failure<bool>($"Cannot delete items");
         }
     }
 }

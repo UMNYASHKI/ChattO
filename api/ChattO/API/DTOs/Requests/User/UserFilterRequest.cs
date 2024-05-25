@@ -38,6 +38,10 @@ public class UserFilterRequest : SortingParams, IMapWith<GetListAppUsers.Query>
             .ForMember(query => query.IsEmailSent,
                                   opt => opt.MapFrom(request => request.IsEmailSent))
             .ForMember(query => query.DisplayName,
-                                  opt => opt.MapFrom(request => request.DisplayName));
+                                  opt => opt.MapFrom(request => request.DisplayName))
+            .ForMember(c => c.PageNumber, opt => opt.MapFrom(r => r.PageNumber))
+            .ForMember(c => c.PageSize, opt => opt.MapFrom(r => r.PageSize))
+            .ForMember(c => c.ColumnName, opt => opt.MapFrom(r => r.ColumnName))
+            .ForMember(c => c.Descending, opt => opt.MapFrom(r => r.Descending));
     }
 }
