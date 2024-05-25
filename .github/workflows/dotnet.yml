@@ -1,0 +1,31 @@
+name: .NET
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Setup swashBuckle
+      run: dotnet tool install --global Swashbuckle.AspNetCore.Cli --version 6.3.1
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: api/ChattO
+    - name: Build
+      run: dotnet build --no-restore
+      working-directory: api/ChattO
+    - name: Test
+      run: dotnet test --no-restore
+      working-directory: api/ChattO

@@ -1,0 +1,39 @@
+name: Update specification
+
+on:
+  workflow_run:
+        workflows: ['.Net']
+        types: [completed]
+        branches:
+            - 'main'
+
+jobs:
+  copy_file:
+    
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check folder existence
+        run: mkdir -p specifications
+
+      - name: Copy file to specifications
+        run: cp api/ChattO/API/openapi.yml api/ChattO/API/async-api.yml specifications/
+
+      - name: Setup git global credentials
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Adding new file and performing commit
+        run: |
+          git add .
+          git commit -m "[skip ci] Copy file to specifications folder" --allow-empty
+
+      - name: Pushing to main
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.CI_ACCESS_TOKEN }}
