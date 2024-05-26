@@ -55,6 +55,39 @@ public class ConnectionManager
         return (List<Guid?>)[.. _users.Values];
     }
 
+    public Result<List<WebSocket>> GetWebSockets(List<Guid> userIds)
+    {
+        try
+        {
+            var socketIds = _users.Where(x => userIds.Contains(x.Value))
+                .Select(x => x.Key).ToList();
+            var webSockets = _sockets.Where(x => socketIds.Contains(x.Value));
+
+            return Result.Success(webSockets.Select(x => x.Key).ToList());
+        }
+        catch
+        {
+            return Result.Failure<List<WebSocket>>("Failed to get websockets");
+        }
+    }
+
+    public Result<Guid> GetUserIdBySocket(WebSocket socket)
+    {
+        try
+        {
+            var webSocketId = _sockets.FirstOrDefault(x => x.Key.Equals(socket)).Value;
+            var userId = _users.FirstOrDefault(x => x.Key == webSocketId).Value;
+            if (webSocketId.Equals(Guid.Empty) || userId.Equals(Guid.Empty))
+                return Result.Failure<Guid>("Failed to get userId by websocket");
+            
+            return Result.Success(userId);
+        }
+        catch
+        {
+            return Result.Failure<Guid>("Failed to get userId by websocket");
+        }
+    }
+
     private Guid CreateConnectionId()
     {
         return Guid.NewGuid();
