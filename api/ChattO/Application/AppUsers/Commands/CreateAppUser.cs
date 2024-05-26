@@ -7,6 +7,7 @@ using Domain.Enums;
 using Domain.Models;
 using FluentValidation;
 using MediatR;
+using System.Threading.Tasks;
 
 namespace Application.AppUsers.Commands;
 
@@ -160,20 +161,13 @@ public class CreateAppUser
 
         private async Task<Result<bool>> RegisterUsers(List<AppUser> appUsers)
         {
-            var tasks = new List<Task<Result<bool>>>();
             foreach (var user in appUsers)
             {
-                tasks.Add(_userService.RegisterUserAsync(user));
+               var result = await _userService.RegisterUserAsync(user);
+               if (!result.IsSuccessful)
+                    return Result.Failure<bool>(result.Message);
             }
-
-            var results = await Task.WhenAll(tasks);
-
-            if (results.Any(r => !r.IsSuccessful))
-            {
-                var errors = results.Where(r => !r.IsSuccessful).Select(r => r.Message).ToList();
-                return Result.Failure<bool>(string.Join(" ", errors));
-            }
-                
+      
             return Result.Success<bool>();
         }
     }
