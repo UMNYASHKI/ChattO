@@ -24,7 +24,7 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITokenService, JwtService>();
 
-        services/*.AddGoogleAuthentification(apiConfiguration)*/
+        services.AddGoogleAuthentification(apiConfiguration)
             .AddJwtAuthentication(apiConfiguration);
 
         services.InitializeBackblaze(apiConfiguration);

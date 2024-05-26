@@ -1,9 +1,11 @@
 ﻿using API.DTOs.Requests.UserGroups;
 using Application.UserGroups.Commands;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 public class UserGroupController : BaseController
 {
     [HttpPost]
