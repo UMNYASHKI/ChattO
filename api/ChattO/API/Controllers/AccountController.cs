@@ -1,4 +1,5 @@
 ﻿using API.DTOs.Requests.Account;
+using API.DTOs.Responses.Account;
 using Application.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -24,8 +25,10 @@ public class AccountController : BaseController
     public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest) 
     {
         var loginResult = await _userService.AuthenticateUserAsync(loginRequest.Email, loginRequest.Password);
+        if (!loginResult.IsSuccessful)
+            return HandleResult(loginResult);
 
-        return HandleResult(loginResult);
+        return Ok(new LoginResponse() { Token = loginResult.Data });
     }
 
     [HttpGet("GoogleLogin")]
