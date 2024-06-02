@@ -1,5 +1,11 @@
-import { SigninForm } from '@/components/common/auth/SigninForm';
+import { SignInForm } from '@/components/pages/signin/form';
 
-export default function SignInRoute() {
-  return <SigninForm />;
-}
+const Login: React.FC = () => {
+  return (
+    <>
+      <SignInForm />
+    </>
+  );
+};
+
+export default Login;
