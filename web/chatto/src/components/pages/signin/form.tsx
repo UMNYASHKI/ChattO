@@ -96,7 +96,7 @@ export const SignInForm: React.FC = () => {
           )}
         />
         <Link
-          href=""
+          href="/forgot"
           className="block ml-auto underline underline-offset-4"
         >
           Forgot password?
