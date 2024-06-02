@@ -1,24 +1,30 @@
+import Image from 'next/image';
 import React from 'react';
 
+import Bubbles from '@/../public/bubbles.png';
+import Dashboard from '@/../public/dashboard.png';
+
 const DashboardSection: React.FC = () => {
-    return (
-        <section className="flex flex-col items-center p-10">
-            <h2 className="text-2xl font-bold mb-4">
-                Control the process of managing users and groups using a
-                comprehensive admin panel.
-            </h2>
-            <img src="/dashboard.png" alt="Dashboard" className="h-60 w-60" />
-            <div className="flex flex-col space-y-4 mt-4 text-gray-700">
-                <p>Register your organization</p>
-                <p>Assign more admins to help you manage the workspace</p>
-                <p>Create, edit, delete and manage users</p>
-                <p>Manage chats and channels</p>
-                <p>
-                    View a dashboard that displays the organization`s statistics
-                </p>
-            </div>
-        </section>
-    );
+  return (
+    <section className="flex flex-col h-screen items-center justify-center text-xl">
+      <h1 className="text-4xl">
+        Control the process of managing users and <br />
+        groups using a comprehensive admin panel.
+      </h1>
+      <div className="flex flex-row w-full">
+        <Image
+          alt="Dashboard"
+          src={Dashboard}
+          className="w-3/5 h-full object-contain"
+        />
+        <Image
+          alt="Bubbles"
+          src={Bubbles}
+          className="w-2/5 h-full object-contain"
+        />
+      </div>
+    </section>
+  );
 };
 
 export default DashboardSection;
