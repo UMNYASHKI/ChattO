@@ -1,5 +1,6 @@
 ﻿using API.DTOs.Requests.Account;
 using API.DTOs.Responses.Account;
+using API.DTOs.Responses.User;
 using Application.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -71,5 +72,20 @@ public class AccountController : BaseController
         await _userService.SignOutAsync();
 
         return Ok();
+    }
+
+    [Authorize]
+    [HttpGet]
+    [ProducesResponseType<UserDetailsResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAccountDetails()
+    {
+        var userResult = await _userService.GetCurrentUser();
+        if (!userResult.IsSuccessful)
+            return HandleResult(userResult);
+
+        return Ok(Mapper.Map<UserDetailsResponse>(userResult.Data));
     }
 }
