@@ -1,4 +1,5 @@
 ﻿using API.DTOs.Requests.Organization;
+using API.DTOs.Responses.Feed;
 using API.DTOs.Responses.Organization;
 using API.Helpers;
 using Application.Abstractions;
@@ -37,7 +38,11 @@ public class OrganizationController : BaseController
         var user = Mapper.Map<AppUser>(request);
         user.OrganizationId = result.Data;
 
-        return HandleResult(await _userService.RegisterUserAsync(user)); 
+        var userResult = await _userService.RegisterUserAsync(user);
+        if (!userResult.IsSuccessful)
+            return HandleResult(userResult);
+
+        return CreatedAtAction(nameof(this.GetById), new { id = result.Data }, result.Data); 
     }
 
     [Authorize(Roles = RolesConstants.SystemAdmin)]
