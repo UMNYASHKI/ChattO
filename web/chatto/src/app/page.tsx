@@ -10,19 +10,19 @@ import PricingSection from '../components/pages/index/PricingSection';
 import StartSection from '../components/pages/index/StartSection';
 
 const LandingPage: React.FC = () => {
-  return (
-    <>
-      <Header />
-      <main className="px-64">
-        <StartSection />
-        <DashboardSection />
-        <MobileSection />
-        <PricingSection />
-        <FaqSection />
-      </main>
-      <Footer />
-    </>
-  );
+	return (
+		<>
+			<Header />
+			<main className="px-64">
+				<StartSection />
+				<DashboardSection />
+				<MobileSection />
+				<PricingSection />
+				<FaqSection />
+			</main>
+			<Footer />
+		</>
+	);
 };
 
 export default LandingPage;
