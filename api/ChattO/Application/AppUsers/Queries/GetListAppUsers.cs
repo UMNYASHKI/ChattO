@@ -43,7 +43,7 @@ public class GetListAppUsers
                 return Result.Failure<PagingResponse<AppUser>>(validationResult.ToString(" "));
 
             var filter = ExpressionFilter<AppUser, Query>.GetFilter(request);
-            var sortBy = SortingBuilder<AppUser>.GetSortBy(request.ColumnName, request.Descending ?? true);
+            var sortBy = SortingBuilder<AppUser>.GetSortBy(request.ColumnName ?? "Id", request.Descending ?? true);
             if (!sortBy.IsSuccessful)
                 return Result.Failure<PagingResponse<AppUser>>(sortBy.Message);
 

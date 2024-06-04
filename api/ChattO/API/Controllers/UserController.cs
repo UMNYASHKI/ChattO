@@ -51,7 +51,7 @@ public class UserController : BaseController
     [ProducesResponseType<string>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Get([FromQuery] UserFilterRequest request)
+    public async Task<IActionResult> Get([FromBody] UserFilterRequest request)
     {
         var listResult = await Mediator.Send(Mapper.Map<GetListAppUsers.Query>(request));
         if (!listResult.IsSuccessful)
