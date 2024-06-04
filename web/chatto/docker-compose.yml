@@ -1,8 +1,8 @@
 version: "3.8"
 services:
-  web:
+  chatto.web:
     image: chatto-web
-    container_name: web
+    container_name: chatto.web
     build:
       context: . 
       dockerfile: Dockerfile
