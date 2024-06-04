@@ -133,7 +133,7 @@ export const user = {
 	get: (
 		filter: UserFilterRequest
 	): Promise<ApiResponse<PagingResponse<UserResponse>>> =>
-		requests.get('/User', { params: { filter } }),
+		requests.get('/User', filter),
 	getById: (id: string): Promise<ApiResponse<UserDetailsResponse>> =>
 		requests.get('/User/' + id, {}),
 	/*update: (id:string, data: UpdateUserRequest) => requests.post("/User/"+id, data),*/

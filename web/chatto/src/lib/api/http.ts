@@ -32,7 +32,7 @@ export function createApiInstance(options: ApiInstanceOptions) {
 
 		const addToUrl =
 			method == 'GET'
-				? '?' + new URLSearchParams(JSON.stringify(body)).toString()
+				? '?' + new URLSearchParams(body as Record<string, string>).toString()
 				: '';
 
 		const _body = method != 'GET' ? { body: JSON.stringify(body) } : {};

@@ -23,7 +23,7 @@ export const DashboardUserTable: React.FC<{
 			const u = await user.get({
 				groupId: null,
 				userName: null,
-				appUserRole: null,
+				appUserRole: 3,
 				email: null,
 				organizationId: orgId,
 				isEmailSent: null,
