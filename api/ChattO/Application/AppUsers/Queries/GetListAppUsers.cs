@@ -16,7 +16,7 @@ public class GetListAppUsers
         [Filter]
         public string? UserName { get; set; }
         [Filter]
-        public AppUserRole? AppUserRole { get; set; }
+        public AppUserRole? Role { get; set; }
         [Filter]
         public string? Email { get; set; }
         [Filter]

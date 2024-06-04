@@ -29,7 +29,7 @@ public class UserFilterRequest : SortingParams, IMapWith<GetListAppUsers.Query>
                                   opt => opt.MapFrom(request => request.GroupId))
             .ForMember(query => query.UserName,
                                   opt => opt.MapFrom(request => request.UserName))
-            .ForMember(query => query.AppUserRole,
+            .ForMember(query => query.Role,
                                   opt => opt.MapFrom(request => request.AppUserRole))
             .ForMember(query => query.Email,
                                   opt => opt.MapFrom(request => request.Email))
