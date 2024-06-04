@@ -11,7 +11,10 @@ public class Feed
     public FeedType Type { get; set; }
     public Guid? GroupId { get; set; }
     public virtual Group Group { get; set; }
-    public Guid FeedImageId { get; set; }
+    public Guid? FeedImageId { get; set; }
     public virtual FeedImage FeedImage { get; set; }
+    public Guid? TicketId { get; set; }
+    public virtual Ticket Ticket { get; set; }
     public virtual ICollection<AppUserFeed> AppUserFeeds { get; set; }
+    
 }

@@ -1,17 +1,34 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <UserSecretsId>207e34ff-a539-44aa-9fb0-2117e61eb2cd</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
+  <Target Name="OpenAPI" AfterTargets="Build" Condition="$(Configuration)=='Debug'">
+    <PropertyGroup>
+      <AssemblyFullPath>$([System.IO.Path]::GetFullPath($(MSBuildProjectDirectory)\$(OutDir)$(TargetFileName)))</AssemblyFullPath>
+    </PropertyGroup>
+    <Exec Command="swagger tofile --output openapi.yml --yaml $(AssemblyFullPath) v1" WorkingDirectory="$(ProjectDir)" />
+  </Target>
+
+
   <ItemGroup>
+    <PackageReference Include="AsyncAPI.NET" Version="5.2.0" />
+    <PackageReference Include="AsyncAPI.NET.Bindings" Version="5.2.0" />
+    <PackageReference Include="AsyncAPI.NET.Readers" Version="5.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="8.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 

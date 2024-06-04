@@ -2,6 +2,7 @@
 
 public enum AppUserRole
 {
+    SystemAdmin,
     SuperAdmin,
     Admin,
     User
