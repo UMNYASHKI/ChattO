@@ -37,13 +37,13 @@ import {
 } from './resp';
 
 const requests = {
-	get: <T>(url: string, params?: unknown) =>
+	get: <T>(url: string, params?: { [key: string]: any }) =>
 		apiInstance<T>(url, { method: 'GET', body: params }),
-	post: <T>(url: string, body: unknown) =>
+	post: <T>(url: string, body: { [key: string]: any }) =>
 		apiInstance<T>(url, { method: 'POST', body: body }),
-	put: <T>(url: string, body: unknown) =>
+	put: <T>(url: string, body: { [key: string]: any }) =>
 		apiInstance<T>(url, { method: 'PUT', body: body }),
-	delete: <T>(url: string, body?: unknown) =>
+	delete: <T>(url: string, body?: { [key: string]: any }) =>
 		apiInstance<T>(url, { method: 'DELETE', body: body })
 };
 
