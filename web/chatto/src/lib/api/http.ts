@@ -5,7 +5,7 @@ type Headers = { [key: string]: string };
 interface FetchOptions {
 	method?: string;
 	headers?: Headers;
-	body?: unknown;
+	body?: { [key: string]: any };
 }
 
 interface ApiInstanceOptions {
@@ -30,33 +30,43 @@ export function createApiInstance(options: ApiInstanceOptions) {
 
 		const session = await getSession();
 
-		const addToUrl =
-			method == 'GET'
-				? '?' + new URLSearchParams(body as Record<string, string>).toString()
-				: '';
-
-		const _body = method != 'GET' ? { body: JSON.stringify(body) } : {};
-
-		const response = await fetch(`${baseURL}${endpoint}` + addToUrl, {
-			method,
-			headers: {
-				...defaultHeaders,
-				...headers,
-				Authorization: 'Bearer ' + session.token
-			},
-			..._body
-		});
-
+		let fullUrl = `${baseURL}${endpoint}`;
+	
+		if (method === 'GET' && body) {
+		  const filteredBody = Object.fromEntries(
+			Object.entries(body).filter(([key, value]) => value !== null)
+		  );
+		  const queryParams = new URLSearchParams(filteredBody as Record<string, string>);
+		  fullUrl += `?${queryParams.toString()}`;
+		}
+	
+		const requestOptions: RequestInit = {
+		  method,
+		  headers: {
+			...defaultHeaders,
+			...headers,
+			Authorization: 'Bearer ' + session.token,
+		  },
+		};
+	
+		if (method !== 'GET' && body) {
+		  requestOptions.body = JSON.stringify(body);
+		}
+	
+		const response = await fetch(fullUrl, requestOptions);
+	
 		let js;
 		try {
-			js = await response.json();
-		} catch {}
-
+		  js = await response.json();
+		} catch {
+		  js = undefined;
+		}
+	
 		return {
-			status: response.status,
-			ok: response.ok,
-			statusText: response.statusText,
-			json: js
+		  status: response.status,
+		  ok: response.ok,
+		  statusText: response.statusText,
+		  json: js,
 		};
 	};
 }
