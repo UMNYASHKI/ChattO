@@ -1,4 +1,4 @@
-import Pricing from '@/components/pages/pricing/Pricing';
+import Pricing from "@/components/pages/pricing/pricing";
 
 const PricingPage: React.FC = () => {
 	return (
