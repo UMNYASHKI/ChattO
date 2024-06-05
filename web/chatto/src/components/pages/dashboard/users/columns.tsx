@@ -14,8 +14,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { UserResponse } from '@/lib/api/resp';
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 type TableUser = {
 	name: string;
 	email: string;
@@ -81,9 +79,7 @@ export const columns: ColumnDef<TableUser>[] = [
 	},
 	{
 		id: 'actions',
-		cell: ({ row }) => {
-			const payment = row.original;
-
+		cell: () => {
 			return (
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
@@ -94,13 +90,7 @@ export const columns: ColumnDef<TableUser>[] = [
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
 						<DropdownMenuLabel>Actions</DropdownMenuLabel>
-						<DropdownMenuItem
-						// onClick={() =>
-						// 	navigator.clipboard.writeText(payment.id)
-						// }
-						>
-							Edit
-						</DropdownMenuItem>
+						<DropdownMenuItem>Edit</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem>View user</DropdownMenuItem>
 					</DropdownMenuContent>

@@ -7,6 +7,7 @@ import { PagingResponse, UserResponse } from '@/lib/api/resp';
 
 import { DashboardError } from '../error';
 import { DataTable } from '../table';
+import { DashboardUsersAdd } from './add';
 import { columns, ToTableUser } from './columns';
 
 export const DashboardUserTable: React.FC<{
@@ -15,12 +16,19 @@ export const DashboardUserTable: React.FC<{
 	const [query, setQuery] = useState('');
 	const [page, setPage] = useState(0);
 
-	const [users, setUsers] = useState<PagingResponse<UserResponse>>();
+	const [users, setUsers] = useState<PagingResponse<UserResponse>>({
+		items: [],
+		currentPage: 1,
+		totalPages: 0,
+		pageSize: 10,
+		totalCount: 1
+	});
 	const [state, setState] = useState<'error' | 'loading' | 'idle'>('loading');
 
 	useEffect(() => {
 		async function fetchData() {
-			const u = await user.get({
+			setState('loading');
+			const req = await user.get({
 				groupId: null,
 				userName: null,
 				appUserRole: 3,
@@ -31,13 +39,14 @@ export const DashboardUserTable: React.FC<{
 				columnName: null,
 				descending: null,
 				pageNumber: page + 1,
-				pageSize: 2
+				pageSize: 10
 			});
 
-			setUsers(u.json);
-
-			if (!u.json) setState('error');
-			else setState('idle');
+			if (!req.json) setState('error');
+			else {
+				setUsers(req.json);
+				setState('idle');
+			}
 		}
 		fetchData();
 	}, [orgId, query, page]);
@@ -45,25 +54,21 @@ export const DashboardUserTable: React.FC<{
 	if (state == 'error')
 		return <DashboardError message="Could not retrieve users" />;
 
-	if (state == 'loading' || !users)
-		return (
-			<div className="flex justify-center items-center h-screen">
-				<div className="animate-spin rounded-full h-16 w-16 border-t-4"></div>
-			</div>
-		);
+	const data = users.items.map(ToTableUser);
 
 	return (
-		<div className="w-full h-full">
+		<div className="w-full flex-1">
 			<DataTable
+				state={state}
 				columns={columns}
-				data={users.items.map(ToTableUser)}
+				data={data}
 				pagination={{
 					total: users.totalCount,
-					pageCount: users.totalPages,
-					//api returns 1
+					//api returns 1 because we suck
 					startingPage: users.currentPage - 1,
 					pageSize: users.pageSize
 				}}
+				addForm={<DashboardUsersAdd />}
 				onSearch={setQuery}
 				onPagination={setPage}
 			/>

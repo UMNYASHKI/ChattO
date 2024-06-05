@@ -11,10 +11,18 @@ import {
 	useReactTable,
 	VisibilityState
 } from '@tanstack/react-table';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import {
+	Drawer,
+	DrawerClose,
+	DrawerContent,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger
+} from '@/components/ui/drawer';
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
@@ -30,37 +38,33 @@ import {
 	TableHeader,
 	TableRow
 } from '@/components/ui/table';
-import useDebounce from '@/lib/hooks/debounce';
 
 interface DataTableProps<TData, TValue> {
+	state: 'idle' | 'loading' | 'error';
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 	pagination: {
 		total: number;
-		pageCount: number;
 		pageSize: number;
 		startingPage: number;
 	};
+	addForm: ReactNode;
 	onSearch: (query: string) => void;
 	onPagination: (page: number) => void;
 }
 
 export function DataTable<TData, TValue>({
+	state,
 	columns,
 	data,
 	pagination,
+	addForm,
 	onSearch,
 	onPagination
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
 	const [query, setQuery] = useState<string>();
-	const debouncedQuery = useDebounce(query, 500);
-
-	useEffect(() => {
-		debouncedQuery && onSearch(debouncedQuery);
-	}, [debouncedQuery, onSearch]);
 
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
 		{}
@@ -100,12 +104,15 @@ export function DataTable<TData, TValue>({
 	});
 
 	return (
-		<div>
-			<div className="flex items-center py-4">
+		<div className="flex flex-col justify-between h-full">
+			<div className="flex items-center py-4 space-x-2">
 				<Input
 					placeholder="Search"
 					onChange={(event) => setQuery(event.target.value)}
 				/>
+				<Button onClick={() => query !== undefined && onSearch(query)}>
+					Search
+				</Button>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="outline" className="ml-auto">
@@ -133,58 +140,71 @@ export function DataTable<TData, TValue>({
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
-			<div className="rounded-md border">
-				<Table>
-					<TableHeader>
-						{table.getHeaderGroups().map((headerGroup) => (
-							<TableRow key={headerGroup.id}>
-								{headerGroup.headers.map((header) => {
-									return (
-										<TableHead key={header.id}>
-											{header.isPlaceholder
-												? null
-												: flexRender(
-														header.column.columnDef
-															.header,
-														header.getContext()
-													)}
-										</TableHead>
-									);
-								})}
-							</TableRow>
-						))}
-					</TableHeader>
-					<TableBody>
-						{table.getRowModel().rows?.length ? (
-							table.getRowModel().rows.map((row) => (
-								<TableRow
-									key={row.id}
-									data-state={
-										row.getIsSelected() && 'selected'
-									}
-								>
-									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id}>
-											{flexRender(
-												cell.column.columnDef.cell,
-												cell.getContext()
-											)}
+			<div className="h-[70vh]">
+				<div className="rounded-md border max-h-full overflow-auto">
+					{state == 'loading' ? (
+						<div className="flex justify-center items-center h-36">
+							<div className="animate-spin rounded-full h-16 w-16 border-t-4"></div>
+						</div>
+					) : (
+						<Table>
+							<TableHeader>
+								{table.getHeaderGroups().map((headerGroup) => (
+									<TableRow key={headerGroup.id}>
+										{headerGroup.headers.map((header) => {
+											return (
+												<TableHead key={header.id}>
+													{header.isPlaceholder
+														? null
+														: flexRender(
+																header.column
+																	.columnDef
+																	.header,
+																header.getContext()
+															)}
+												</TableHead>
+											);
+										})}
+									</TableRow>
+								))}
+							</TableHeader>
+							<TableBody>
+								{table.getRowModel().rows?.length ? (
+									table.getRowModel().rows.map((row) => (
+										<TableRow
+											key={row.id}
+											data-state={
+												row.getIsSelected() &&
+												'selected'
+											}
+										>
+											{row
+												.getVisibleCells()
+												.map((cell) => (
+													<TableCell key={cell.id}>
+														{flexRender(
+															cell.column
+																.columnDef.cell,
+															cell.getContext()
+														)}
+													</TableCell>
+												))}
+										</TableRow>
+									))
+								) : (
+									<TableRow>
+										<TableCell
+											colSpan={columns.length}
+											className="h-24 text-center"
+										>
+											No results.
 										</TableCell>
-									))}
-								</TableRow>
-							))
-						) : (
-							<TableRow>
-								<TableCell
-									colSpan={columns.length}
-									className="h-24 text-center"
-								>
-									No results.
-								</TableCell>
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>
+									</TableRow>
+								)}
+							</TableBody>
+						</Table>
+					)}
+				</div>
 			</div>
 			<div className="flex items-center justify-between py-4">
 				<div className="flex items-center justify-end space-x-2">
@@ -238,12 +258,25 @@ export function DataTable<TData, TValue>({
 						Next
 					</Button>
 				</div>
-				<Link
-					href="/dashboard/users/add"
-					className="p-1 px-3 border rounded-lg hover:bg-black hover:text-white transition"
-				>
-					Add
-				</Link>
+				<Drawer>
+					<DrawerTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+						Add
+					</DrawerTrigger>
+					<DrawerContent className="lg:w-2/3 mx-auto">
+						<DrawerHeader>
+							<DrawerTitle className="text-4xl">
+								Add entries to db
+							</DrawerTitle>
+							{/* <DrawerDescription>{description}</DrawerDescription> */}
+						</DrawerHeader>
+						<div className="px-4">{addForm}</div>
+						<DrawerFooter className="flex-row">
+							<DrawerClose className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full">
+								Close
+							</DrawerClose>
+						</DrawerFooter>
+					</DrawerContent>
+				</Drawer>
 			</div>
 		</div>
 	);

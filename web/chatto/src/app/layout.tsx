@@ -4,6 +4,8 @@ import clsx from 'clsx';
 import { Mitr } from 'next/font/google';
 import React from 'react';
 
+import { Toaster } from '@/components/ui/toaster';
+
 const font = Mitr({
 	subsets: ['latin'],
 	weight: ['300', '400', '500', '700'],
@@ -20,7 +22,10 @@ export default function RootLayout({
 				<title>ChattO</title>
 				<link rel="icon" href="/favicon.ico" />
 			</head>
-			<body className={clsx(font.variable, 'font-mitr')}>{children}</body>
+			<body className={clsx(font.variable, 'font-mitr')}>
+				{children}
+				<Toaster />
+			</body>
 		</html>
 	);
 }

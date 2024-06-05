@@ -1,5 +1,4 @@
 import { DashboardError } from '@/components/pages/dashboard/error';
-import { Button } from '@/components/ui/button';
 import { getSession } from '@/lib/actions/session';
 import { billing } from '@/lib/api/agent';
 

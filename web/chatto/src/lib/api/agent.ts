@@ -1,4 +1,4 @@
-import { apiInstance, ApiResponse } from './http';
+import { apiInstance, ApiResponse, FetchOptions } from './http';
 import {
 	AddUsersToGroupRequest,
 	CreateAccountRequest,
@@ -37,13 +37,13 @@ import {
 } from './resp';
 
 const requests = {
-	get: <T>(url: string, params?: { [key: string]: any }) =>
+	get: <T>(url: string, params?: FetchOptions['body']) =>
 		apiInstance<T>(url, { method: 'GET', body: params }),
-	post: <T>(url: string, body: { [key: string]: any }) =>
+	post: <T>(url: string, body?: FetchOptions['body']) =>
 		apiInstance<T>(url, { method: 'POST', body: body }),
-	put: <T>(url: string, body: { [key: string]: any }) =>
+	put: <T>(url: string, body?: FetchOptions['body']) =>
 		apiInstance<T>(url, { method: 'PUT', body: body }),
-	delete: <T>(url: string, body?: { [key: string]: any }) =>
+	delete: <T>(url: string, body?: FetchOptions['body']) =>
 		apiInstance<T>(url, { method: 'DELETE', body: body })
 };
 
