@@ -38,14 +38,13 @@ export const ForgotPasswordForm: React.FC = () => {
 
 	// 2. Define a submit handler.
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		const res = await account.forgotPassword({
-			email: values.email
-		});
-
-		if (!res.ok) {
-			return;
-		}
-
+		// const res = await account.forgotPassword({
+		// 	email: values.email
+		// });
+		//
+		// if (!res.ok) {
+		// 	return;
+		// }
 		// Handle post-submission logic, like displaying a success message
 	}
 
@@ -58,7 +57,7 @@ export const ForgotPasswordForm: React.FC = () => {
 				<span className="mx-auto text-2xl">FORGOT PASSWORD</span>
 				<p className="text-center">
 					Enter the email address associated with your account and
-					we'll send you a link to reset your password.
+					we&apos;ll send you a link to reset your password.
 				</p>
 				<FormField
 					control={form.control}
