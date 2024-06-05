@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import Link from 'next/link';
 import React from 'react';
 
 const PriceCard: React.FC<{
@@ -16,9 +17,12 @@ const PriceCard: React.FC<{
 			<h2 className="text-xl font-semibold mb-2">{period}</h2>
 			<p className="text-4xl font-bold mb-2">${price}</p>
 			<p className="text-gray-500 mb-4">PER ORGANIZATION</p>
-			<button className="px-4 py-2 bg-black text-white rounded">
+			<Link
+				href="/signup"
+				className="px-4 py-2 bg-black text-white rounded"
+			>
 				GET STARTED
-			</button>
+			</Link>
 		</div>
 	);
 };

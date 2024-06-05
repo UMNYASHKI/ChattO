@@ -64,13 +64,11 @@ export const account = {
 };
 
 export const billing = {
-	create: (id: string) => requests.post('/Billing?billingInfoId=' + id, {}),
 	get: (
 		filter: GetOrganizationBillingsRequest
 	): Promise<ApiResponse<PagingResponse<BillingResponse>>> =>
 		requests.get('/Billing', { params: { filter } }),
-	getById: (id: string) => requests.get('/Billing/' + id),
-	delete: (id: string) => requests.delete('/Billing?billingId=' + id)
+	getById: (id: string) => requests.get('/Billing/' + id)
 };
 
 export const billingInfo = {
