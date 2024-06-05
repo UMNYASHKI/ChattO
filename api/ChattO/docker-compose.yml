@@ -15,26 +15,6 @@ services:
     build:
         context: .
         dockerfile: API/Dockerfile
-    environment:
-        - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Server=chatto.database;Port=5432;Database=chatto;
-        - ASPNETCORE_URLS=http://+:80
-        - JwtSettings__Key=c5bb980c73014f67ad5b6b3e052bafdb
-        - JwtSettings__Issuer=https://localhost:8080/
-        - JwtSettings__Audience=https://localhost:8080/
-        - JwtSettings__TokenValidityFromDays=3
-        - BackBlaze__Secrets__KeyId=005cf87f2ead8ec0000000002
-        - BackBlaze__Secrets__ApplicationKey=K005vu4PI//XBsVoxGO3xRFsWaOwnt4
-        - BackBlaze__Bucket__Name=chatto-cloud-repository
-        - BackBlaze__Bucket__Id=ac3fb827bf72ce1a8de80e1c
-        - BackBlaze__Bucket__Endpoint=s3.us-east-005.backblazeb2.com  
-        - GoogleAuthSettings__ClientId=953801166712-jb4hndv21h7psofhgrs7v6akmdv8iama.apps.googleusercontent.com
-        - GoogleAuthSettings__ClientSecret=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
-        - MailjetSettings__ApiId=1f9de662735a6ae3d84a7941551e0e16
-        - MailjetSettings__ApiSecret=1caf1ff40f05d230cf27f8e685a8c822
-        - EmailSettings__FromEmail=chatto.community@gmail.com
-        - EmailSettings__FromName=ChattO
-        - PayPalOptions__ClientId=AaFC1lng6Ns1DYwD5-gbeF0zlYGNnEq6cpVTq_timm29SuNYTtoUx1p3ZIBUdUfG4tYVPFNs5UcVd6nW
-        - PayPalOptions__ClientSecret=ECGSjfSSbGGoxIuFncunWiBdvlzbBhNvxlxaSil9CFbY64VR2i2hIuhmIZm2VbxdxZKlszXLoXn2G54o
     networks:
         - dev
 
