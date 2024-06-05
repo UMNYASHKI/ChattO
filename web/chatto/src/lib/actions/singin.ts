@@ -42,32 +42,32 @@ export async function signin(_currentState: unknown, formData: FormData) {
 			user: resUser.json
 		});
 
-		// const resBilling = await billing.get({
-		// 	organizationId: resUser.json?.organization.id,
-		// 	columnName: null,
-		// 	descending: null,
-		// 	pageNumber: 0,
-		// 	pageSize: 0
-		// });
+		const resBilling = await billing.get({
+			organizationId: resUser.json?.organization.id,
+			columnName: null,
+			descending: null,
+			pageNumber: 0,
+			pageSize: 0
+		});
 
-		// console.log(resBilling);
+		console.log(resBilling);
 
-		// if (resBilling.status == 400 || !resBilling.ok) {
-		// 	return {
-		// 		s: false,
-		// 		m: 'Something went wrong while retrieveing org sub'
-		// 	};
-		// }
+		if (resBilling.status == 400 || !resBilling.ok) {
+			return {
+				s: false,
+				m: 'Something went wrong while retrieveing org sub'
+			};
+		}
 
-		// // i hate all of you
-		// const validSub = resBilling.json?.items.find((x) =>
-		// 	isSubscriptionValid(x.createdAt, x.billingInfo.type)
-		// );
+		// i hate all of you
+		const validSub = resBilling.json?.items.find((x) =>
+			isSubscriptionValid(x.createdAt, x.billingInfo.type)
+		);
 
-		// console.log(validSub);
+		console.log(validSub);
 
-		// if (validSub != undefined) redirect('/dashboard');
-		// else redirect('/pricing');
+		if (validSub != undefined) redirect('/dashboard');
+		else redirect('/pricing');
 
 		redirect('/dashboard');
 	} catch (error) {
