@@ -15,20 +15,21 @@ export async function addUser(_currentState: unknown, formData: FormData) {
 
 	try {
 		const session = await getSession();
-		if (!session.user) return { s: false, m: 'Session invalid or malformed input' };
+		if (!session.user)
+			return { s: false, m: 'Session invalid or malformed input' };
 
-		const account : CreateAccountRequest = {
+		const account: CreateAccountRequest = {
 			firstName: first,
 			lastName: last,
 			userName: username,
 			email: email
 		};
 
-		const req  : CreateAccountsRequest = {
+		const req: CreateAccountsRequest = {
 			requests: [account],
 			appUserRole: 3,
 			organizationId: session.user.organization.id
-		}
+		};
 
 		const res = await user.create(req);
 
