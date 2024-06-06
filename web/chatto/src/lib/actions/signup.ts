@@ -1,5 +1,5 @@
 'use server';
-
+import { redirect } from 'next/navigation';
 import { organization } from '../api/agent';
 import { signin } from './singin';
 
@@ -21,11 +21,14 @@ export async function signup(_currentState: unknown, formData: FormData) {
 			password: pass
 		});
 
+		console.log(res);
+
 		if (!res.ok) {
 			return { s: false, m: 'Something went wrong. ' + res.statusText };
 		}
 
-		signin({}, formData);
+		redirect('/signin');
+		// signin({}, formData);
 	} catch (error) {
 		throw error;
 	}
