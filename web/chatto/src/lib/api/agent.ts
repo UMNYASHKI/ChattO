@@ -2,6 +2,7 @@ import { apiInstance, ApiResponse, FetchOptions } from './http';
 import {
 	AddUsersToGroupRequest,
 	CreateAccountRequest,
+	CreateAccountsRequest,
 	CreateBillingInfoRequest,
 	CreateFeedRequest,
 	CreateGroupRequest,
@@ -127,7 +128,7 @@ export const organization = {
 };
 
 export const user = {
-	create: (data: CreateAccountRequest) => requests.post('/User', data),
+	create: (data: CreateAccountsRequest) => requests.post('/User', data),
 	get: (
 		filter: UserFilterRequest
 	): Promise<ApiResponse<PagingResponse<UserResponse>>> =>
