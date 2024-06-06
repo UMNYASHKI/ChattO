@@ -1,6 +1,7 @@
 'use server';
-import { organization } from '../api/agent';
 import { redirect } from 'next/navigation';
+
+import { organization } from '../api/agent';
 
 export async function signup(_currentState: unknown, formData: FormData) {
 	const organizationName = formData.get('organizationName')?.toString();
